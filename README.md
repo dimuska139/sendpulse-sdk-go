@@ -26,7 +26,14 @@ func main() {
 
 	client, e := sendpulse.ApiClient(ApiUserId, ApiSecret, ApiTimeout)
 	if e != nil {
-		fmt.Println(e)
+		switch err := e.(type) {
+		case *sendpulse.HttpError: // Http error
+			fmt.Println(err.HttpCode)
+			fmt.Println(err.Url)
+			fmt.Println(err.Message)
+		default: // Another errors
+			fmt.Println(e)
+		}
 	}
 
 	// Get address book info by id
@@ -50,11 +57,11 @@ func main() {
 	books, err := client.Books.List(uint(limit), uint(offset))
 	if err != nil {
 		switch err := e.(type) {
-		case *sendpulse.HttpError:
+		case *sendpulse.HttpError: // Http error
 			fmt.Println(err.HttpCode)
 			fmt.Println(err.Url)
 			fmt.Println(err.Message)
-		default:
+		default: // Another errors
 			fmt.Println(e)
 		}
 	} else {
@@ -81,11 +88,11 @@ func main() {
 	err = client.Books.AddEmails(uint(addressBookId), emails, extraParams)
 	if err != nil {
 		switch err := e.(type) {
-		case *sendpulse.HttpError:
+		case *sendpulse.HttpError: // Http error
 			fmt.Println(err.HttpCode)
 			fmt.Println(err.Url)
 			fmt.Println(err.Message)
-		default:
+		default: // Another errors
 			fmt.Println(e)
 		}
 	}
