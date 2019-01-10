@@ -3,6 +3,8 @@ A SendPulse REST client library and example for Go (Golang).
 
 API Documentation [https://sendpulse.com/api](https://sendpulse.com/api)
 
+[![Build Status](https://travis-ci.org/dimuska139/sendpulse-sdk-go.svg?branch=master)](https://travis-ci.org/dimuska139/sendpulse-sdk-go)
+
 ### Download
 
 ```shell
