@@ -9,11 +9,6 @@ type sendpulseClient struct {
 	Automation360 *automation360
 }
 
-type Email struct {
-	Email     string            `json:"email"`
-	Variables map[string]string `json:"variables"`
-}
-
 func ApiClient(apiUserId string, apiSecret string, timeout int) (*sendpulseClient, error) {
 	if len(apiUserId) == 0 || len(apiSecret) == 0 {
 		return nil, errors.New("client ID or Secret is empty")

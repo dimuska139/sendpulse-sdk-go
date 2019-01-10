@@ -21,6 +21,11 @@ type Book struct {
 	StatusExplain    string `json:"status_explain"`
 }
 
+type Email struct {
+	Email     string            `json:"email"`
+	Variables map[string]string `json:"variables"`
+}
+
 func (b *books) Get(addressBookId uint) (*Book, error) {
 	body, err := b.Client.makeRequest(fmt.Sprintf("/addressbooks/%d", addressBookId), "GET", nil, true)
 
