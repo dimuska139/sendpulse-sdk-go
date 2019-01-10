@@ -215,3 +215,39 @@ func TestAddEmailsSuccess(t *testing.T) {
 	err := spClient.Books.AddEmails(uint(addressBookId), emails, make(map[string]string))
 	assert.NoError(t, err)
 }
+
+func TestAddEmailsWithParamsSuccess(t *testing.T) {
+	apiUid := fake.CharactersN(50)
+	apiSecret := fake.CharactersN(50)
+
+	httpmock.Activate()
+	defer httpmock.DeactivateAndReset()
+
+	emails := []Email{
+		Email{
+			Email:     fake.EmailAddress(),
+			Variables: make(map[string]string),
+		},
+		Email{
+			Email:     fake.EmailAddress(),
+			Variables: make(map[string]string),
+		},
+	}
+
+	addressBookId := 1
+
+	httpmock.RegisterResponder("POST", fmt.Sprintf("%s/addressbooks/%d/emails", apiBaseUrl, addressBookId),
+		httpmock.NewStringResponder(http.StatusOK, `{
+    		"result": true
+		}`))
+	httpmock.RegisterResponder("POST", apiBaseUrl+"/oauth/access_token",
+		httpmock.NewStringResponder(http.StatusOK,
+			`{"access_token": "testtoken","token_type": "Bearer","expires_in": 3600}`))
+	spClient, _ := ApiClient(apiUid, apiSecret, 5)
+	extraParams := map[string]string{
+		"param1": "value1",
+		"param2": "value2",
+	}
+	err := spClient.Books.AddEmails(uint(addressBookId), emails, extraParams)
+	assert.NoError(t, err)
+}
