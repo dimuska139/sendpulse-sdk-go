@@ -29,6 +29,7 @@ func TestStartEventEmptyEventName(t *testing.T) {
 }
 
 func TestStartEventNoPhoneAndEmail(t *testing.T) {
+	eventName := fake.Word()
 	apiUid := fake.CharactersN(50)
 	apiSecret := fake.CharactersN(50)
 	httpmock.Activate()
@@ -40,7 +41,7 @@ func TestStartEventNoPhoneAndEmail(t *testing.T) {
 
 	variables := make(map[string]string)
 	variables["name"] = fake.FullName()
-	err := spClient.Automation360.StartEvent("", variables)
+	err := spClient.Automation360.StartEvent(eventName, variables)
 	assert.Error(t, err)
 	_, isHttpError := err.(*HttpError)
 	assert.False(t, isHttpError)
