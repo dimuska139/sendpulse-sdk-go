@@ -78,12 +78,18 @@ func (c *client) makeRequest(path string, method string, data map[string]string,
 
 	body, err := ioutil.ReadAll(resp.Body)
 
-	if resp.StatusCode != http.StatusOK {
-		return nil, &HttpError{resp.StatusCode, fullPath, string(body)}
+	if err != nil {
+		return nil, err
 	}
+
+	err = resp.Body.Close()
 
 	if err != nil {
 		return nil, err
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, &HttpError{resp.StatusCode, fullPath, string(body)}
 	}
 
 	return body, nil
