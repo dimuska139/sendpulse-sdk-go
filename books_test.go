@@ -61,6 +61,68 @@ func TestBookCreateExisting(t *testing.T) {
 	assert.Equal(t, respBody, httpErr.Body)
 }
 
+func TestBookCreateIncorrectJson(t *testing.T) {
+	bookName := fake.Word()
+	apiUid := fake.CharactersN(50)
+	apiSecret := fake.CharactersN(50)
+	url := fmt.Sprintf("%s/addressbooks", apiBaseUrl)
+
+	httpmock.Activate()
+	defer httpmock.DeactivateAndReset()
+	httpmock.RegisterResponder("POST", apiBaseUrl+"/oauth/access_token",
+		httpmock.NewStringResponder(http.StatusOK,
+			`{"access_token": "testtoken","token_type": "Bearer","expires_in": 3600}`))
+
+	respBody := `Incorrect json`
+
+	httpmock.RegisterResponder("POST", url,
+		httpmock.NewStringResponder(http.StatusBadRequest, respBody))
+
+	spClient, _ := ApiClient(apiUid, apiSecret, 5)
+
+	bookId, err := spClient.Books.Create(bookName)
+	assert.Error(t, err)
+	httpErr, isResponseError := err.(*ResponseError)
+	assert.True(t, isResponseError)
+	assert.Nil(t, bookId)
+
+	assert.Equal(t, http.StatusBadRequest, httpErr.HttpCode)
+	assert.Equal(t, url, httpErr.Url)
+	assert.Equal(t, respBody, httpErr.Body)
+}
+
+func TestBookCreateNoIdInResponse(t *testing.T) {
+	bookName := fake.Word()
+	apiUid := fake.CharactersN(50)
+	apiSecret := fake.CharactersN(50)
+	url := fmt.Sprintf("%s/addressbooks", apiBaseUrl)
+
+	httpmock.Activate()
+	defer httpmock.DeactivateAndReset()
+	httpmock.RegisterResponder("POST", apiBaseUrl+"/oauth/access_token",
+		httpmock.NewStringResponder(http.StatusOK,
+			`{"access_token": "testtoken","token_type": "Bearer","expires_in": 3600}`))
+
+	respBody := `{
+    	"no_id": "Error"
+	}`
+
+	httpmock.RegisterResponder("POST", url,
+		httpmock.NewStringResponder(http.StatusBadRequest, respBody))
+
+	spClient, _ := ApiClient(apiUid, apiSecret, 5)
+
+	bookId, err := spClient.Books.Create(bookName)
+	assert.Error(t, err)
+	httpErr, isResponseError := err.(*ResponseError)
+	assert.True(t, isResponseError)
+	assert.Nil(t, bookId)
+
+	assert.Equal(t, http.StatusBadRequest, httpErr.HttpCode)
+	assert.Equal(t, url, httpErr.Url)
+	assert.Equal(t, respBody, httpErr.Body)
+}
+
 func TestBookCreateSuccess(t *testing.T) {
 	bookName := fake.Word()
 	var newBookId uint = 1
@@ -156,6 +218,36 @@ func TestGetNotFound(t *testing.T) {
 	assert.Equal(t, respBody, httpErr.Body)
 }
 
+func TestGetInvalidJson(t *testing.T) {
+	respBody := `Invalid json`
+
+	notExistingBookID := 1
+	url := fmt.Sprintf("%s/addressbooks/%d", apiBaseUrl, notExistingBookID)
+
+	apiUid := fake.CharactersN(50)
+	apiSecret := fake.CharactersN(50)
+
+	httpmock.Activate()
+	defer httpmock.DeactivateAndReset()
+
+	httpmock.RegisterResponder("POST", apiBaseUrl+"/oauth/access_token",
+		httpmock.NewStringResponder(http.StatusOK,
+			`{"access_token": "testtoken","token_type": "Bearer","expires_in": 3600}`))
+
+	httpmock.RegisterResponder("GET", url,
+		httpmock.NewStringResponder(http.StatusBadRequest, respBody))
+
+	spClient, _ := ApiClient(apiUid, apiSecret, 5)
+
+	_, err := spClient.Books.Get(uint(notExistingBookID))
+	assert.Error(t, err)
+	httpErr, isResponseError := err.(*ResponseError)
+	assert.True(t, isResponseError)
+	assert.Equal(t, http.StatusBadRequest, httpErr.HttpCode)
+	assert.Equal(t, url, httpErr.Url)
+	assert.Equal(t, respBody, httpErr.Body)
+}
+
 func TestListSuccess(t *testing.T) {
 	apiUid := fake.CharactersN(50)
 	apiSecret := fake.CharactersN(50)
@@ -201,6 +293,31 @@ func TestListSuccess(t *testing.T) {
 	assert.Equal(t, books, *responseBooks)
 }
 
+func TestListInvalidJson(t *testing.T) {
+	apiUid := fake.CharactersN(50)
+	apiSecret := fake.CharactersN(50)
+	url := fmt.Sprintf("%s/addressbooks", apiBaseUrl)
+
+	httpmock.Activate()
+	defer httpmock.DeactivateAndReset()
+
+	respBody := "Invalid json"
+
+	httpmock.RegisterResponder("GET", url,
+		httpmock.NewStringResponder(http.StatusOK, respBody))
+	httpmock.RegisterResponder("POST", apiBaseUrl+"/oauth/access_token",
+		httpmock.NewStringResponder(http.StatusOK,
+			`{"access_token": "testtoken","token_type": "Bearer","expires_in": 3600}`))
+
+	spClient, _ := ApiClient(apiUid, apiSecret, 5)
+
+	_, err := spClient.Books.List(0, 10)
+	assert.Error(t, err)
+
+	_, isResponseError := err.(*ResponseError)
+	assert.False(t, isResponseError)
+}
+
 func TestAddEmailsEmptyList(t *testing.T) {
 	apiUid := fake.CharactersN(50)
 	apiSecret := fake.CharactersN(50)
@@ -227,6 +344,45 @@ func TestAddEmailsBookNotFound(t *testing.T) {
    			"error_code": 404,
     		"message": "Not Found"
 		}`
+
+	apiUid := fake.CharactersN(50)
+	apiSecret := fake.CharactersN(50)
+
+	httpmock.Activate()
+	defer httpmock.DeactivateAndReset()
+
+	emails := []Email{
+		Email{
+			Email:     fake.EmailAddress(),
+			Variables: make(map[string]string),
+		},
+		Email{
+			Email:     fake.EmailAddress(),
+			Variables: make(map[string]string),
+		},
+	}
+
+	httpmock.RegisterResponder("POST", apiBaseUrl+"/oauth/access_token",
+		httpmock.NewStringResponder(http.StatusOK,
+			`{"access_token": "testtoken","token_type": "Bearer","expires_in": 3600}`))
+
+	httpmock.RegisterResponder("POST", url,
+		httpmock.NewStringResponder(http.StatusBadRequest, respBody))
+	spClient, _ := ApiClient(apiUid, apiSecret, 5)
+	err := spClient.Books.AddEmails(uint(addressBookId), emails, make(map[string]string))
+	assert.Error(t, err)
+
+	httpErr, isResponseError := err.(*ResponseError)
+	assert.True(t, isResponseError)
+	assert.Equal(t, http.StatusBadRequest, httpErr.HttpCode)
+	assert.Equal(t, url, httpErr.Url)
+	assert.Equal(t, respBody, httpErr.Body)
+}
+
+func TestAddEmailsInvalidJson(t *testing.T) {
+	addressBookId := 1
+	url := fmt.Sprintf("%s/addressbooks/%d/emails", apiBaseUrl, addressBookId)
+	respBody := `Invalid json`
 
 	apiUid := fake.CharactersN(50)
 	apiSecret := fake.CharactersN(50)
