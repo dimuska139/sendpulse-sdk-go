@@ -12,14 +12,14 @@ import (
 	"time"
 )
 
-type HttpError struct {
+type ResponseError struct {
 	HttpCode int
 	Url      string
-	Message  string
+	Body     string
 }
 
-func (e *HttpError) Error() string {
-	return fmt.Sprintf("Http code: %d, url: %s, body: %s", e.HttpCode, e.Url, e.Message)
+func (e *ResponseError) Error() string {
+	return fmt.Sprintf("Http code: %d, url: %s, body: %s", e.HttpCode, e.Url, e.Body)
 }
 
 type client struct {
@@ -89,7 +89,7 @@ func (c *client) makeRequest(path string, method string, data map[string]string,
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, &HttpError{resp.StatusCode, fullPath, string(body)}
+		return nil, &ResponseError{resp.StatusCode, fullPath, string(body)}
 	}
 
 	return body, nil
@@ -100,8 +100,9 @@ func (c *client) refreshToken() error {
 	data["grant_type"] = "client_credentials"
 	data["client_id"] = c.userId
 	data["client_secret"] = c.secret
+	path := "/oauth/access_token"
 
-	body, err := c.makeRequest("/oauth/access_token", "POST", data, false)
+	body, err := c.makeRequest(path, "POST", data, false)
 
 	if err != nil {
 		return err
@@ -109,12 +110,12 @@ func (c *client) refreshToken() error {
 
 	var respData map[string]interface{}
 	if err := json.Unmarshal(body, &respData); err != nil {
-		return errors.New(string(body))
+		return &ResponseError{http.StatusOK, fmt.Sprintf(apiBaseUrl+"%s", path), string(body)}
 	}
 
 	accessToken, tokenExists := respData["access_token"]
 	if !tokenExists {
-		return errors.New(string(body))
+		return &ResponseError{http.StatusOK, fmt.Sprintf(apiBaseUrl+"%s", path), string(body)}
 	}
 
 	c.token = accessToken.(string)

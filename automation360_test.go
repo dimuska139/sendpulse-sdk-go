@@ -24,8 +24,8 @@ func TestStartEventEmptyEventName(t *testing.T) {
 	variables["name"] = fake.FullName()
 	err := spClient.Automation360.StartEvent("", variables)
 	assert.Error(t, err)
-	_, isHttpError := err.(*HttpError)
-	assert.False(t, isHttpError)
+	_, isResponseError := err.(*ResponseError)
+	assert.False(t, isResponseError)
 }
 
 func TestStartEventNoPhoneAndEmail(t *testing.T) {
@@ -43,8 +43,8 @@ func TestStartEventNoPhoneAndEmail(t *testing.T) {
 	variables["name"] = fake.FullName()
 	err := spClient.Automation360.StartEvent(eventName, variables)
 	assert.Error(t, err)
-	_, isHttpError := err.(*HttpError)
-	assert.False(t, isHttpError)
+	_, isResponseError := err.(*ResponseError)
+	assert.False(t, isResponseError)
 }
 
 func TestStartEventNotExists(t *testing.T) {
@@ -72,11 +72,11 @@ func TestStartEventNotExists(t *testing.T) {
 	variables["name"] = fake.FullName()
 	err := spClient.Automation360.StartEvent(eventName, variables)
 	assert.Error(t, err)
-	httpError, isHttpError := err.(*HttpError)
-	assert.True(t, isHttpError)
-	assert.Equal(t, http.StatusBadRequest, httpError.HttpCode)
-	assert.Equal(t, respBody, httpError.Message)
-	assert.Equal(t, url, httpError.Url)
+	ResponseError, isResponseError := err.(*ResponseError)
+	assert.True(t, isResponseError)
+	assert.Equal(t, http.StatusBadRequest, ResponseError.HttpCode)
+	assert.Equal(t, respBody, ResponseError.Body)
+	assert.Equal(t, url, ResponseError.Url)
 }
 
 func TestStartEventDublicateData(t *testing.T) {
@@ -104,8 +104,8 @@ func TestStartEventDublicateData(t *testing.T) {
 	variables["name"] = fake.FullName()
 	err := spClient.Automation360.StartEvent(eventName, variables)
 	assert.Error(t, err)
-	_, isHttpError := err.(*HttpError)
-	assert.False(t, isHttpError)
+	_, isResponseError := err.(*ResponseError)
+	assert.False(t, isResponseError)
 	assert.Equal(t, respBody, err.Error())
 }
 

@@ -24,8 +24,8 @@ func TestBookCreateEmptyName(t *testing.T) {
 
 	_, err := spClient.Books.Create("")
 	assert.Error(t, err)
-	_, isHttpError := err.(*HttpError)
-	assert.False(t, isHttpError)
+	_, isResponseError := err.(*ResponseError)
+	assert.False(t, isResponseError)
 }
 
 func TestBookCreateExisting(t *testing.T) {
@@ -52,13 +52,13 @@ func TestBookCreateExisting(t *testing.T) {
 
 	bookId, err := spClient.Books.Create(bookName)
 	assert.Error(t, err)
-	httpErr, isHttpError := err.(*HttpError)
-	assert.True(t, isHttpError)
+	httpErr, isResponseError := err.(*ResponseError)
+	assert.True(t, isResponseError)
 	assert.Nil(t, bookId)
 
 	assert.Equal(t, http.StatusBadRequest, httpErr.HttpCode)
 	assert.Equal(t, url, httpErr.Url)
-	assert.Equal(t, respBody, httpErr.Message)
+	assert.Equal(t, respBody, httpErr.Body)
 }
 
 func TestBookCreateSuccess(t *testing.T) {
@@ -149,11 +149,11 @@ func TestGetNotFound(t *testing.T) {
 
 	_, err := spClient.Books.Get(uint(notExistingBookID))
 	assert.Error(t, err)
-	httpErr, isHttpError := err.(*HttpError)
-	assert.True(t, isHttpError)
+	httpErr, isResponseError := err.(*ResponseError)
+	assert.True(t, isResponseError)
 	assert.Equal(t, http.StatusBadRequest, httpErr.HttpCode)
 	assert.Equal(t, url, httpErr.Url)
-	assert.Equal(t, respBody, httpErr.Message)
+	assert.Equal(t, respBody, httpErr.Body)
 }
 
 func TestListSuccess(t *testing.T) {
@@ -216,8 +216,8 @@ func TestAddEmailsEmptyList(t *testing.T) {
 	spClient, _ := ApiClient(apiUid, apiSecret, 5)
 	err := spClient.Books.AddEmails(1, emailsList, params)
 	assert.Error(t, err)
-	_, isHttpError := err.(*HttpError)
-	assert.False(t, isHttpError)
+	_, isResponseError := err.(*ResponseError)
+	assert.False(t, isResponseError)
 }
 
 func TestAddEmailsBookNotFound(t *testing.T) {
@@ -255,11 +255,11 @@ func TestAddEmailsBookNotFound(t *testing.T) {
 	err := spClient.Books.AddEmails(uint(addressBookId), emails, make(map[string]string))
 	assert.Error(t, err)
 
-	httpErr, isHttpError := err.(*HttpError)
-	assert.True(t, isHttpError)
+	httpErr, isResponseError := err.(*ResponseError)
+	assert.True(t, isResponseError)
 	assert.Equal(t, http.StatusBadRequest, httpErr.HttpCode)
 	assert.Equal(t, url, httpErr.Url)
-	assert.Equal(t, respBody, httpErr.Message)
+	assert.Equal(t, respBody, httpErr.Body)
 }
 
 func TestAddEmailsSuccess(t *testing.T) {

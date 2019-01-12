@@ -32,10 +32,10 @@ func main() {
 	client, e := sendpulse.ApiClient(ApiUserId, ApiSecret, ApiTimeout)
 	if e != nil {
 		switch err := e.(type) {
-		case *sendpulse.HttpError: // Http error
+		case *sendpulse.ResponseError: // Http error
 			fmt.Println(err.HttpCode)
 			fmt.Println(err.Url)
-			fmt.Println(err.Message)
+			fmt.Println(err.Body)
 		default: // Another errors
 			fmt.Println(e)
 		}
@@ -45,10 +45,10 @@ func main() {
 	bookInfo, e := client.Books.Get(uint(addressBookId))
 	if e != nil {
 		switch err := e.(type) {
-		case *sendpulse.HttpError: // Http error
+		case *sendpulse.ResponseError: // Http error
 			fmt.Println(err.HttpCode)
 			fmt.Println(err.Url)
-			fmt.Println(err.Message)
+			fmt.Println(err.Body)
 		default: // Another errors
 			fmt.Println(e)
 		}
@@ -62,10 +62,10 @@ func main() {
 	books, err := client.Books.List(uint(limit), uint(offset))
 	if err != nil {
 		switch err := e.(type) {
-		case *sendpulse.HttpError: // Http error
+		case *sendpulse.ResponseError: // Http error
 			fmt.Println(err.HttpCode)
 			fmt.Println(err.Url)
-			fmt.Println(err.Message)
+			fmt.Println(err.Body)
 		default: // Another errors
 			fmt.Println(e)
 		}
@@ -93,10 +93,10 @@ func main() {
 	err = client.Books.AddEmails(uint(addressBookId), emails, extraParams)
 	if err != nil {
 		switch err := e.(type) {
-		case *sendpulse.HttpError: // Http error
+		case *sendpulse.ResponseError: // Http error
 			fmt.Println(err.HttpCode)
 			fmt.Println(err.Url)
-			fmt.Println(err.Message)
+			fmt.Println(err.Body)
 		default: // Another errors
 			fmt.Println(e)
 		}
