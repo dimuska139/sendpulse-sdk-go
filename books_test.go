@@ -10,6 +10,84 @@ import (
 	"testing"
 )
 
+func TestBookCreateEmptyName(t *testing.T) {
+	apiUid := fake.CharactersN(50)
+	apiSecret := fake.CharactersN(50)
+
+	httpmock.Activate()
+	defer httpmock.DeactivateAndReset()
+	httpmock.RegisterResponder("POST", apiBaseUrl+"/oauth/access_token",
+		httpmock.NewStringResponder(http.StatusOK,
+			`{"access_token": "testtoken","token_type": "Bearer","expires_in": 3600}`))
+
+	spClient, _ := ApiClient(apiUid, apiSecret, 5)
+
+	_, err := spClient.Books.Create("")
+	assert.Error(t, err)
+	_, isHttpError := err.(*HttpError)
+	assert.False(t, isHttpError)
+}
+
+func TestBookCreateExisting(t *testing.T) {
+	bookName := fake.Word()
+	apiUid := fake.CharactersN(50)
+	apiSecret := fake.CharactersN(50)
+	url := fmt.Sprintf("%s/addressbooks", apiBaseUrl)
+
+	httpmock.Activate()
+	defer httpmock.DeactivateAndReset()
+	httpmock.RegisterResponder("POST", apiBaseUrl+"/oauth/access_token",
+		httpmock.NewStringResponder(http.StatusOK,
+			`{"access_token": "testtoken","token_type": "Bearer","expires_in": 3600}`))
+
+	respBody := `{
+    	"error_code": 203,
+    	"message": "Book name already in use"
+	}`
+
+	httpmock.RegisterResponder("POST", url,
+		httpmock.NewStringResponder(http.StatusBadRequest, respBody))
+
+	spClient, _ := ApiClient(apiUid, apiSecret, 5)
+
+	bookId, err := spClient.Books.Create(bookName)
+	assert.Error(t, err)
+	httpErr, isHttpError := err.(*HttpError)
+	assert.True(t, isHttpError)
+	assert.Nil(t, bookId)
+
+	assert.Equal(t, http.StatusBadRequest, httpErr.HttpCode)
+	assert.Equal(t, url, httpErr.Url)
+	assert.Equal(t, respBody, httpErr.Message)
+}
+
+func TestBookCreateSuccess(t *testing.T) {
+	bookName := fake.Word()
+	var newBookId uint = 1
+	apiUid := fake.CharactersN(50)
+	apiSecret := fake.CharactersN(50)
+	url := fmt.Sprintf("%s/addressbooks", apiBaseUrl)
+
+	httpmock.Activate()
+	defer httpmock.DeactivateAndReset()
+	httpmock.RegisterResponder("POST", apiBaseUrl+"/oauth/access_token",
+		httpmock.NewStringResponder(http.StatusOK,
+			`{"access_token": "testtoken","token_type": "Bearer","expires_in": 3600}`))
+
+	respBody := fmt.Sprintf(`{
+    	"id": %d
+	}`, newBookId)
+
+	httpmock.RegisterResponder("POST", url,
+		httpmock.NewStringResponder(http.StatusOK, respBody))
+
+	spClient, _ := ApiClient(apiUid, apiSecret, 5)
+
+	bookId, err := spClient.Books.Create(bookName)
+	assert.NoError(t, err)
+	assert.Equal(t, newBookId, *bookId)
+}
+
 func TestGetSuccess(t *testing.T) {
 	apiUid := fake.CharactersN(50)
 	apiSecret := fake.CharactersN(50)
