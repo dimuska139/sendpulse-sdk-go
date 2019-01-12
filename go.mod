@@ -1,4 +1,4 @@
-module github.com/dimuska139/sendpulse
+module github.com/dimuska139/sendpulse-sdk-go
 
 require (
 	github.com/corpix/uarand v0.0.0 // indirect

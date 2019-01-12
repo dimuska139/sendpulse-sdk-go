@@ -26,6 +26,31 @@ type Email struct {
 	Variables map[string]string `json:"variables"`
 }
 
+func (b *books) Create(addressBookName string) (*uint, error) {
+	if len(addressBookName) == 0 {
+		return nil, errors.New("could not to create address book with empty name")
+	}
+	data := map[string]string{
+		"bookName": addressBookName,
+	}
+	body, err := b.Client.makeRequest(fmt.Sprintf("/addressbooks"), "POST", data, true)
+	if err != nil {
+		return nil, err
+	}
+
+	var respData map[string]uint
+	if err := json.Unmarshal(body, &respData); err != nil {
+		return nil, errors.New(string(body))
+	}
+
+	createdBookId, idExists := respData["id"]
+	if !idExists {
+		return nil, errors.New(string(body))
+	}
+
+	return &createdBookId, err
+}
+
 func (b *books) Get(addressBookId uint) (*Book, error) {
 	body, err := b.Client.makeRequest(fmt.Sprintf("/addressbooks/%d", addressBookId), "GET", nil, true)
 
