@@ -4,12 +4,12 @@ import (
 	"errors"
 )
 
-type sendpulseClient struct {
+type SendpulseClient struct {
 	Books         *books
 	Automation360 *automation360
 }
 
-func ApiClient(apiUserId string, apiSecret string, timeout int) (*sendpulseClient, error) {
+func ApiClient(apiUserId string, apiSecret string, timeout int) (*SendpulseClient, error) {
 	if len(apiUserId) == 0 || len(apiSecret) == 0 {
 		return nil, errors.New("client ID or Secret is empty")
 	}
@@ -22,7 +22,7 @@ func ApiClient(apiUserId string, apiSecret string, timeout int) (*sendpulseClien
 
 	b := &books{c}
 	automation := &automation360{c}
-	spClient := &sendpulseClient{b, automation}
+	spClient := &SendpulseClient{b, automation}
 
 	return spClient, nil
 }
