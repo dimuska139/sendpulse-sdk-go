@@ -24,8 +24,8 @@ func TestStartEventEmptyEventName(t *testing.T) {
 	variables["name"] = fake.FullName()
 	err := spClient.Automation360.StartEvent("", variables)
 	assert.Error(t, err)
-	_, isResponseError := err.(*ResponseError)
-	assert.False(t, isResponseError)
+	_, isSPError := err.(*SendpulseError)
+	assert.False(t, isSPError)
 }
 
 func TestStartEventNoPhoneAndEmail(t *testing.T) {
@@ -43,14 +43,15 @@ func TestStartEventNoPhoneAndEmail(t *testing.T) {
 	variables["name"] = fake.FullName()
 	err := spClient.Automation360.StartEvent(eventName, variables)
 	assert.Error(t, err)
-	_, isResponseError := err.(*ResponseError)
-	assert.False(t, isResponseError)
+	_, isSPError := err.(*SendpulseError)
+	assert.False(t, isSPError)
 }
 
 func TestStartEventNotExists(t *testing.T) {
 	eventName := fake.Word()
 
-	url := fmt.Sprintf("%s/events/name/%s", apiBaseUrl, eventName)
+	path := fmt.Sprintf("/events/name/%s", eventName)
+	url := apiBaseUrl + path
 
 	apiUid := fake.CharactersN(50)
 	apiSecret := fake.CharactersN(50)
@@ -72,17 +73,19 @@ func TestStartEventNotExists(t *testing.T) {
 	variables["name"] = fake.FullName()
 	err := spClient.Automation360.StartEvent(eventName, variables)
 	assert.Error(t, err)
-	ResponseError, isResponseError := err.(*ResponseError)
+	ResponseError, isResponseError := err.(*SendpulseError)
 	assert.True(t, isResponseError)
 	assert.Equal(t, http.StatusBadRequest, ResponseError.HttpCode)
+	assert.Equal(t, path, ResponseError.Url)
 	assert.Equal(t, respBody, ResponseError.Body)
-	assert.Equal(t, url, ResponseError.Url)
+	assert.Equal(t, "", ResponseError.Message)
 }
 
 func TestStartEventDublicateData(t *testing.T) {
 	eventName := fake.Word()
 
-	url := fmt.Sprintf("%s/events/name/%s", apiBaseUrl, eventName)
+	path := fmt.Sprintf("/events/name/%s", eventName)
+	url := apiBaseUrl + path
 
 	apiUid := fake.CharactersN(50)
 	apiSecret := fake.CharactersN(50)
@@ -104,9 +107,12 @@ func TestStartEventDublicateData(t *testing.T) {
 	variables["name"] = fake.FullName()
 	err := spClient.Automation360.StartEvent(eventName, variables)
 	assert.Error(t, err)
-	_, isResponseError := err.(*ResponseError)
-	assert.False(t, isResponseError)
-	assert.Equal(t, respBody, err.Error())
+	spError, isSPError := err.(*SendpulseError)
+	assert.True(t, isSPError)
+	assert.Equal(t, http.StatusOK, spError.HttpCode)
+	assert.Equal(t, path, spError.Url)
+	assert.Equal(t, respBody, spError.Body)
+	assert.Equal(t, "'result' is false", spError.Message)
 }
 
 func TestStartEventWithPhone(t *testing.T) {

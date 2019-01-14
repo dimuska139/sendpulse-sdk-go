@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"net/http"
 )
 
 type books struct {
@@ -27,32 +28,35 @@ type Email struct {
 }
 
 func (b *books) Create(addressBookName string) (*uint, error) {
+	path := "/addressbooks"
+
 	if len(addressBookName) == 0 {
 		return nil, errors.New("could not to create address book with empty name")
 	}
 	data := map[string]string{
 		"bookName": addressBookName,
 	}
-	body, err := b.Client.makeRequest(fmt.Sprintf("/addressbooks"), "POST", data, true)
+	body, err := b.Client.makeRequest(fmt.Sprintf(path), "POST", data, true)
 	if err != nil {
 		return nil, err
 	}
 
 	var respData map[string]uint
 	if err := json.Unmarshal(body, &respData); err != nil {
-		return nil, errors.New(string(body))
+		return nil, &SendpulseError{http.StatusOK, path, string(body), err.Error()}
 	}
 
 	createdBookId, idExists := respData["id"]
 	if !idExists {
-		return nil, errors.New(string(body))
+		return nil, &SendpulseError{http.StatusOK, path, string(body), "'id' not found in response"}
 	}
 
 	return &createdBookId, err
 }
 
 func (b *books) Get(addressBookId uint) (*Book, error) {
-	body, err := b.Client.makeRequest(fmt.Sprintf("/addressbooks/%d", addressBookId), "GET", nil, true)
+	path := fmt.Sprintf("/addressbooks/%d", addressBookId)
+	body, err := b.Client.makeRequest(path, "GET", nil, true)
 
 	if err != nil {
 		return nil, err
@@ -60,18 +64,19 @@ func (b *books) Get(addressBookId uint) (*Book, error) {
 
 	var respData []Book
 	if err := json.Unmarshal(body, &respData); err != nil {
-		return nil, errors.New(string(body))
+		return nil, &SendpulseError{http.StatusOK, path, string(body), err.Error()}
 	}
 
 	return &respData[0], err
 }
 
 func (b *books) List(limit uint, offset uint) (*[]Book, error) {
+	path := "/addressbooks"
 	data := map[string]string{
 		"limit":  fmt.Sprint(limit),
 		"offset": fmt.Sprint(offset),
 	}
-	body, err := b.Client.makeRequest("/addressbooks", "GET", data, true)
+	body, err := b.Client.makeRequest(path, "GET", data, true)
 
 	if err != nil {
 		return nil, err
@@ -79,13 +84,15 @@ func (b *books) List(limit uint, offset uint) (*[]Book, error) {
 
 	var respData []Book
 	if err := json.Unmarshal(body, &respData); err != nil {
-		return nil, errors.New(string(body))
+		return nil, &SendpulseError{http.StatusOK, path, string(body), err.Error()}
 	}
 
 	return &respData, nil
 }
 
 func (b *books) AddEmails(addressBookId uint, notifications []Email, additionalParams map[string]string) error {
+	path := fmt.Sprintf("/addressbooks/%d/emails", addressBookId)
+
 	if len(notifications) == 0 {
 		return errors.New("empty emails list")
 	}
@@ -106,7 +113,7 @@ func (b *books) AddEmails(addressBookId uint, notifications []Email, additionalP
 		}
 	}
 
-	body, err := b.Client.makeRequest(fmt.Sprintf("/addressbooks/%d/emails", addressBookId), "POST", data, true)
+	body, err := b.Client.makeRequest(path, "POST", data, true)
 
 	if err != nil {
 		return err
@@ -114,11 +121,15 @@ func (b *books) AddEmails(addressBookId uint, notifications []Email, additionalP
 
 	var respData map[string]interface{}
 	if err := json.Unmarshal(body, &respData); err != nil {
-		return errors.New(string(body))
+		return &SendpulseError{http.StatusOK, path, string(body), err.Error()}
 	}
-	_, resultExists := respData["result"]
-	if !resultExists || !respData["result"].(bool) {
-		return errors.New(string(body))
+	result, resultExists := respData["result"]
+	if !resultExists {
+		return &SendpulseError{http.StatusOK, path, string(body), "'result' not found in response"}
+	}
+
+	if !result.(bool) {
+		return &SendpulseError{http.StatusOK, path, string(body), "'result' is false"}
 	}
 
 	return nil

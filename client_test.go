@@ -10,8 +10,8 @@ import (
 )
 
 func TestResponseErrorData(t *testing.T) {
-	e := ResponseError{http.StatusInternalServerError, "http://test.com", "Something went wrong"}
-	assert.Equal(t, fmt.Sprintf("Http code: %d, url: %s, body: %s", e.HttpCode, e.Url, e.Body), e.Error())
+	e := SendpulseError{http.StatusInternalServerError, "http://test.com", "Something went wrong", "Test message"}
+	assert.Equal(t, fmt.Sprintf("Http code: %d, url: %s, body: %s, message: %s", e.HttpCode, e.Url, e.Body, e.Message), e.Error())
 }
 
 func TestGetTokenResponseError(t *testing.T) {
@@ -29,7 +29,7 @@ func TestGetTokenResponseError(t *testing.T) {
 
 	_, err := ApiClient(apiUserId, apiSecret, 5)
 	assert.Error(t, err)
-	responseError, isResponseError := err.(*ResponseError)
+	responseError, isResponseError := err.(*SendpulseError)
 	assert.True(t, isResponseError)
 
 	assert.Equal(t, http.StatusOK, responseError.HttpCode)
@@ -52,7 +52,7 @@ func TestGetTokenNoAccessToken(t *testing.T) {
 
 	_, err := ApiClient(apiUserId, apiSecret, 5)
 	assert.Error(t, err)
-	responseError, isResponseError := err.(*ResponseError)
+	responseError, isResponseError := err.(*SendpulseError)
 	assert.True(t, isResponseError)
 
 	assert.Equal(t, http.StatusOK, responseError.HttpCode)

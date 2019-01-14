@@ -34,7 +34,8 @@ func TestApiClient(t *testing.T) {
 }
 
 func TestApiClientError(t *testing.T) {
-	url := apiBaseUrl + "/oauth/access_token"
+	path := "/oauth/access_token"
+	url := apiBaseUrl + path
 	respBody := `{"error": "invalid_client","error_description": "Client authentication failed.","message": "Client authentication failed.","error_code": 1}`
 
 	httpmock.Activate()
@@ -49,9 +50,9 @@ func TestApiClientError(t *testing.T) {
 
 	_, err := ApiClient(apiUserId, apiSecret, 5)
 	assert.Error(t, err)
-	ResponseError, isResponseError := err.(*ResponseError)
+	ResponseError, isResponseError := err.(*SendpulseError)
 	assert.True(t, isResponseError)
-	assert.Equal(t, url, ResponseError.Url)
 	assert.Equal(t, http.StatusUnauthorized, ResponseError.HttpCode)
+	assert.Equal(t, path, ResponseError.Url)
 	assert.Equal(t, respBody, ResponseError.Body)
 }

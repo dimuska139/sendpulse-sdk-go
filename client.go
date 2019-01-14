@@ -3,7 +3,6 @@ package sendpulse
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -12,14 +11,15 @@ import (
 	"time"
 )
 
-type ResponseError struct {
+type SendpulseError struct {
 	HttpCode int
 	Url      string
 	Body     string
+	Message  string
 }
 
-func (e *ResponseError) Error() string {
-	return fmt.Sprintf("Http code: %d, url: %s, body: %s", e.HttpCode, e.Url, e.Body)
+func (e *SendpulseError) Error() string {
+	return fmt.Sprintf("Http code: %d, url: %s, body: %s, message: %s", e.HttpCode, e.Url, e.Body, e.Message)
 }
 
 type client struct {
@@ -42,7 +42,7 @@ func (c *client) makeRequest(path string, method string, data map[string]string,
 	fullPath := fmt.Sprintf(apiBaseUrl+"%s", path)
 	req, e := http.NewRequest(method, fullPath, bytes.NewBufferString(q.Encode()))
 	if e != nil {
-		return nil, errors.New(fmt.Sprintf("Url parse error: %s", fullPath))
+		return nil, &SendpulseError{0, path, "", e.Error()}
 	}
 
 	if method == "GET" {
@@ -61,7 +61,7 @@ func (c *client) makeRequest(path string, method string, data map[string]string,
 	}
 	resp, err := client.Do(req)
 	if err != nil {
-		return nil, err
+		return nil, &SendpulseError{0, path, "", e.Error()}
 	}
 
 	if resp.StatusCode == http.StatusUnauthorized && useToken {
@@ -79,17 +79,15 @@ func (c *client) makeRequest(path string, method string, data map[string]string,
 	body, err := ioutil.ReadAll(resp.Body)
 
 	if err != nil {
-		return nil, err
+		return nil, &SendpulseError{resp.StatusCode, path, string(body), err.Error()}
 	}
 
-	err = resp.Body.Close()
-
-	if err != nil {
-		return nil, err
+	if err := resp.Body.Close(); err != nil {
+		return nil, &SendpulseError{resp.StatusCode, path, string(body), err.Error()}
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, &ResponseError{resp.StatusCode, fullPath, string(body)}
+		return nil, &SendpulseError{resp.StatusCode, path, string(body), ""}
 	}
 
 	return body, nil
@@ -110,12 +108,12 @@ func (c *client) refreshToken() error {
 
 	var respData map[string]interface{}
 	if err := json.Unmarshal(body, &respData); err != nil {
-		return &ResponseError{http.StatusOK, fmt.Sprintf(apiBaseUrl+"%s", path), string(body)}
+		return &SendpulseError{http.StatusOK, fmt.Sprintf(apiBaseUrl+"%s", path), string(body), err.Error()}
 	}
 
 	accessToken, tokenExists := respData["access_token"]
 	if !tokenExists {
-		return &ResponseError{http.StatusOK, fmt.Sprintf(apiBaseUrl+"%s", path), string(body)}
+		return &SendpulseError{http.StatusOK, fmt.Sprintf(apiBaseUrl+"%s", path), string(body), "'access_token' not found in response"}
 	}
 
 	c.token = accessToken.(string)
