@@ -23,8 +23,8 @@ type Book struct {
 }
 
 type Email struct {
-	Email     string            `json:"email"`
-	Variables map[string]string `json:"variables"`
+	Email     string                 `json:"email"`
+	Variables map[string]interface{} `json:"variables"`
 }
 
 func (b *books) Create(addressBookName string) (*uint, error) {
@@ -33,7 +33,7 @@ func (b *books) Create(addressBookName string) (*uint, error) {
 	if len(addressBookName) == 0 {
 		return nil, errors.New("could not to create address book with empty name")
 	}
-	data := map[string]string{
+	data := map[string]interface{}{
 		"bookName": addressBookName,
 	}
 	body, err := b.Client.makeRequest(fmt.Sprintf(path), "POST", data, true)
@@ -72,9 +72,9 @@ func (b *books) Get(addressBookId uint) (*Book, error) {
 
 func (b *books) List(limit uint, offset uint) (*[]Book, error) {
 	path := "/addressbooks"
-	data := map[string]string{
-		"limit":  fmt.Sprint(limit),
-		"offset": fmt.Sprint(offset),
+	data := map[string]interface{}{
+		"limit":  limit,
+		"offset": offset,
 	}
 	body, err := b.Client.makeRequest(path, "GET", data, true)
 
@@ -103,7 +103,7 @@ func (b *books) AddEmails(addressBookId uint, notifications []Email, additionalP
 		return errors.New("could not to encode emails list")
 	}
 
-	data := map[string]string{
+	data := map[string]interface{}{
 		"emails": string(encoded),
 	}
 

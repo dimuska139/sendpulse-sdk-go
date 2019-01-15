@@ -11,7 +11,7 @@ type automation360 struct {
 	Client *client
 }
 
-func (a *automation360) StartEvent(eventName string, variables map[string]string) error {
+func (a *automation360) StartEvent(eventName string, variables map[string]interface{}) error {
 	path := fmt.Sprintf("/events/name/%s", eventName)
 
 	if len(eventName) == 0 {

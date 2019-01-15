@@ -31,10 +31,10 @@ type client struct {
 
 const apiBaseUrl = "https://api.sendpulse.com"
 
-func (c *client) makeRequest(path string, method string, data map[string]string, useToken bool) ([]byte, error) {
+func (c *client) makeRequest(path string, method string, data map[string]interface{}, useToken bool) ([]byte, error) {
 	q := url.Values{}
 	for param, value := range data {
-		q.Add(param, value)
+		q.Add(param, value.(string))
 	}
 
 	method = strings.ToUpper(method)
@@ -61,7 +61,7 @@ func (c *client) makeRequest(path string, method string, data map[string]string,
 	}
 	resp, err := client.Do(req)
 	if err != nil {
-		return nil, &SendpulseError{0, path, "", e.Error()}
+		return nil, &SendpulseError{0, path, "", err.Error()}
 	}
 
 	if resp.StatusCode == http.StatusUnauthorized && useToken {
@@ -94,7 +94,7 @@ func (c *client) makeRequest(path string, method string, data map[string]string,
 }
 
 func (c *client) refreshToken() error {
-	data := make(map[string]string)
+	data := make(map[string]interface{})
 	data["grant_type"] = "client_credentials"
 	data["client_id"] = c.userId
 	data["client_secret"] = c.secret
