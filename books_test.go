@@ -378,11 +378,11 @@ func TestAddEmailsBookNotFound(t *testing.T) {
 	emails := []Email{
 		Email{
 			Email:     fake.EmailAddress(),
-			Variables: make(map[string]string),
+			Variables: make(map[string]interface{}),
 		},
 		Email{
 			Email:     fake.EmailAddress(),
-			Variables: make(map[string]string),
+			Variables: make(map[string]interface{}),
 		},
 	}
 
@@ -419,11 +419,11 @@ func TestAddEmailsInvalidJson(t *testing.T) {
 	emails := []Email{
 		Email{
 			Email:     fake.EmailAddress(),
-			Variables: make(map[string]string),
+			Variables: make(map[string]interface{}),
 		},
 		Email{
 			Email:     fake.EmailAddress(),
-			Variables: make(map[string]string),
+			Variables: make(map[string]interface{}),
 		},
 	}
 
@@ -454,11 +454,11 @@ func TestAddEmailsSuccess(t *testing.T) {
 	emails := []Email{
 		Email{
 			Email:     fake.EmailAddress(),
-			Variables: make(map[string]string),
+			Variables: make(map[string]interface{}),
 		},
 		Email{
 			Email:     fake.EmailAddress(),
-			Variables: make(map[string]string),
+			Variables: make(map[string]interface{}),
 		},
 	}
 
@@ -486,11 +486,11 @@ func TestAddEmailsWithParamsSuccess(t *testing.T) {
 	emails := []Email{
 		Email{
 			Email:     fake.EmailAddress(),
-			Variables: make(map[string]string),
+			Variables: make(map[string]interface{}),
 		},
 		Email{
 			Email:     fake.EmailAddress(),
-			Variables: make(map[string]string),
+			Variables: make(map[string]interface{}),
 		},
 	}
 

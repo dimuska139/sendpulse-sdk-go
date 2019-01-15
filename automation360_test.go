@@ -19,7 +19,7 @@ func TestStartEventEmptyEventName(t *testing.T) {
 			`{"access_token": "testtoken","token_type": "Bearer","expires_in": 3600}`))
 	spClient, _ := ApiClient(apiUid, apiSecret, 5)
 
-	variables := make(map[string]string)
+	variables := make(map[string]interface{})
 	variables["phone"] = fake.Phone()
 	variables["name"] = fake.FullName()
 	err := spClient.Automation360.StartEvent("", variables)
@@ -39,7 +39,7 @@ func TestStartEventNoPhoneAndEmail(t *testing.T) {
 			`{"access_token": "testtoken","token_type": "Bearer","expires_in": 3600}`))
 	spClient, _ := ApiClient(apiUid, apiSecret, 5)
 
-	variables := make(map[string]string)
+	variables := make(map[string]interface{})
 	variables["name"] = fake.FullName()
 	err := spClient.Automation360.StartEvent(eventName, variables)
 	assert.Error(t, err)
@@ -68,7 +68,7 @@ func TestStartEventNotExists(t *testing.T) {
 
 	spClient, _ := ApiClient(apiUid, apiSecret, 5)
 
-	variables := make(map[string]string)
+	variables := make(map[string]interface{})
 	variables["email"] = fake.EmailAddress()
 	variables["name"] = fake.FullName()
 	err := spClient.Automation360.StartEvent(eventName, variables)
@@ -102,7 +102,7 @@ func TestStartEventDublicateData(t *testing.T) {
 
 	spClient, _ := ApiClient(apiUid, apiSecret, 5)
 
-	variables := make(map[string]string)
+	variables := make(map[string]interface{})
 	variables["phone"] = fake.Phone()
 	variables["name"] = fake.FullName()
 	err := spClient.Automation360.StartEvent(eventName, variables)
@@ -134,7 +134,7 @@ func TestStartEventWithPhone(t *testing.T) {
 
 	spClient, _ := ApiClient(apiUid, apiSecret, 5)
 
-	variables := make(map[string]string)
+	variables := make(map[string]interface{})
 	variables["phone"] = fake.Phone()
 	variables["name"] = fake.FullName()
 	err := spClient.Automation360.StartEvent(eventName, variables)
@@ -160,7 +160,7 @@ func TestStartEventWithEmail(t *testing.T) {
 
 	spClient, _ := ApiClient(apiUid, apiSecret, 5)
 
-	variables := make(map[string]string)
+	variables := make(map[string]interface{})
 	variables["email"] = fake.EmailAddress()
 	variables["name"] = fake.FullName()
 	err := spClient.Automation360.StartEvent(eventName, variables)

@@ -73,8 +73,8 @@ func (b *books) Get(addressBookId uint) (*Book, error) {
 func (b *books) List(limit uint, offset uint) (*[]Book, error) {
 	path := "/addressbooks"
 	data := map[string]interface{}{
-		"limit":  limit,
-		"offset": offset,
+		"limit":  fmt.Sprint(limit),
+		"offset": fmt.Sprint(offset),
 	}
 	body, err := b.Client.makeRequest(path, "GET", data, true)
 
