@@ -42,7 +42,7 @@ func (c *client) makeRequest(path string, method string, data map[string]interfa
 	fullPath := fmt.Sprintf(apiBaseUrl+"%s", path)
 	req, e := http.NewRequest(method, fullPath, bytes.NewBufferString(q.Encode()))
 	if e != nil {
-		return nil, &SendpulseError{0, path, "", e.Error()}
+		return nil, e
 	}
 
 	if method == "GET" {
@@ -61,7 +61,7 @@ func (c *client) makeRequest(path string, method string, data map[string]interfa
 	}
 	resp, err := client.Do(req)
 	if err != nil {
-		return nil, &SendpulseError{0, path, "", err.Error()}
+		return nil, &SendpulseError{http.StatusServiceUnavailable, path, "", err.Error()}
 	}
 
 	if resp.StatusCode == http.StatusUnauthorized && useToken {
