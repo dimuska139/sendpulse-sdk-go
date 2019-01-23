@@ -34,7 +34,7 @@ const apiBaseUrl = "https://api.sendpulse.com"
 func (c *client) makeRequest(path string, method string, data map[string]interface{}, useToken bool) ([]byte, error) {
 	q := url.Values{}
 	for param, value := range data {
-		q.Add(param, value.(string))
+		q.Add(param, fmt.Sprintf("%v", value))
 	}
 
 	method = strings.ToUpper(method)
