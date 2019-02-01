@@ -60,10 +60,11 @@ func (c *client) makeRequest(path string, method string, data map[string]interfa
 		req.Header.Add("Authorization", "Bearer "+c.token)
 	}
 	resp, err := client.Do(req)
-	defer resp.Body.Close()
 	if err != nil {
 		return nil, &SendpulseError{http.StatusServiceUnavailable, path, "", err.Error()}
 	}
+
+	defer resp.Body.Close()
 
 	if resp.StatusCode == http.StatusUnauthorized && useToken {
 		err := c.refreshToken()
