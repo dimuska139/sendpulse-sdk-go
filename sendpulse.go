@@ -2,6 +2,7 @@ package sendpulse
 
 import (
 	"errors"
+	"sync"
 )
 
 type SendpulseClient struct {
@@ -14,11 +15,8 @@ func ApiClient(apiUserId string, apiSecret string, timeout int) (*SendpulseClien
 		return nil, errors.New("client ID or Secret is empty")
 	}
 
-	c := &client{apiUserId, apiSecret, "", timeout}
-	err := c.refreshToken()
-	if err != nil {
-		return nil, err
-	}
+	c := &client{apiUserId, apiSecret, nil, timeout, nil}
+	c.tokenLock = new(sync.RWMutex)
 
 	b := &books{c}
 	automation := &automation360{c}
