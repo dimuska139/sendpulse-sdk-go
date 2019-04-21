@@ -31,14 +31,7 @@ func main() {
 
 	client, e := sendpulse.ApiClient(ApiUserId, ApiSecret, ApiTimeout)
 	if e != nil {
-		switch err := e.(type) {
-		case *sendpulse.ResponseError: // Http error
-			fmt.Println(err.HttpCode)
-			fmt.Println(err.Url)
-			fmt.Println(err.Body)
-		default: // Another errors
-			fmt.Println(e)
-		}
+		fmt.Println(e)
 	}
 
 	// Get address book info by id
