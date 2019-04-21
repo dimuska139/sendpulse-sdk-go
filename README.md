@@ -20,7 +20,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/dimuska139/sendpulse-sdk-go"
+	sendpulse "github.com/dimuska139/sendpulse-sdk-go"
 )
 const ApiUserId = "12345"
 const ApiSecret = "12345"
