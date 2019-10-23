@@ -28,14 +28,20 @@ const ApiTimeout = 5
 
 func main() {
 	addressBookId := 12345
+    
+    config := sendpulse.Config{
+        UserID: ApiUserId,
+        Secret: ApiSecret,
+        Timeout: ApiTimeout,
+    }
 
-	client, e := sendpulse.ApiClient(ApiUserId, ApiSecret, ApiTimeout)
+	client, e := sendpulse.ApiClient(config)
 	if e != nil {
 		fmt.Println(e)
 	}
 
 	// Get address book info by id
-	bookInfo, e := client.Books.Get(uint(addressBookId))
+	bookInfo, e := client.Emails.Books.Get(uint(addressBookId))
 	if e != nil {
 		fmt.Println(e)
 	} else {
