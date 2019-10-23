@@ -6,8 +6,7 @@ import (
 )
 
 type SendpulseClient struct {
-	Books         *books
-	Automation360 *automation360
+	Emails Emails
 }
 
 func ApiClient(apiUserId string, apiSecret string, timeout int) (*SendpulseClient, error) {
@@ -18,9 +17,15 @@ func ApiClient(apiUserId string, apiSecret string, timeout int) (*SendpulseClien
 	c := &client{apiUserId, apiSecret, nil, timeout, nil}
 	c.tokenLock = new(sync.RWMutex)
 
-	b := &books{c}
-	automation := &automation360{c}
-	spClient := &SendpulseClient{b, automation}
+	b := books{c}
+	automation := automation360{c}
+
+	spClient := &SendpulseClient{
+		Emails: Emails{
+			Books:         b,
+			Automation360: automation,
+		},
+	}
 
 	return spClient, nil
 }

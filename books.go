@@ -22,15 +22,38 @@ type Book struct {
 	StatusExplain    string `json:"status_explain"`
 }
 
+type Variable struct {
+	Name  string
+	Type  string
+	Value string
+}
+
+type Contact struct {
+	Email         string
+	Status        int
+	StatusExplain string
+	Variables     map[string]interface{}
+}
+
 type Email struct {
 	Email     string                 `json:"email"`
 	Variables map[string]interface{} `json:"variables"`
 }
 
+type CompaignCost struct {
+	Cur                       string
+	SentEmailsQty             int
+	OverdraftAllEmailsPrice   int
+	AddressesDeltaFromBalance int
+	AddressesDeltaFromTariff  int
+	MaxEmailsPerTask          int
+	Result                    bool
+}
+
 func (b *books) Create(addressBookName string) (*uint, error) {
 	path := "/addressbooks"
 
-	if len(addressBookName) == 0 {
+	if addressBookName == "" {
 		return nil, errors.New("could not to create address book with empty name")
 	}
 	data := map[string]interface{}{
@@ -54,20 +77,37 @@ func (b *books) Create(addressBookName string) (*uint, error) {
 	return &createdBookId, err
 }
 
-func (b *books) Get(addressBookId uint) (*Book, error) {
+func (b *books) Update(addressBookId uint, name string) error {
 	path := fmt.Sprintf("/addressbooks/%d", addressBookId)
-	body, err := b.Client.makeRequest(path, "GET", nil, true)
 
+	if name == "" {
+		return errors.New("could not to update address book with empty name")
+	}
+
+	data := map[string]interface{}{
+		"name": name,
+	}
+
+	body, err := b.Client.makeRequest(fmt.Sprintf(path), "PUT", data, true)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	var respData []Book
+	var respData map[string]interface{}
 	if err := json.Unmarshal(body, &respData); err != nil {
-		return nil, &SendpulseError{http.StatusOK, path, string(body), err.Error()}
+		return &SendpulseError{http.StatusOK, path, string(body), err.Error()}
 	}
 
-	return &respData[0], err
+	result, resultExists := respData["result"]
+	if !resultExists {
+		return &SendpulseError{http.StatusOK, path, string(body), "'result' not found in response"}
+	}
+
+	if !result.(bool) {
+		return &SendpulseError{http.StatusOK, path, string(body), "'result' is false"}
+	}
+
+	return nil
 }
 
 func (b *books) List(limit uint, offset uint) (*[]Book, error) {
@@ -90,7 +130,77 @@ func (b *books) List(limit uint, offset uint) (*[]Book, error) {
 	return &respData, nil
 }
 
-func (b *books) AddEmails(addressBookId uint, notifications []Email, additionalParams map[string]string) error {
+func (b *books) Get(addressBookId uint) (*Book, error) {
+	path := fmt.Sprintf("/addressbooks/%d", addressBookId)
+	body, err := b.Client.makeRequest(path, "GET", nil, true)
+
+	if err != nil {
+		return nil, err
+	}
+
+	var respData []Book
+	if err := json.Unmarshal(body, &respData); err != nil {
+		return nil, &SendpulseError{http.StatusOK, path, string(body), err.Error()}
+	}
+
+	return &respData[0], err
+}
+
+func (b *books) Variables(addressBookId uint) ([]Variable, error) {
+	path := fmt.Sprintf("/addressbooks/%d/variables", addressBookId)
+	body, err := b.Client.makeRequest(path, "GET", nil, true)
+
+	if err != nil {
+		return nil, err
+	}
+
+	var variables []Variable
+	if err := json.Unmarshal(body, &variables); err != nil {
+		return nil, &SendpulseError{http.StatusOK, path, string(body), err.Error()}
+	}
+
+	return variables, err
+}
+
+func (b *books) Emails(addressBookId uint, limit uint, offset uint) ([]Contact, error) {
+	path := fmt.Sprintf("/addressbooks/%d/emails?limit=%d&offset=%d", addressBookId, limit, offset)
+
+	body, err := b.Client.makeRequest(path, "GET", nil, true)
+
+	if err != nil {
+		return nil, err
+	}
+
+	var contacts []Contact
+	if err := json.Unmarshal(body, &contacts); err != nil {
+		return nil, &SendpulseError{http.StatusOK, path, string(body), err.Error()}
+	}
+
+	return contacts, err
+}
+
+func (b *books) EmailsTotal(addressBookId uint) (uint, error) {
+	path := fmt.Sprintf("/addressbooks/%d/emails/total", addressBookId)
+
+	body, err := b.Client.makeRequest(fmt.Sprintf(path), "GET", nil, true)
+	if err != nil {
+		return 0, err
+	}
+
+	var respData map[string]interface{}
+	if err := json.Unmarshal(body, &respData); err != nil {
+		return 0, &SendpulseError{http.StatusOK, path, string(body), err.Error()}
+	}
+
+	total, totalExists := respData["total"]
+	if !totalExists {
+		return 0, &SendpulseError{http.StatusOK, path, string(body), "'total' not found in response"}
+	}
+
+	return uint(total.(float64)), nil
+}
+
+func (b *books) AddEmails(addressBookId uint, notifications []Email, additionalParams map[string]string, senderEmail string) error {
 	path := fmt.Sprintf("/addressbooks/%d/emails", addressBookId)
 
 	if len(notifications) == 0 {
@@ -105,6 +215,11 @@ func (b *books) AddEmails(addressBookId uint, notifications []Email, additionalP
 
 	data := map[string]interface{}{
 		"emails": string(encoded),
+	}
+
+	if senderEmail != "" { // double-opt-in method
+		data["confirmation"] = "force"
+		data["sender_email"] = senderEmail
 	}
 
 	if len(additionalParams) != 0 {
@@ -133,4 +248,41 @@ func (b *books) AddEmails(addressBookId uint, notifications []Email, additionalP
 	}
 
 	return nil
+}
+
+func (b *books) DeleteEmails(addressBookId uint, emailsList []string) error {
+	path := fmt.Sprintf("/addressbooks/%d/emails", addressBookId)
+
+	encoded, err := json.Marshal(emailsList)
+	if err != nil {
+		return errors.New("could not to encode emails list")
+	}
+
+	data := map[string]interface{}{
+		"emails": string(encoded),
+	}
+	_, err = b.Client.makeRequest(path, "DELETE", data, true)
+	return err
+}
+
+func (b *books) Delete(addressBookId uint) error {
+	path := fmt.Sprintf("/addressbooks/%d", addressBookId)
+	_, err := b.Client.makeRequest(path, "DELETE", nil, true)
+	return err
+}
+
+func (b *books) CampaignCost(addressBookId uint) (*CompaignCost, error) {
+	path := fmt.Sprintf("/addressbooks/%d/cost", addressBookId)
+
+	body, err := b.Client.makeRequest(fmt.Sprintf(path), "GET", nil, true)
+	if err != nil {
+		return nil, err
+	}
+
+	var respData CompaignCost
+	if err := json.Unmarshal(body, &respData); err != nil {
+		return nil, &SendpulseError{http.StatusOK, path, string(body), err.Error()}
+	}
+
+	return &respData, err
 }
