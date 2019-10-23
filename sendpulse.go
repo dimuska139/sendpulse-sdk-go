@@ -1,26 +1,27 @@
 package sendpulse
 
 import (
-	"errors"
 	"sync"
 )
 
 type SendpulseClient struct {
+	client *client
 	Emails Emails
 }
 
-func ApiClient(apiUserId string, apiSecret string, timeout int) (*SendpulseClient, error) {
-	if len(apiUserId) == 0 || len(apiSecret) == 0 {
-		return nil, errors.New("client ID or Secret is empty")
+func ApiClient(config Config) (*SendpulseClient, error) {
+	if config.Timeout == 0 {
+		config.Timeout = 5
 	}
 
-	c := &client{apiUserId, apiSecret, nil, timeout, nil}
+	c := &client{config, "", nil}
 	c.tokenLock = new(sync.RWMutex)
 
 	b := books{c}
 	automation := automation360{c}
 
 	spClient := &SendpulseClient{
+		client: c,
 		Emails: Emails{
 			Books:         b,
 			Automation360: automation,

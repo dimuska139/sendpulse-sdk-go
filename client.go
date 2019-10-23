@@ -24,50 +24,48 @@ func (e *SendpulseError) Error() string {
 }
 
 type client struct {
-	userId    string
-	secret    string
-	token     *string
-	timeout   int
+	config    Config
+	token     string
 	tokenLock *sync.RWMutex
 }
 
 const apiBaseUrl = "https://api.sendpulse.com"
 
-func (c *client) getToken() (*string, error) {
+func (c *client) getToken() (string, error) {
 	c.tokenLock.RLock()
 	token := c.token
 	c.tokenLock.RUnlock()
 
-	if token != nil {
+	if token != "" {
 		return token, nil
 	}
 
 	data := make(map[string]interface{})
 	data["grant_type"] = "client_credentials"
-	data["client_id"] = c.userId
-	data["client_secret"] = c.secret
+	data["client_id"] = c.config.UserID
+	data["client_secret"] = c.config.Secret
 	path := "/oauth/access_token"
 
 	body, err := c.makeRequest(path, "POST", data, false)
 
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	var respData map[string]interface{}
 	if err := json.Unmarshal(body, &respData); err != nil {
-		return nil, &SendpulseError{http.StatusOK, fmt.Sprintf(apiBaseUrl+"%s", path), string(body), err.Error()}
+		return "", &SendpulseError{http.StatusOK, fmt.Sprintf(apiBaseUrl+"%s", path), string(body), err.Error()}
 	}
 
 	accessToken, tokenExists := respData["access_token"]
 	if !tokenExists {
-		return nil, &SendpulseError{http.StatusOK, fmt.Sprintf(apiBaseUrl+"%s", path), string(body), "'access_token' not found in response"}
+		return "", &SendpulseError{http.StatusOK, fmt.Sprintf(apiBaseUrl+"%s", path), string(body), "'access_token' not found in response"}
 	}
 	accessTokenStr := accessToken.(string)
 
 	c.tokenLock.Lock()
-	c.token = &accessTokenStr
-	token = &accessTokenStr
+	c.token = accessTokenStr
+	token = accessTokenStr
 	c.tokenLock.Unlock()
 
 	return token, nil
@@ -75,7 +73,7 @@ func (c *client) getToken() (*string, error) {
 
 func (c *client) clearToken() {
 	c.tokenLock.Lock()
-	c.token = nil
+	c.token = ""
 	c.tokenLock.Unlock()
 }
 
@@ -101,7 +99,7 @@ func (c *client) makeRequest(path string, method string, data map[string]interfa
 	}
 
 	client := &http.Client{
-		Timeout: time.Duration(c.timeout) * time.Second,
+		Timeout: time.Duration(c.config.Timeout) * time.Second,
 	}
 
 	if useToken {
@@ -110,7 +108,7 @@ func (c *client) makeRequest(path string, method string, data map[string]interfa
 			return nil, err
 		}
 
-		req.Header.Add("Authorization", "Bearer "+*token)
+		req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", token))
 	}
 	resp, err := client.Do(req)
 	if err != nil {

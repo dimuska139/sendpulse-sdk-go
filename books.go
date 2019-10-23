@@ -53,9 +53,6 @@ type CompaignCost struct {
 func (b *books) Create(addressBookName string) (*uint, error) {
 	path := "/addressbooks"
 
-	if addressBookName == "" {
-		return nil, errors.New("could not to create address book with empty name")
-	}
 	data := map[string]interface{}{
 		"bookName": addressBookName,
 	}
@@ -80,10 +77,6 @@ func (b *books) Create(addressBookName string) (*uint, error) {
 func (b *books) Update(addressBookId uint, name string) error {
 	path := fmt.Sprintf("/addressbooks/%d", addressBookId)
 
-	if name == "" {
-		return errors.New("could not to update address book with empty name")
-	}
-
 	data := map[string]interface{}{
 		"name": name,
 	}
@@ -99,12 +92,8 @@ func (b *books) Update(addressBookId uint, name string) error {
 	}
 
 	result, resultExists := respData["result"]
-	if !resultExists {
-		return &SendpulseError{http.StatusOK, path, string(body), "'result' not found in response"}
-	}
-
-	if !result.(bool) {
-		return &SendpulseError{http.StatusOK, path, string(body), "'result' is false"}
+	if !resultExists || !result.(bool) {
+		return &SendpulseError{http.StatusOK, path, string(body), "invalid response"}
 	}
 
 	return nil
@@ -203,10 +192,6 @@ func (b *books) EmailsTotal(addressBookId uint) (uint, error) {
 func (b *books) AddEmails(addressBookId uint, notifications []Email, additionalParams map[string]string, senderEmail string) error {
 	path := fmt.Sprintf("/addressbooks/%d/emails", addressBookId)
 
-	if len(notifications) == 0 {
-		return errors.New("empty emails list")
-	}
-
 	encoded, err := json.Marshal(notifications)
 
 	if err != nil {
@@ -239,14 +224,9 @@ func (b *books) AddEmails(addressBookId uint, notifications []Email, additionalP
 		return &SendpulseError{http.StatusOK, path, string(body), err.Error()}
 	}
 	result, resultExists := respData["result"]
-	if !resultExists {
-		return &SendpulseError{http.StatusOK, path, string(body), "'result' not found in response"}
+	if !resultExists || !result.(bool) {
+		return &SendpulseError{http.StatusOK, path, string(body), "invalid response"}
 	}
-
-	if !result.(bool) {
-		return &SendpulseError{http.StatusOK, path, string(body), "'result' is false"}
-	}
-
 	return nil
 }
 
