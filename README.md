@@ -1,5 +1,5 @@
-# SendPulse REST client library
-A SendPulse REST client library and example for Go (Golang).
+# SendPulse REST client library (unofficial)
+An unofficial SendPulse REST client library for Go (Golang).
 
 API Documentation [https://sendpulse.com/api](https://sendpulse.com/api)
 
@@ -37,65 +37,9 @@ func main() {
 	// Get address book info by id
 	bookInfo, e := client.Books.Get(uint(addressBookId))
 	if e != nil {
-		switch err := e.(type) {
-		case *sendpulse.SendpulseError: // Sendpulse error
-			fmt.Println(err.HttpCode)
-			fmt.Println(err.Url)
-			fmt.Println(err.Body)
-			fmt.Println(err.Message)
-		default: // Another errors
-			fmt.Println(e)
-		}
+		fmt.Println(e)
 	} else {
 		fmt.Println(*bookInfo)
-	}
-
-	// Get address books list
-	limit := 10
-	offset := 20
-	books, err := client.Books.List(uint(limit), uint(offset))
-	if err != nil {
-		switch err := e.(type) {
-		case *sendpulse.SendpulseError: // Sendpulse error
-			fmt.Println(err.HttpCode)
-			fmt.Println(err.Url)
-			fmt.Println(err.Body)
-			fmt.Println(err.Message)
-		default: // Another errors
-			fmt.Println(e)
-		}
-	} else {
-		fmt.Println(*books)
-	}
-
-	// Add emails to address book
-	emails := []sendpulse.Email{
-		sendpulse.Email{
-			Email:     "alex@test.net",
-			Variables: map[string]string{
-				"name": "Alex",
-				"age": "25",
-			},
-		},
-		sendpulse.Email{
-			Email:     "dima@test.net",
-			Variables: make(map[string]string),
-		},
-	}
-	
-	extraParams := make(map[string]string)
-	
-	err = client.Books.AddEmails(uint(addressBookId), emails, extraParams)
-	if err != nil {
-		switch err := e.(type) {
-		case *sendpulse.SendpulseError: // Sendpulse error
-			fmt.Println(err.HttpCode)
-			fmt.Println(err.Url)
-			fmt.Println(err.Body)
-			fmt.Println(err.Message)
-		default: // Another errors
-			fmt.Println(e)
-		}
 	}
 }
 ```

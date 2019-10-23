@@ -30,14 +30,24 @@ type Variable struct {
 
 type Contact struct {
 	Email         string
-	Status        string
+	Status        int
 	StatusExplain string
-	Variables     []Variable
+	Variables     map[string]interface{}
 }
 
 type Email struct {
 	Email     string                 `json:"email"`
 	Variables map[string]interface{} `json:"variables"`
+}
+
+type CompaignCost struct {
+	Cur                       string
+	SentEmailsQty             int
+	OverdraftAllEmailsPrice   int
+	AddressesDeltaFromBalance int
+	AddressesDeltaFromTariff  int
+	MaxEmailsPerTask          int
+	Result                    bool
 }
 
 func (b *books) Create(addressBookName string) (*uint, error) {
@@ -187,15 +197,10 @@ func (b *books) EmailsTotal(addressBookId uint) (uint, error) {
 		return 0, &SendpulseError{http.StatusOK, path, string(body), "'total' not found in response"}
 	}
 
-	iTotal, ok := total.(int)
-	if !ok {
-		return 0, &SendpulseError{http.StatusOK, path, string(body), "'total' is not numeric"}
-	}
-
-	return uint(iTotal), nil
+	return uint(total.(float64)), nil
 }
 
-func (b *books) AddEmails(addressBookId uint, notifications []Email, additionalParams map[string]string) error {
+func (b *books) AddEmails(addressBookId uint, notifications []Email, additionalParams map[string]string, senderEmail string) error {
 	path := fmt.Sprintf("/addressbooks/%d/emails", addressBookId)
 
 	if len(notifications) == 0 {
@@ -210,6 +215,11 @@ func (b *books) AddEmails(addressBookId uint, notifications []Email, additionalP
 
 	data := map[string]interface{}{
 		"emails": string(encoded),
+	}
+
+	if senderEmail != "" { // double-opt-in method
+		data["confirmation"] = "force"
+		data["sender_email"] = senderEmail
 	}
 
 	if len(additionalParams) != 0 {
@@ -238,4 +248,41 @@ func (b *books) AddEmails(addressBookId uint, notifications []Email, additionalP
 	}
 
 	return nil
+}
+
+func (b *books) DeleteEmails(addressBookId uint, emailsList []string) error {
+	path := fmt.Sprintf("/addressbooks/%d/emails", addressBookId)
+
+	encoded, err := json.Marshal(emailsList)
+	if err != nil {
+		return errors.New("could not to encode emails list")
+	}
+
+	data := map[string]interface{}{
+		"emails": string(encoded),
+	}
+	_, err = b.Client.makeRequest(path, "DELETE", data, true)
+	return err
+}
+
+func (b *books) Delete(addressBookId uint) error {
+	path := fmt.Sprintf("/addressbooks/%d", addressBookId)
+	_, err := b.Client.makeRequest(path, "DELETE", nil, true)
+	return err
+}
+
+func (b *books) CampaignCost(addressBookId uint) (*CompaignCost, error) {
+	path := fmt.Sprintf("/addressbooks/%d/cost", addressBookId)
+
+	body, err := b.Client.makeRequest(fmt.Sprintf(path), "GET", nil, true)
+	if err != nil {
+		return nil, err
+	}
+
+	var respData CompaignCost
+	if err := json.Unmarshal(body, &respData); err != nil {
+		return nil, &SendpulseError{http.StatusOK, path, string(body), err.Error()}
+	}
+
+	return &respData, err
 }

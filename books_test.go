@@ -10,7 +10,7 @@ import (
 	"testing"
 )
 
-func TestBookCreateEmptyName(t *testing.T) {
+func TestBooks_Create_EmptyName(t *testing.T) {
 	apiUid := fake.CharactersN(50)
 	apiSecret := fake.CharactersN(50)
 
@@ -22,13 +22,13 @@ func TestBookCreateEmptyName(t *testing.T) {
 
 	spClient, _ := ApiClient(apiUid, apiSecret, 5)
 
-	_, err := spClient.Books.Create("")
+	_, err := spClient.Emails.Books.Create("")
 	assert.Error(t, err)
 	_, isResponseError := err.(*SendpulseError)
 	assert.False(t, isResponseError)
 }
 
-func TestBookCreateExisting(t *testing.T) {
+func TestBooks_Create_Existing(t *testing.T) {
 	bookName := fake.Word()
 	apiUid := fake.CharactersN(50)
 	apiSecret := fake.CharactersN(50)
@@ -52,7 +52,7 @@ func TestBookCreateExisting(t *testing.T) {
 
 	spClient, _ := ApiClient(apiUid, apiSecret, 5)
 
-	bookId, err := spClient.Books.Create(bookName)
+	bookId, err := spClient.Emails.Books.Create(bookName)
 	assert.Error(t, err)
 	spErr, isSPError := err.(*SendpulseError)
 	assert.True(t, isSPError)
@@ -64,7 +64,7 @@ func TestBookCreateExisting(t *testing.T) {
 	assert.Equal(t, "", spErr.Message)
 }
 
-func TestBookCreateIncorrectJson(t *testing.T) {
+func TestBooks_Create_IncorrectJson(t *testing.T) {
 	bookName := fake.Word()
 	apiUid := fake.CharactersN(50)
 	apiSecret := fake.CharactersN(50)
@@ -85,7 +85,7 @@ func TestBookCreateIncorrectJson(t *testing.T) {
 
 	spClient, _ := ApiClient(apiUid, apiSecret, 5)
 
-	bookId, err := spClient.Books.Create(bookName)
+	bookId, err := spClient.Emails.Books.Create(bookName)
 	assert.Error(t, err)
 	spErr, isSpError := err.(*SendpulseError)
 	assert.True(t, isSpError)
@@ -96,7 +96,7 @@ func TestBookCreateIncorrectJson(t *testing.T) {
 	assert.Equal(t, respBody, spErr.Body)
 }
 
-func TestBookCreateNoIdInResponse(t *testing.T) {
+func TestBooks_Create_NoIdInResponse(t *testing.T) {
 	bookName := fake.Word()
 	apiUid := fake.CharactersN(50)
 	apiSecret := fake.CharactersN(50)
@@ -119,7 +119,7 @@ func TestBookCreateNoIdInResponse(t *testing.T) {
 
 	spClient, _ := ApiClient(apiUid, apiSecret, 5)
 
-	bookId, err := spClient.Books.Create(bookName)
+	bookId, err := spClient.Emails.Books.Create(bookName)
 	assert.Error(t, err)
 	httpErr, isResponseError := err.(*SendpulseError)
 	assert.True(t, isResponseError)
@@ -131,7 +131,7 @@ func TestBookCreateNoIdInResponse(t *testing.T) {
 	assert.Equal(t, "", httpErr.Message)
 }
 
-func TestBookCreateSuccess(t *testing.T) {
+func TestBooks_Create_Success(t *testing.T) {
 	bookName := fake.Word()
 	var newBookId uint = 1
 	apiUid := fake.CharactersN(50)
@@ -155,12 +155,12 @@ func TestBookCreateSuccess(t *testing.T) {
 
 	spClient, _ := ApiClient(apiUid, apiSecret, 5)
 
-	bookId, err := spClient.Books.Create(bookName)
+	bookId, err := spClient.Emails.Books.Create(bookName)
 	assert.NoError(t, err)
 	assert.Equal(t, newBookId, *bookId)
 }
 
-func TestGetSuccess(t *testing.T) {
+func TestBooks_Get_Success(t *testing.T) {
 	apiUid := fake.CharactersN(50)
 	apiSecret := fake.CharactersN(50)
 
@@ -189,13 +189,13 @@ func TestGetSuccess(t *testing.T) {
 		httpmock.NewStringResponder(http.StatusOK, string(encoded)))
 
 	spClient, _ := ApiClient(apiUid, apiSecret, 5)
-	book, err := spClient.Books.Get(books[0].ID)
+	book, err := spClient.Emails.Books.Get(books[0].ID)
 	assert.NoError(t, err)
 
 	assert.Equal(t, books[0], *book)
 }
 
-func TestGetNotFound(t *testing.T) {
+func TestBooks_Get_NotFound(t *testing.T) {
 	respBody := `{
      		"error_code": 213,
    			"message": "Book not found"
@@ -221,7 +221,7 @@ func TestGetNotFound(t *testing.T) {
 
 	spClient, _ := ApiClient(apiUid, apiSecret, 5)
 
-	_, err := spClient.Books.Get(uint(notExistingBookID))
+	_, err := spClient.Emails.Books.Get(uint(notExistingBookID))
 	assert.Error(t, err)
 	httpErr, isResponseError := err.(*SendpulseError)
 	assert.True(t, isResponseError)
@@ -231,7 +231,7 @@ func TestGetNotFound(t *testing.T) {
 	assert.Equal(t, "", httpErr.Message)
 }
 
-func TestGetInvalidJson(t *testing.T) {
+func TestBooks_Get_InvalidJson(t *testing.T) {
 	respBody := `Invalid json`
 
 	notExistingBookID := 1
@@ -254,7 +254,7 @@ func TestGetInvalidJson(t *testing.T) {
 
 	spClient, _ := ApiClient(apiUid, apiSecret, 5)
 
-	_, err := spClient.Books.Get(uint(notExistingBookID))
+	_, err := spClient.Emails.Books.Get(uint(notExistingBookID))
 	assert.Error(t, err)
 	httpErr, isResponseError := err.(*SendpulseError)
 	assert.True(t, isResponseError)
@@ -264,7 +264,7 @@ func TestGetInvalidJson(t *testing.T) {
 	assert.Equal(t, "", httpErr.Message)
 }
 
-func TestListSuccess(t *testing.T) {
+func TestBooks_List_Success(t *testing.T) {
 	apiUid := fake.CharactersN(50)
 	apiSecret := fake.CharactersN(50)
 
@@ -303,13 +303,13 @@ func TestListSuccess(t *testing.T) {
 
 	spClient, _ := ApiClient(apiUid, apiSecret, 5)
 
-	responseBooks, err := spClient.Books.List(0, 10)
+	responseBooks, err := spClient.Emails.Books.List(0, 10)
 	assert.NoError(t, err)
 
 	assert.Equal(t, books, *responseBooks)
 }
 
-func TestListInvalidJson(t *testing.T) {
+func TestBooks_List_InvalidJson(t *testing.T) {
 	apiUid := fake.CharactersN(50)
 	apiSecret := fake.CharactersN(50)
 
@@ -329,7 +329,7 @@ func TestListInvalidJson(t *testing.T) {
 
 	spClient, _ := ApiClient(apiUid, apiSecret, 5)
 
-	_, err := spClient.Books.List(0, 10)
+	_, err := spClient.Emails.Books.List(0, 10)
 	assert.Error(t, err)
 
 	spError, isSpError := err.(*SendpulseError)
@@ -339,7 +339,7 @@ func TestListInvalidJson(t *testing.T) {
 	assert.Equal(t, respBody, spError.Body)
 }
 
-func TestAddEmailsEmptyList(t *testing.T) {
+func TestBooks_AddEmails_EmptyList(t *testing.T) {
 	apiUid := fake.CharactersN(50)
 	apiSecret := fake.CharactersN(50)
 
@@ -352,13 +352,13 @@ func TestAddEmailsEmptyList(t *testing.T) {
 		httpmock.NewStringResponder(http.StatusOK,
 			`{"access_token": "testtoken","token_type": "Bearer","expires_in": 3600}`))
 	spClient, _ := ApiClient(apiUid, apiSecret, 5)
-	err := spClient.Books.AddEmails(1, emailsList, params)
+	err := spClient.Emails.Books.AddEmails(1, emailsList, params, "")
 	assert.Error(t, err)
 	_, isResponseError := err.(*SendpulseError)
 	assert.False(t, isResponseError)
 }
 
-func TestAddEmailsBookNotFound(t *testing.T) {
+func TestBooks_AddEmails_BookNotFound(t *testing.T) {
 	addressBookId := 1
 
 	path := fmt.Sprintf("/addressbooks/%d/emails", addressBookId)
@@ -393,7 +393,7 @@ func TestAddEmailsBookNotFound(t *testing.T) {
 	httpmock.RegisterResponder("POST", url,
 		httpmock.NewStringResponder(http.StatusBadRequest, respBody))
 	spClient, _ := ApiClient(apiUid, apiSecret, 5)
-	err := spClient.Books.AddEmails(uint(addressBookId), emails, make(map[string]string))
+	err := spClient.Emails.Books.AddEmails(uint(addressBookId), emails, make(map[string]string), "")
 	assert.Error(t, err)
 
 	httpErr, isResponseError := err.(*SendpulseError)
@@ -403,7 +403,7 @@ func TestAddEmailsBookNotFound(t *testing.T) {
 	assert.Equal(t, respBody, httpErr.Body)
 }
 
-func TestAddEmailsInvalidJson(t *testing.T) {
+func TestBooks_AddEmails_InvalidJson(t *testing.T) {
 	addressBookId := 1
 
 	path := fmt.Sprintf("/addressbooks/%d/emails", addressBookId)
@@ -434,7 +434,7 @@ func TestAddEmailsInvalidJson(t *testing.T) {
 	httpmock.RegisterResponder("POST", url,
 		httpmock.NewStringResponder(http.StatusBadRequest, respBody))
 	spClient, _ := ApiClient(apiUid, apiSecret, 5)
-	err := spClient.Books.AddEmails(uint(addressBookId), emails, make(map[string]string))
+	err := spClient.Emails.Books.AddEmails(uint(addressBookId), emails, make(map[string]string), "")
 	assert.Error(t, err)
 
 	spErr, isResponseError := err.(*SendpulseError)
@@ -444,7 +444,7 @@ func TestAddEmailsInvalidJson(t *testing.T) {
 	assert.Equal(t, respBody, spErr.Body)
 }
 
-func TestAddEmailsSuccess(t *testing.T) {
+func TestBooks_AddEmails_Success(t *testing.T) {
 	apiUid := fake.CharactersN(50)
 	apiSecret := fake.CharactersN(50)
 
@@ -452,11 +452,11 @@ func TestAddEmailsSuccess(t *testing.T) {
 	defer httpmock.DeactivateAndReset()
 
 	emails := []Email{
-		Email{
+		{
 			Email:     fake.EmailAddress(),
 			Variables: make(map[string]interface{}),
 		},
-		Email{
+		{
 			Email:     fake.EmailAddress(),
 			Variables: make(map[string]interface{}),
 		},
@@ -472,11 +472,11 @@ func TestAddEmailsSuccess(t *testing.T) {
 		httpmock.NewStringResponder(http.StatusOK,
 			`{"access_token": "testtoken","token_type": "Bearer","expires_in": 3600}`))
 	spClient, _ := ApiClient(apiUid, apiSecret, 5)
-	err := spClient.Books.AddEmails(uint(addressBookId), emails, make(map[string]string))
+	err := spClient.Emails.Books.AddEmails(uint(addressBookId), emails, make(map[string]string), "")
 	assert.NoError(t, err)
 }
 
-func TestAddEmailsWithParamsSuccess(t *testing.T) {
+func TestBooks_AddEmails_WithParamsSuccess(t *testing.T) {
 	apiUid := fake.CharactersN(50)
 	apiSecret := fake.CharactersN(50)
 
@@ -484,11 +484,11 @@ func TestAddEmailsWithParamsSuccess(t *testing.T) {
 	defer httpmock.DeactivateAndReset()
 
 	emails := []Email{
-		Email{
+		{
 			Email:     fake.EmailAddress(),
 			Variables: make(map[string]interface{}),
 		},
-		Email{
+		{
 			Email:     fake.EmailAddress(),
 			Variables: make(map[string]interface{}),
 		},
@@ -508,6 +508,6 @@ func TestAddEmailsWithParamsSuccess(t *testing.T) {
 		"param1": "value1",
 		"param2": "value2",
 	}
-	err := spClient.Books.AddEmails(uint(addressBookId), emails, extraParams)
+	err := spClient.Emails.Books.AddEmails(uint(addressBookId), emails, extraParams, fake.EmailAddress())
 	assert.NoError(t, err)
 }

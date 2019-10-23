@@ -9,7 +9,7 @@ import (
 	"testing"
 )
 
-func TestStartEventEmptyEventName(t *testing.T) {
+func TestAutomation360_StartEvent_EmptyEventName(t *testing.T) {
 	apiUid := fake.CharactersN(50)
 	apiSecret := fake.CharactersN(50)
 	httpmock.Activate()
@@ -22,13 +22,13 @@ func TestStartEventEmptyEventName(t *testing.T) {
 	variables := make(map[string]interface{})
 	variables["phone"] = fake.Phone()
 	variables["name"] = fake.FullName()
-	err := spClient.Automation360.StartEvent("", variables)
+	err := spClient.Emails.Automation360.StartEvent("", variables)
 	assert.Error(t, err)
 	_, isSPError := err.(*SendpulseError)
 	assert.False(t, isSPError)
 }
 
-func TestStartEventNoPhoneAndEmail(t *testing.T) {
+func TestAutomation360_StartEvent_NoPhoneAndEmail(t *testing.T) {
 	eventName := fake.Word()
 	apiUid := fake.CharactersN(50)
 	apiSecret := fake.CharactersN(50)
@@ -41,13 +41,13 @@ func TestStartEventNoPhoneAndEmail(t *testing.T) {
 
 	variables := make(map[string]interface{})
 	variables["name"] = fake.FullName()
-	err := spClient.Automation360.StartEvent(eventName, variables)
+	err := spClient.Emails.Automation360.StartEvent(eventName, variables)
 	assert.Error(t, err)
 	_, isSPError := err.(*SendpulseError)
 	assert.False(t, isSPError)
 }
 
-func TestStartEventNotExists(t *testing.T) {
+func TestAutomation360_StartEvent_EventNotExists(t *testing.T) {
 	eventName := fake.Word()
 
 	path := fmt.Sprintf("/events/name/%s", eventName)
@@ -71,7 +71,7 @@ func TestStartEventNotExists(t *testing.T) {
 	variables := make(map[string]interface{})
 	variables["email"] = fake.EmailAddress()
 	variables["name"] = fake.FullName()
-	err := spClient.Automation360.StartEvent(eventName, variables)
+	err := spClient.Emails.Automation360.StartEvent(eventName, variables)
 	assert.Error(t, err)
 	ResponseError, isResponseError := err.(*SendpulseError)
 	assert.True(t, isResponseError)
@@ -81,7 +81,7 @@ func TestStartEventNotExists(t *testing.T) {
 	assert.Equal(t, "", ResponseError.Message)
 }
 
-func TestStartEventDublicateData(t *testing.T) {
+func TestAutomation360_StartEvent_DublicateData(t *testing.T) {
 	eventName := fake.Word()
 
 	path := fmt.Sprintf("/events/name/%s", eventName)
@@ -105,7 +105,7 @@ func TestStartEventDublicateData(t *testing.T) {
 	variables := make(map[string]interface{})
 	variables["phone"] = fake.Phone()
 	variables["name"] = fake.FullName()
-	err := spClient.Automation360.StartEvent(eventName, variables)
+	err := spClient.Emails.Automation360.StartEvent(eventName, variables)
 	assert.Error(t, err)
 	spError, isSPError := err.(*SendpulseError)
 	assert.True(t, isSPError)
@@ -115,7 +115,7 @@ func TestStartEventDublicateData(t *testing.T) {
 	assert.Equal(t, "'result' is false", spError.Message)
 }
 
-func TestStartEventWithPhone(t *testing.T) {
+func TestAutomation360_StartEvent_WithPhone(t *testing.T) {
 	eventName := fake.Word()
 
 	url := fmt.Sprintf("%s/events/name/%s", apiBaseUrl, eventName)
@@ -137,11 +137,11 @@ func TestStartEventWithPhone(t *testing.T) {
 	variables := make(map[string]interface{})
 	variables["phone"] = fake.Phone()
 	variables["name"] = fake.FullName()
-	err := spClient.Automation360.StartEvent(eventName, variables)
+	err := spClient.Emails.Automation360.StartEvent(eventName, variables)
 	assert.NoError(t, err)
 }
 
-func TestStartEventWithEmail(t *testing.T) {
+func TestAutomation360_StartEvent_WithEmail(t *testing.T) {
 	eventName := fake.Word()
 
 	url := fmt.Sprintf("%s/events/name/%s", apiBaseUrl, eventName)
@@ -163,6 +163,6 @@ func TestStartEventWithEmail(t *testing.T) {
 	variables := make(map[string]interface{})
 	variables["email"] = fake.EmailAddress()
 	variables["name"] = fake.FullName()
-	err := spClient.Automation360.StartEvent(eventName, variables)
+	err := spClient.Emails.Automation360.StartEvent(eventName, variables)
 	assert.NoError(t, err)
 }
