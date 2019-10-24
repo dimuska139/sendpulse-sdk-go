@@ -22,7 +22,6 @@ func (a *automation360) StartEvent(eventName string, variables map[string]interf
 	}
 
 	body, err := a.Client.makeRequest(path, "POST", variables, true)
-
 	if err != nil {
 		return err
 	}
@@ -33,12 +32,8 @@ func (a *automation360) StartEvent(eventName string, variables map[string]interf
 	}
 
 	result, resultExists := respData["result"]
-	if !resultExists {
-		return &SendpulseError{http.StatusOK, path, string(body), "'result' not found in response"}
-	}
-
-	if !result.(bool) {
-		return &SendpulseError{http.StatusOK, path, string(body), "'result' is false"}
+	if !resultExists || !result.(bool) {
+		return &SendpulseError{http.StatusOK, path, string(body), "invalid response"}
 	}
 
 	return nil

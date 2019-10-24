@@ -29,6 +29,11 @@ type client struct {
 	tokenLock *sync.RWMutex
 }
 
+func NewClient(config Config) *client {
+	c := &client{config, "", new(sync.RWMutex)}
+	return c
+}
+
 const apiBaseUrl = "https://api.sendpulse.com"
 
 func (c *client) getToken() (string, error) {
@@ -85,7 +90,7 @@ func (c *client) makeRequest(path string, method string, data map[string]interfa
 
 	method = strings.ToUpper(method)
 
-	fullPath := fmt.Sprintf(apiBaseUrl+"%s", path)
+	fullPath := apiBaseUrl + path
 	req, e := http.NewRequest(method, fullPath, bytes.NewBufferString(q.Encode()))
 	if e != nil {
 		return nil, e

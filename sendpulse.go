@@ -1,9 +1,5 @@
 package sendpulse
 
-import (
-	"sync"
-)
-
 type SendpulseClient struct {
 	client *client
 	Emails Emails
@@ -14,8 +10,7 @@ func ApiClient(config Config) (*SendpulseClient, error) {
 		config.Timeout = 5
 	}
 
-	c := &client{config, "", nil}
-	c.tokenLock = new(sync.RWMutex)
+	c := NewClient(config)
 
 	b := books{c}
 	automation := automation360{c}

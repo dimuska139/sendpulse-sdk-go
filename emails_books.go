@@ -30,9 +30,9 @@ type Variable struct {
 
 type Contact struct {
 	Email         string
-	Status        int
+	Status        string
 	StatusExplain string
-	Variables     map[string]interface{}
+	Variables     []Variable
 }
 
 type Email struct {
@@ -152,9 +152,13 @@ func (b *books) Variables(addressBookId uint) ([]Variable, error) {
 }
 
 func (b *books) Emails(addressBookId uint, limit uint, offset uint) ([]Contact, error) {
-	path := fmt.Sprintf("/addressbooks/%d/emails?limit=%d&offset=%d", addressBookId, limit, offset)
+	path := fmt.Sprintf("/addressbooks/%d/emails", addressBookId)
 
-	body, err := b.Client.makeRequest(path, "GET", nil, true)
+	data := map[string]interface{}{
+		"limit":  fmt.Sprint(limit),
+		"offset": fmt.Sprint(offset),
+	}
+	body, err := b.Client.makeRequest(path, "GET", data, true)
 
 	if err != nil {
 		return nil, err
@@ -189,6 +193,14 @@ func (b *books) EmailsTotal(addressBookId uint) (uint, error) {
 	return uint(total.(float64)), nil
 }
 
+/**
+Known limitations:
+-- Max 10 rps allowed
+-- Max 255 chars per variable
+-- Sendpulse calls trim function to every variable
+-- Sendpulse rejects requests with html tags an \r symbols
+-- Sendpulse don't remove previous user variables if user already added to address book before
+*/
 func (b *books) AddEmails(addressBookId uint, notifications []Email, additionalParams map[string]string, senderEmail string) error {
 	path := fmt.Sprintf("/addressbooks/%d/emails", addressBookId)
 
