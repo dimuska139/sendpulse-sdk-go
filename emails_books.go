@@ -40,7 +40,7 @@ type Email struct {
 	Variables map[string]interface{} `json:"variables"`
 }
 
-type CompaignCost struct {
+type CampaignCost struct {
 	Cur                       string
 	SentEmailsQty             int
 	OverdraftAllEmailsPrice   int
@@ -253,17 +253,40 @@ func (b *books) DeleteEmails(addressBookId uint, emailsList []string) error {
 	data := map[string]interface{}{
 		"emails": string(encoded),
 	}
-	_, err = b.Client.makeRequest(path, "DELETE", data, true)
-	return err
+	body, err := b.Client.makeRequest(path, "DELETE", data, true)
+	if err != nil {
+		return err
+	}
+
+	var respData map[string]interface{}
+	if err := json.Unmarshal(body, &respData); err != nil {
+		return &SendpulseError{http.StatusOK, path, string(body), err.Error()}
+	}
+	result, resultExists := respData["result"]
+	if !resultExists || !result.(bool) {
+		return &SendpulseError{http.StatusOK, path, string(body), "invalid response"}
+	}
+	return nil
 }
 
 func (b *books) Delete(addressBookId uint) error {
 	path := fmt.Sprintf("/addressbooks/%d", addressBookId)
-	_, err := b.Client.makeRequest(path, "DELETE", nil, true)
-	return err
+	body, err := b.Client.makeRequest(path, "DELETE", nil, true)
+	if err != nil {
+		return err
+	}
+	var respData map[string]interface{}
+	if err := json.Unmarshal(body, &respData); err != nil {
+		return &SendpulseError{http.StatusOK, path, string(body), err.Error()}
+	}
+	result, resultExists := respData["result"]
+	if !resultExists || !result.(bool) {
+		return &SendpulseError{http.StatusOK, path, string(body), "invalid response"}
+	}
+	return nil
 }
 
-func (b *books) CampaignCost(addressBookId uint) (*CompaignCost, error) {
+func (b *books) CampaignCost(addressBookId uint) (*CampaignCost, error) {
 	path := fmt.Sprintf("/addressbooks/%d/cost", addressBookId)
 
 	body, err := b.Client.makeRequest(fmt.Sprintf(path), "GET", nil, true)
@@ -271,7 +294,7 @@ func (b *books) CampaignCost(addressBookId uint) (*CompaignCost, error) {
 		return nil, err
 	}
 
-	var respData CompaignCost
+	var respData CampaignCost
 	if err := json.Unmarshal(body, &respData); err != nil {
 		return nil, &SendpulseError{http.StatusOK, path, string(body), err.Error()}
 	}

@@ -14,7 +14,27 @@ func TestSendpulseError_Error(t *testing.T) {
 	assert.Equal(t, fmt.Sprintf("Http code: %d, url: %s, body: %s, message: %s", e.HttpCode, e.Url, e.Body, e.Message), e.Error())
 }
 
-func TestGetToken_Stored(t *testing.T) {
+func TestClient_ClearToken(t *testing.T) {
+	config := Config{
+		UserID:  fake.Word(),
+		Secret:  fake.Word(),
+		Timeout: 0,
+	}
+
+	c := NewClient(config)
+	token := fake.Word()
+	c.token = token
+
+	tok, _ := c.getToken()
+	assert.Equal(t, token, tok)
+
+	c.clearToken()
+
+	emptyTok, _ := c.getToken()
+	assert.Equal(t, "", emptyTok)
+}
+
+func TestClient_GetToken_Stored(t *testing.T) {
 	config := Config{
 		UserID:  fake.Word(),
 		Secret:  fake.Word(),
@@ -28,7 +48,7 @@ func TestGetToken_Stored(t *testing.T) {
 	assert.Equal(t, token, result)
 }
 
-func TestGetToken_Error(t *testing.T) {
+func TestClient_GetToken_Error(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
@@ -48,12 +68,12 @@ func TestGetToken_Error(t *testing.T) {
 	assert.Equal(t, "", token)
 }
 
-func TestGetToken_BadJson(t *testing.T) {
+func TestClient_GetToken_BadJson(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
 	httpmock.RegisterResponder("POST", apiBaseUrl+"/oauth/access_token",
-		httpmock.NewStringResponder(http.StatusInternalServerError,
+		httpmock.NewStringResponder(http.StatusOK,
 			`{access_token": "testtoken","token_type": "Bearer","expires_in": 3600}`))
 
 	config := Config{
@@ -68,12 +88,12 @@ func TestGetToken_BadJson(t *testing.T) {
 	assert.Equal(t, "", token)
 }
 
-func TestGetToken_NoTokenProperty(t *testing.T) {
+func TestClient_GetToken_NoTokenProperty(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
 	httpmock.RegisterResponder("POST", apiBaseUrl+"/oauth/access_token",
-		httpmock.NewStringResponder(http.StatusInternalServerError,
+		httpmock.NewStringResponder(http.StatusOK,
 			`{"token_type": "Bearer","expires_in": 3600}`))
 
 	config := Config{
@@ -88,7 +108,7 @@ func TestGetToken_NoTokenProperty(t *testing.T) {
 	assert.Equal(t, "", token)
 }
 
-func TestGetToken_Success(t *testing.T) {
+func TestClient_GetToken_Success(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
