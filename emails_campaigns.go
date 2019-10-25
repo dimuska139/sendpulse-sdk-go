@@ -60,8 +60,8 @@ type MessageInfo struct {
 	SenderEmail string
 	Subject     string
 	Body        string
-	ListID      interface{}
 	Attachments string
+	ListID      interface{}
 }
 
 type CampaignInfo struct {
@@ -79,7 +79,7 @@ type CampaignInfo struct {
 type CampaignFullInfo struct {
 	ID                uint
 	Name              string
-	Message           map[string]interface{}
+	Message           MessageInfo
 	Status            uint
 	AllEmailQty       uint
 	TariffEmailQty    uint
@@ -155,7 +155,6 @@ func (c *campaigns) Create(campaignData CreateCampaignData) (*CreatedCampaignDat
 	return &createdCampaign, err
 }
 
-// TODO: Unknown response format
 func (c *campaigns) Update(campaignData UpdateCampaignData) error {
 	path := "/campaigns"
 
@@ -170,9 +169,19 @@ func (c *campaigns) Update(campaignData UpdateCampaignData) error {
 		"send_date":    campaignData.SendDate.Format("2006-01-02 15:04:05"),
 	}
 
-	_, err := c.Client.makeRequest(fmt.Sprintf(path), "PATCH", data, true)
+	body, err := c.Client.makeRequest(fmt.Sprintf(path), "PATCH", data, true)
 	if err != nil {
 		return err
+	}
+
+	var respData map[string]interface{}
+	if err := json.Unmarshal(body, &respData); err != nil {
+		return &SendpulseError{http.StatusOK, path, string(body), err.Error()}
+	}
+
+	result, resultExists := respData["result"]
+	if !resultExists || !result.(bool) {
+		return &SendpulseError{http.StatusOK, path, string(body), "invalid response"}
 	}
 	return nil
 }
@@ -233,7 +242,7 @@ func (c *campaigns) ListByBook(bookID uint, limit uint, offset uint) ([]Task, er
 	return respData, nil
 }
 
-func (c *campaigns) Countries(campaignID uint) (map[string]int, error) {
+func (c *campaigns) Countries(campaignID uint) (map[string]uint, error) {
 	path := fmt.Sprintf("/campaigns/%d/countries", campaignID)
 
 	body, err := c.Client.makeRequest(path, "GET", nil, true)
@@ -241,7 +250,7 @@ func (c *campaigns) Countries(campaignID uint) (map[string]int, error) {
 		return nil, err
 	}
 
-	var respData map[string]int
+	var respData map[string]uint
 	if err := json.Unmarshal(body, &respData); err != nil {
 		return nil, &SendpulseError{http.StatusOK, path, string(body), err.Error()}
 	}
