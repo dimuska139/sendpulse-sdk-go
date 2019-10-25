@@ -55,6 +55,27 @@ type CampaignStatisticsCounts struct {
 	Explain string
 }
 
+type MessageInfo struct {
+	SenderName  string
+	SenderEmail string
+	Subject     string
+	Body        string
+	ListID      interface{}
+	Attachments string
+}
+
+type CampaignInfo struct {
+	ID                string
+	Name              string
+	Message           MessageInfo
+	Status            string
+	AllEmailQty       uint
+	TariffEmailQty    string
+	PaidEmailQty      string
+	OverdraftPrice    uint
+	OverdraftCurrency string
+}
+
 type CampaignFullInfo struct {
 	ID                uint
 	Name              string
@@ -70,7 +91,18 @@ type CampaignFullInfo struct {
 	Permalink         string
 }
 
-// Only 4 mailing per hour
+type Task struct {
+	ID     uint   `json:"task_id"`
+	Name   string `json:"task_name"`
+	Status uint   `json:"task_status"`
+}
+
+type ReferralsStatistics struct {
+	Link  string
+	Count uint
+}
+
+// Limit: 4 mailing per hour
 func (c *campaigns) Create(campaignData CreateCampaignData) (*CreatedCampaignData, error) {
 	path := "/campaigns"
 
@@ -115,7 +147,7 @@ func (c *campaigns) Create(campaignData CreateCampaignData) (*CreatedCampaignDat
 	if err != nil {
 		return nil, err
 	}
-
+	fmt.Println(body)
 	var createdCampaign CreatedCampaignData
 	if err := json.Unmarshal(body, &createdCampaign); err != nil {
 		return nil, &SendpulseError{http.StatusOK, path, string(body), err.Error()}
@@ -161,20 +193,76 @@ func (c *campaigns) Get(campaignID string) (*CampaignFullInfo, error) {
 	return &info, err
 }
 
-func (c *campaigns) List(limit uint, offset uint) (*[]Book, error) {
+func (c *campaigns) List(limit uint, offset uint) ([]CampaignInfo, error) {
+	path := "/campaigns"
+	data := map[string]interface{}{
+		"limit":  fmt.Sprint(limit),
+		"offset": fmt.Sprint(offset),
+	}
+	body, err := c.Client.makeRequest(path, "GET", data, true)
 
+	if err != nil {
+		return nil, err
+	}
+
+	var respData []CampaignInfo
+	if err := json.Unmarshal(body, &respData); err != nil {
+		return nil, &SendpulseError{http.StatusOK, path, string(body), err.Error()}
+	}
+
+	return respData, nil
 }
 
-func (c *campaigns) ListByBook(bookID uint, limit uint, offset uint) (*[]Book, error) {
+func (c *campaigns) ListByBook(bookID uint, limit uint, offset uint) ([]Task, error) {
+	path := fmt.Sprintf("/addressbooks/%d/campaigns", bookID)
+	data := map[string]interface{}{
+		"limit":  fmt.Sprint(limit),
+		"offset": fmt.Sprint(offset),
+	}
 
+	body, err := c.Client.makeRequest(path, "GET", data, true)
+	if err != nil {
+		return nil, err
+	}
+
+	var respData []Task
+	if err := json.Unmarshal(body, &respData); err != nil {
+		return nil, &SendpulseError{http.StatusOK, path, string(body), err.Error()}
+	}
+
+	return respData, nil
 }
 
 func (c *campaigns) Countries(campaignID uint) (map[string]int, error) {
+	path := fmt.Sprintf("/campaigns/%d/countries", campaignID)
 
+	body, err := c.Client.makeRequest(path, "GET", nil, true)
+	if err != nil {
+		return nil, err
+	}
+
+	var respData map[string]int
+	if err := json.Unmarshal(body, &respData); err != nil {
+		return nil, &SendpulseError{http.StatusOK, path, string(body), err.Error()}
+	}
+
+	return respData, nil
 }
 
-func (c *campaigns) Referrals(campaignID uint) (*[]Book, error) {
+func (c *campaigns) Referrals(campaignID uint) ([]ReferralsStatistics, error) {
+	path := fmt.Sprintf("/campaigns/%d/referrals", campaignID)
 
+	body, err := c.Client.makeRequest(path, "GET", nil, true)
+	if err != nil {
+		return nil, err
+	}
+
+	var respData []ReferralsStatistics
+	if err := json.Unmarshal(body, &respData); err != nil {
+		return nil, &SendpulseError{http.StatusOK, path, string(body), err.Error()}
+	}
+
+	return respData, nil
 }
 
 func (c *campaigns) Delete(campaignID uint) error {

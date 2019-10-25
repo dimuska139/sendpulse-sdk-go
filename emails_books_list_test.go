@@ -55,7 +55,7 @@ func TestBooks_List_Success(t *testing.T) {
 	responseBooks, err := spClient.Emails.Books.List(0, 10)
 	assert.NoError(t, err)
 
-	assert.Equal(t, books, *responseBooks)
+	assert.Equal(t, books, responseBooks)
 }
 
 func TestBooks_List_BadJson(t *testing.T) {

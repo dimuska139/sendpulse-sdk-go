@@ -99,7 +99,7 @@ func (b *books) Update(addressBookId uint, name string) error {
 	return nil
 }
 
-func (b *books) List(limit uint, offset uint) (*[]Book, error) {
+func (b *books) List(limit uint, offset uint) ([]Book, error) {
 	path := "/addressbooks"
 	data := map[string]interface{}{
 		"limit":  fmt.Sprint(limit),
@@ -116,7 +116,7 @@ func (b *books) List(limit uint, offset uint) (*[]Book, error) {
 		return nil, &SendpulseError{http.StatusOK, path, string(body), err.Error()}
 	}
 
-	return &respData, nil
+	return respData, nil
 }
 
 func (b *books) Get(addressBookId uint) (*Book, error) {
