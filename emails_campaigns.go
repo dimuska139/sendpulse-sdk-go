@@ -5,11 +5,22 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 	"time"
 )
 
 type campaigns struct {
 	Client *client
+}
+
+type createdCampaignDataRaw struct {
+	ID                interface{} `json:"id"`
+	Status            interface{} `json:"status"`
+	Count             interface{} `json:"count"`
+	TariffEmailQty    interface{} `json:"tariff_email_qty"`
+	PaidEmailQty      interface{} `json:"paid_email_qty"`
+	OverdraftPrice    interface{} `json:"overdraft_price"`
+	OverdraftCurrency string      `json:"ovedraft_currency"`
 }
 
 type CreateCampaignData struct {
@@ -25,7 +36,7 @@ type CreateCampaignData struct {
 	SendDate     time.Time
 	Name         string
 	Attachments  map[string]string
-	Type         string
+	IsDraft      bool
 }
 
 type CreatedCampaignData struct {
@@ -83,12 +94,6 @@ type CampaignFullInfo struct {
 	Permalink  string
 }
 
-type campaignStatisticsCountsRaw struct {
-	Code    interface{}
-	Count   interface{}
-	Explain string
-}
-
 type messageInfoRaw struct {
 	SenderName  string
 	SenderEmail string
@@ -108,13 +113,6 @@ type campaignInfoRaw struct {
 	PaidEmailQty      interface{}
 	OverdraftPrice    interface{}
 	OverdraftCurrency string
-}
-
-type campaignFullInfoRaw struct {
-	campaignInfoRaw
-	Statistics []campaignStatisticsCountsRaw
-	SendDate   time.Time
-	Permalink  string
 }
 
 type Task struct {
@@ -141,19 +139,14 @@ func (c *campaigns) Create(campaignData CreateCampaignData) (*CreatedCampaignDat
 		"list_id":      campaignData.ListID,
 		"segment_id":   campaignData.SegmentID,
 		"attachments":  campaignData.Attachments,
-		"type":         campaignData.Type,
+	}
+
+	if campaignData.IsDraft {
+		data["type"] = "draft"
 	}
 
 	if campaignData.BodyAMP != "" {
 		data["body_amp"] = b64.StdEncoding.EncodeToString([]byte(campaignData.BodyAMP))
-	}
-
-	if len(campaignData.SendTestOnly) != 0 {
-		encoded, err := json.Marshal(campaignData.SendTestOnly)
-		if err != nil {
-			return nil, err
-		}
-		data["send_test_only"] = encoded
 	}
 
 	if !campaignData.SendDate.IsZero() {
@@ -167,6 +160,8 @@ func (c *campaigns) Create(campaignData CreateCampaignData) (*CreatedCampaignDat
 	method := "POST"
 	if len(campaignData.SendTestOnly) != 0 {
 		method = "PATCH"
+		encoded, _ := json.Marshal(campaignData.SendTestOnly)
+		data["send_test_only"] = encoded
 	}
 
 	body, err := c.Client.makeRequest(fmt.Sprintf(path), method, data, true)
@@ -174,50 +169,17 @@ func (c *campaigns) Create(campaignData CreateCampaignData) (*CreatedCampaignDat
 		return nil, err
 	}
 
-	type createdCampaignDataRaw struct {
-		ID                interface{}
-		Status            interface{}
-		Count             interface{}
-		TariffEmailQty    interface{}
-		PaidEmailQty      interface{}
-		OverdraftPrice    interface{}
-		OverdraftCurrency string
-	}
-
 	var raw createdCampaignDataRaw
 	if err := json.Unmarshal(body, &raw); err != nil {
 		return nil, &SendpulseError{http.StatusOK, path, string(body), err.Error()}
 	}
 
-	id, ok := raw.ID.(int)
-	if !ok {
-		return nil, fmt.Errorf("can not convert %s (id) to int", raw.ID)
-	}
-
-	status, ok := raw.Status.(int)
-	if !ok {
-		return nil, fmt.Errorf("can not convert %s (status) to int", raw.Status)
-	}
-
-	count, ok := raw.Count.(int)
-	if !ok {
-		return nil, fmt.Errorf("can not convert %s (count) to int", raw.Count)
-	}
-
-	tariffEmailQty, ok := raw.TariffEmailQty.(int)
-	if !ok {
-		return nil, fmt.Errorf("can not convert %s (tariff_email_qty) to int", raw.TariffEmailQty)
-	}
-
-	paidEmailQty, ok := raw.PaidEmailQty.(int)
-	if !ok {
-		return nil, fmt.Errorf("can not convert %s (paid_email_qty) to int", raw.PaidEmailQty)
-	}
-
-	overdraftPrice, ok := raw.OverdraftPrice.(int)
-	if !ok {
-		return nil, fmt.Errorf("can not convert %s (overdraft_price) to int", raw.OverdraftPrice)
-	}
+	id, _ := strconv.Atoi(fmt.Sprint(raw.ID))
+	status, _ := strconv.Atoi(fmt.Sprint(raw.Status))
+	count, _ := strconv.Atoi(fmt.Sprint(raw.Count))
+	tariffEmailQty, _ := strconv.Atoi(fmt.Sprint(raw.TariffEmailQty))
+	paidEmailQty, _ := strconv.Atoi(fmt.Sprint(raw.PaidEmailQty))
+	overdraftPrice, _ := strconv.Atoi(fmt.Sprint(raw.OverdraftPrice))
 
 	createdCampaign := CreatedCampaignData{
 		ID:                id,
@@ -297,40 +259,13 @@ func (c *campaigns) List(limit int, offset int) ([]CampaignInfo, error) {
 
 	var campaignsList []CampaignInfo
 	for _, raw := range respData {
-		id, ok := raw.ID.(int)
-		if !ok {
-			return nil, fmt.Errorf("can not convert %s (id) to int", raw.ID)
-		}
-
-		status, ok := raw.Status.(int)
-		if !ok {
-			return nil, fmt.Errorf("can not convert %s (status) to int", raw.Status)
-		}
-
-		allEmailQty, ok := raw.AllEmailQty.(int)
-		if !ok {
-			return nil, fmt.Errorf("can not convert %s (all_email_qty) to int", raw.AllEmailQty)
-		}
-
-		tariffEmailQty, ok := raw.TariffEmailQty.(int)
-		if !ok {
-			return nil, fmt.Errorf("can not convert %s (tariff_email_qty) to int", raw.TariffEmailQty)
-		}
-
-		paidEmailQty, ok := raw.PaidEmailQty.(int)
-		if !ok {
-			return nil, fmt.Errorf("can not convert %s (paid_email_qty) to int", raw.PaidEmailQty)
-		}
-
-		overdraftPrice, ok := raw.OverdraftPrice.(int)
-		if !ok {
-			return nil, fmt.Errorf("can not convert %s (overdraft_price) to int", raw.OverdraftPrice)
-		}
-
-		listID, ok := raw.Message.ListID.(int)
-		if !ok {
-			return nil, fmt.Errorf("can not convert %s (list_id) to int", raw.Message.ListID)
-		}
+		id, _ := strconv.Atoi(fmt.Sprint(raw.ID))
+		status, _ := strconv.Atoi(fmt.Sprint(raw.Status))
+		allEmailQty, _ := strconv.Atoi(fmt.Sprint(raw.AllEmailQty))
+		tariffEmailQty, _ := strconv.Atoi(fmt.Sprint(raw.TariffEmailQty))
+		paidEmailQty, _ := strconv.Atoi(fmt.Sprint(raw.PaidEmailQty))
+		overdraftPrice, _ := strconv.Atoi(fmt.Sprint(raw.OverdraftPrice))
+		listID, _ := strconv.Atoi(fmt.Sprint(raw.Message.ListID))
 
 		campaignsList = append(campaignsList, CampaignInfo{
 			ID:   id,

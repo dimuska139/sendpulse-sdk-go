@@ -10,7 +10,7 @@ import (
 )
 
 func TestBooks_Update_BadJson(t *testing.T) {
-	var bookId uint = 1
+	var bookId int = 1
 	apiUid := fake.CharactersN(50)
 	apiSecret := fake.CharactersN(50)
 
@@ -42,7 +42,7 @@ func TestBooks_Update_BadJson(t *testing.T) {
 }
 
 func TestBooks_Update_InvalidResponse(t *testing.T) {
-	var bookId uint = 1
+	var bookId int = 1
 	apiUid := fake.CharactersN(50)
 	apiSecret := fake.CharactersN(50)
 
@@ -74,7 +74,7 @@ func TestBooks_Update_InvalidResponse(t *testing.T) {
 }
 
 func TestBooks_Update_Error(t *testing.T) {
-	var bookId uint = 1
+	var bookId int = 1
 	apiUid := fake.CharactersN(50)
 	apiSecret := fake.CharactersN(50)
 
@@ -106,7 +106,7 @@ func TestBooks_Update_Error(t *testing.T) {
 }
 
 func TestBooks_Update_Success(t *testing.T) {
-	var bookId uint = 1
+	var bookId int = 1
 	apiUid := fake.CharactersN(50)
 	apiSecret := fake.CharactersN(50)
 

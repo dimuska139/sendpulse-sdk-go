@@ -5,32 +5,52 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"strconv"
+	"time"
 )
 
 type books struct {
 	Client *client
 }
 
+type bookRaw struct {
+	ID               interface{} `json:"id"`
+	Name             string      `json:"name"`
+	AllEmailQty      interface{} `json:"all_email_qty"`
+	ActiveEmailQty   interface{} `json:"active_email_qty"`
+	InactiveEmailQty interface{} `json:"inactive_email_qty"`
+	CreationDate     time.Time   `json:"creationdate"`
+	Status           interface{} `json:"status"`
+	StatusExplain    string      `json:"status_explain"`
+}
+
 type Book struct {
-	ID               uint   `json:"id"`
-	Name             string `json:"name"`
-	AllEmailQty      uint   `json:"all_email_qty"`
-	ActiveEmailQty   uint   `json:"active_email_qty"`
-	InactiveEmailQty uint   `json:"inactive_email_qty"`
-	CreationDate     string `json:"creationdate"`
-	Status           uint   `json:"status"`
-	StatusExplain    string `json:"status_explain"`
+	ID               int       `json:"id"`
+	Name             string    `json:"name"`
+	AllEmailQty      int       `json:"all_email_qty"`
+	ActiveEmailQty   int       `json:"active_email_qty"`
+	InactiveEmailQty int       `json:"inactive_email_qty"`
+	CreationDate     time.Time `json:"creationdate"`
+	Status           int       `json:"status"`
+	StatusExplain    string    `json:"status_explain"`
 }
 
 type Variable struct {
 	Name  string
 	Type  string
-	Value string
+	Value interface{}
+}
+
+type contactRaw struct {
+	Email         string
+	Status        interface{}
+	StatusExplain string
+	Variables     []Variable
 }
 
 type Contact struct {
 	Email         string
-	Status        string
+	Status        int
 	StatusExplain string
 	Variables     []Variable
 }
@@ -38,6 +58,16 @@ type Contact struct {
 type Email struct {
 	Email     string                 `json:"email"`
 	Variables map[string]interface{} `json:"variables"`
+}
+
+type campaignCostRaw struct {
+	Cur                       string
+	SentEmailsQty             interface{}
+	OverdraftAllEmailsPrice   interface{}
+	AddressesDeltaFromBalance interface{}
+	AddressesDeltaFromTariff  interface{}
+	MaxEmailsPerTask          interface{}
+	Result                    bool
 }
 
 type CampaignCost struct {
@@ -50,7 +80,7 @@ type CampaignCost struct {
 	Result                    bool
 }
 
-func (b *books) Create(addressBookName string) (*uint, error) {
+func (b *books) Create(addressBookName string) (*int, error) {
 	path := "/addressbooks"
 
 	data := map[string]interface{}{
@@ -61,7 +91,7 @@ func (b *books) Create(addressBookName string) (*uint, error) {
 		return nil, err
 	}
 
-	var respData map[string]uint
+	var respData map[string]int
 	if err := json.Unmarshal(body, &respData); err != nil {
 		return nil, &SendpulseError{http.StatusOK, path, string(body), err.Error()}
 	}
@@ -74,7 +104,7 @@ func (b *books) Create(addressBookName string) (*uint, error) {
 	return &createdBookId, err
 }
 
-func (b *books) Update(addressBookId uint, name string) error {
+func (b *books) Update(addressBookId int, name string) error {
 	path := fmt.Sprintf("/addressbooks/%d", addressBookId)
 
 	data := map[string]interface{}{
@@ -99,7 +129,7 @@ func (b *books) Update(addressBookId uint, name string) error {
 	return nil
 }
 
-func (b *books) List(limit uint, offset uint) ([]Book, error) {
+func (b *books) List(limit int, offset int) ([]Book, error) {
 	path := "/addressbooks"
 	data := map[string]interface{}{
 		"limit":  fmt.Sprint(limit),
@@ -111,15 +141,34 @@ func (b *books) List(limit uint, offset uint) ([]Book, error) {
 		return nil, err
 	}
 
-	var respData []Book
+	var respData []bookRaw
 	if err := json.Unmarshal(body, &respData); err != nil {
 		return nil, &SendpulseError{http.StatusOK, path, string(body), err.Error()}
 	}
 
-	return respData, nil
+	var books []Book
+	for _, raw := range respData {
+		id, _ := strconv.Atoi(fmt.Sprint(raw.ID))
+		allEmailQty, _ := strconv.Atoi(fmt.Sprint(raw.AllEmailQty))
+		activeEmailQty, _ := strconv.Atoi(fmt.Sprint(raw.ActiveEmailQty))
+		inactiveEmailQty, _ := strconv.Atoi(fmt.Sprint(raw.InactiveEmailQty))
+		status, _ := strconv.Atoi(fmt.Sprint(raw.Status))
+		books = append(books, Book{
+			ID:               id,
+			Name:             raw.Name,
+			AllEmailQty:      allEmailQty,
+			ActiveEmailQty:   activeEmailQty,
+			InactiveEmailQty: inactiveEmailQty,
+			CreationDate:     raw.CreationDate,
+			Status:           status,
+			StatusExplain:    raw.StatusExplain,
+		})
+	}
+
+	return books, nil
 }
 
-func (b *books) Get(addressBookId uint) (*Book, error) {
+func (b *books) Get(addressBookId int) (*Book, error) {
 	path := fmt.Sprintf("/addressbooks/%d", addressBookId)
 	body, err := b.Client.makeRequest(path, "GET", nil, true)
 
@@ -127,15 +176,31 @@ func (b *books) Get(addressBookId uint) (*Book, error) {
 		return nil, err
 	}
 
-	var respData []Book
+	var respData []bookRaw
 	if err := json.Unmarshal(body, &respData); err != nil {
 		return nil, &SendpulseError{http.StatusOK, path, string(body), err.Error()}
 	}
 
-	return &respData[0], err
+	id, _ := strconv.Atoi(fmt.Sprint(respData[0].ID))
+	allEmailQty, _ := strconv.Atoi(fmt.Sprint(respData[0].AllEmailQty))
+	activeEmailQty, _ := strconv.Atoi(fmt.Sprint(respData[0].ActiveEmailQty))
+	inactiveEmailQty, _ := strconv.Atoi(fmt.Sprint(respData[0].InactiveEmailQty))
+	status, _ := strconv.Atoi(fmt.Sprint(respData[0].Status))
+	book := Book{
+		ID:               id,
+		Name:             respData[0].Name,
+		AllEmailQty:      allEmailQty,
+		ActiveEmailQty:   activeEmailQty,
+		InactiveEmailQty: inactiveEmailQty,
+		CreationDate:     respData[0].CreationDate,
+		Status:           status,
+		StatusExplain:    respData[0].StatusExplain,
+	}
+
+	return &book, err
 }
 
-func (b *books) Variables(addressBookId uint) ([]Variable, error) {
+func (b *books) Variables(addressBookId int) ([]Variable, error) {
 	path := fmt.Sprintf("/addressbooks/%d/variables", addressBookId)
 	body, err := b.Client.makeRequest(path, "GET", nil, true)
 
@@ -151,7 +216,7 @@ func (b *books) Variables(addressBookId uint) ([]Variable, error) {
 	return variables, err
 }
 
-func (b *books) Emails(addressBookId uint, limit uint, offset uint) ([]Contact, error) {
+func (b *books) Emails(addressBookId int, limit int, offset int) ([]Contact, error) {
 	path := fmt.Sprintf("/addressbooks/%d/emails", addressBookId)
 
 	data := map[string]interface{}{
@@ -164,15 +229,25 @@ func (b *books) Emails(addressBookId uint, limit uint, offset uint) ([]Contact, 
 		return nil, err
 	}
 
-	var contacts []Contact
-	if err := json.Unmarshal(body, &contacts); err != nil {
+	var contactsRaw []contactRaw
+	if err := json.Unmarshal(body, &contactsRaw); err != nil {
 		return nil, &SendpulseError{http.StatusOK, path, string(body), err.Error()}
 	}
 
+	var contacts []Contact
+	for _, raw := range contactsRaw {
+		status, _ := strconv.Atoi(fmt.Sprint(raw.Status))
+		contacts = append(contacts, Contact{
+			Email:         raw.Email,
+			Status:        status,
+			StatusExplain: raw.StatusExplain,
+			Variables:     raw.Variables,
+		})
+	}
 	return contacts, err
 }
 
-func (b *books) EmailsTotal(addressBookId uint) (uint, error) {
+func (b *books) EmailsTotal(addressBookId int) (int, error) {
 	path := fmt.Sprintf("/addressbooks/%d/emails/total", addressBookId)
 
 	body, err := b.Client.makeRequest(fmt.Sprintf(path), "GET", nil, true)
@@ -190,7 +265,7 @@ func (b *books) EmailsTotal(addressBookId uint) (uint, error) {
 		return 0, &SendpulseError{http.StatusOK, path, string(body), "'total' not found in response"}
 	}
 
-	return uint(total.(float64)), nil
+	return int(total.(float64)), nil
 }
 
 /**
@@ -201,7 +276,7 @@ Known limitations:
 -- Sendpulse rejects requests with html tags an \r symbols
 -- Sendpulse don't remove previous user variables if user already added to address book before
 */
-func (b *books) AddEmails(addressBookId uint, notifications []Email, additionalParams map[string]string, senderEmail string) error {
+func (b *books) AddEmails(addressBookId int, notifications []Email, additionalParams map[string]string, senderEmail string) error {
 	path := fmt.Sprintf("/addressbooks/%d/emails", addressBookId)
 
 	encoded, err := json.Marshal(notifications)
@@ -242,7 +317,7 @@ func (b *books) AddEmails(addressBookId uint, notifications []Email, additionalP
 	return nil
 }
 
-func (b *books) DeleteEmails(addressBookId uint, emailsList []string) error {
+func (b *books) DeleteEmails(addressBookId int, emailsList []string) error {
 	path := fmt.Sprintf("/addressbooks/%d/emails", addressBookId)
 
 	encoded, err := json.Marshal(emailsList)
@@ -269,7 +344,7 @@ func (b *books) DeleteEmails(addressBookId uint, emailsList []string) error {
 	return nil
 }
 
-func (b *books) Delete(addressBookId uint) error {
+func (b *books) Delete(addressBookId int) error {
 	path := fmt.Sprintf("/addressbooks/%d", addressBookId)
 	body, err := b.Client.makeRequest(path, "DELETE", nil, true)
 	if err != nil {
@@ -286,7 +361,7 @@ func (b *books) Delete(addressBookId uint) error {
 	return nil
 }
 
-func (b *books) CampaignCost(addressBookId uint) (*CampaignCost, error) {
+func (b *books) CampaignCost(addressBookId int) (*CampaignCost, error) {
 	path := fmt.Sprintf("/addressbooks/%d/cost", addressBookId)
 
 	body, err := b.Client.makeRequest(fmt.Sprintf(path), "GET", nil, true)
@@ -294,10 +369,25 @@ func (b *books) CampaignCost(addressBookId uint) (*CampaignCost, error) {
 		return nil, err
 	}
 
-	var respData CampaignCost
+	var respData campaignCostRaw
 	if err := json.Unmarshal(body, &respData); err != nil {
 		return nil, &SendpulseError{http.StatusOK, path, string(body), err.Error()}
 	}
 
-	return &respData, err
+	sentEmailsQty, _ := strconv.Atoi(fmt.Sprint(respData.SentEmailsQty))
+	overdraftAllEmailsPrice, _ := strconv.Atoi(fmt.Sprint(respData.OverdraftAllEmailsPrice))
+	addressesDeltaFromBalance, _ := strconv.Atoi(fmt.Sprint(respData.AddressesDeltaFromBalance))
+	addressesDeltaFromTariff, _ := strconv.Atoi(fmt.Sprint(respData.AddressesDeltaFromTariff))
+	maxEmailsPerTask, _ := strconv.Atoi(fmt.Sprint(respData.MaxEmailsPerTask))
+	cost := CampaignCost{
+		Cur:                       respData.Cur,
+		SentEmailsQty:             sentEmailsQty,
+		OverdraftAllEmailsPrice:   overdraftAllEmailsPrice,
+		AddressesDeltaFromBalance: addressesDeltaFromBalance,
+		AddressesDeltaFromTariff:  addressesDeltaFromTariff,
+		MaxEmailsPerTask:          maxEmailsPerTask,
+		Result:                    false,
+	}
+
+	return &cost, err
 }

@@ -10,7 +10,7 @@ import (
 )
 
 func TestBooks_Emails_Total_BadJson(t *testing.T) {
-	var bookId uint = 1
+	var bookId int = 1
 	apiUid := fake.CharactersN(50)
 	apiSecret := fake.CharactersN(50)
 
@@ -38,11 +38,11 @@ func TestBooks_Emails_Total_BadJson(t *testing.T) {
 	assert.Error(t, err)
 	_, isResponseError := err.(*SendpulseError)
 	assert.True(t, isResponseError)
-	assert.Equal(t, uint(0), total)
+	assert.Equal(t, 0, total)
 }
 
 func TestBooks_Emails_Total_Error(t *testing.T) {
-	var bookId uint = 1
+	var bookId int = 1
 	apiUid := fake.CharactersN(50)
 	apiSecret := fake.CharactersN(50)
 
@@ -70,11 +70,11 @@ func TestBooks_Emails_Total_Error(t *testing.T) {
 	assert.Error(t, err)
 	_, isResponseError := err.(*SendpulseError)
 	assert.True(t, isResponseError)
-	assert.Equal(t, uint(0), total)
+	assert.Equal(t, 0, total)
 }
 
 func TestBooks_Emails_Total_InvalidResponse(t *testing.T) {
-	var bookId uint = 1
+	var bookId int = 1
 	apiUid := fake.CharactersN(50)
 	apiSecret := fake.CharactersN(50)
 
@@ -100,12 +100,12 @@ func TestBooks_Emails_Total_InvalidResponse(t *testing.T) {
 	assert.Error(t, err)
 	_, isResponseError := err.(*SendpulseError)
 	assert.True(t, isResponseError)
-	assert.Equal(t, uint(0), total)
+	assert.Equal(t, 0, total)
 }
 
 func TestBooks_Emails_Total_Success(t *testing.T) {
-	var bookId uint = 1
-	var expectedTotal uint = 12345
+	var bookId int = 1
+	var expectedTotal int = 12345
 	apiUid := fake.CharactersN(50)
 	apiSecret := fake.CharactersN(50)
 
