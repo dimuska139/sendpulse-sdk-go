@@ -10,27 +10,22 @@ import (
 	"testing"
 )
 
-func TestBooks_Get_Success(t *testing.T) {
+func TestCampaigns_Countries_Success(t *testing.T) {
+	campaignID := 1
+
 	apiUid := fake.CharactersN(50)
 	apiSecret := fake.CharactersN(50)
 
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
-	books := []Book{
-		{
-			ID:               1,
-			Name:             fake.CharactersN(10),
-			AllEmailQty:      1,
-			ActiveEmailQty:   0,
-			InactiveEmailQty: 10,
-			Status:           0,
-			StatusExplain:    "Active",
-		},
-	}
-	encoded, _ := json.Marshal(books)
+	data := make(map[string]int)
+	data["UA"] = 23
+	data["RU"] = 34567
 
-	httpmock.RegisterResponder("GET", fmt.Sprintf("%s/addressbooks/%d", apiBaseUrl, books[0].ID),
+	encoded, _ := json.Marshal(data)
+
+	httpmock.RegisterResponder("GET", fmt.Sprintf("%s/campaigns/%d/countries", apiBaseUrl, campaignID),
 		httpmock.NewStringResponder(http.StatusOK, string(encoded)))
 
 	config := Config{
@@ -41,19 +36,13 @@ func TestBooks_Get_Success(t *testing.T) {
 	spClient, _ := ApiClient(config)
 	spClient.client.token = fake.Word()
 
-	book, err := spClient.Emails.Books.Get(books[0].ID)
+	stat, err := spClient.Emails.Campaigns.Countries(campaignID)
 	assert.NoError(t, err)
-
-	assert.Equal(t, books[0], *book)
+	assert.Equal(t, data, stat)
 }
 
-func TestBooks_Get_BadJson(t *testing.T) {
-	respBody := `Invalid json`
-
-	notExistingBookID := 1
-
-	path := fmt.Sprintf("/addressbooks/%d", notExistingBookID)
-	url := apiBaseUrl + path
+func TestCampaigns_Countries_BadJson(t *testing.T) {
+	campaignID := 1
 
 	apiUid := fake.CharactersN(50)
 	apiSecret := fake.CharactersN(50)
@@ -61,8 +50,8 @@ func TestBooks_Get_BadJson(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
-	httpmock.RegisterResponder("GET", url,
-		httpmock.NewStringResponder(http.StatusOK, respBody))
+	httpmock.RegisterResponder("GET", fmt.Sprintf("%s/campaigns/%d/countries", apiBaseUrl, campaignID),
+		httpmock.NewStringResponder(http.StatusOK, `Invalid json`))
 
 	config := Config{
 		UserID:  apiUid,
@@ -72,17 +61,14 @@ func TestBooks_Get_BadJson(t *testing.T) {
 	spClient, _ := ApiClient(config)
 	spClient.client.token = fake.Word()
 
-	_, err := spClient.Emails.Books.Get(notExistingBookID)
+	_, err := spClient.Emails.Campaigns.Countries(campaignID)
 	assert.Error(t, err)
 	_, isResponseError := err.(*SendpulseError)
 	assert.True(t, isResponseError)
 }
 
-func TestBooks_Get_Error(t *testing.T) {
-	notExistingBookID := 1
-
-	path := fmt.Sprintf("/addressbooks/%d", notExistingBookID)
-	url := apiBaseUrl + path
+func TestCampaigns_Countries_Error(t *testing.T) {
+	campaignID := 1
 
 	apiUid := fake.CharactersN(50)
 	apiSecret := fake.CharactersN(50)
@@ -90,7 +76,7 @@ func TestBooks_Get_Error(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
-	httpmock.RegisterResponder("GET", url,
+	httpmock.RegisterResponder("GET", fmt.Sprintf("%s/campaigns/%d/countries", apiBaseUrl, campaignID),
 		httpmock.NewStringResponder(http.StatusBadRequest, ""))
 
 	config := Config{
@@ -101,7 +87,7 @@ func TestBooks_Get_Error(t *testing.T) {
 	spClient, _ := ApiClient(config)
 	spClient.client.token = fake.Word()
 
-	_, err := spClient.Emails.Books.Get(notExistingBookID)
+	_, err := spClient.Emails.Campaigns.Countries(campaignID)
 	assert.Error(t, err)
 	_, isResponseError := err.(*SendpulseError)
 	assert.True(t, isResponseError)

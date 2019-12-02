@@ -109,7 +109,7 @@ func TestBooks_Create_Error(t *testing.T) {
 
 func TestBooks_Create_Success(t *testing.T) {
 	bookName := fake.Word()
-	var newBookId uint = 1
+	var newBookId int = 1
 	apiUid := fake.CharactersN(50)
 	apiSecret := fake.CharactersN(50)
 

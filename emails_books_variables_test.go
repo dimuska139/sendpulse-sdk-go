@@ -33,7 +33,7 @@ func TestBooks_Variables_BadJson(t *testing.T) {
 	spClient, _ := ApiClient(config)
 	spClient.client.token = fake.Word()
 
-	_, err := spClient.Emails.Books.Variables(uint(bookID))
+	_, err := spClient.Emails.Books.Variables(bookID)
 	assert.Error(t, err)
 	_, isResponseError := err.(*SendpulseError)
 	assert.True(t, isResponseError)
@@ -63,7 +63,7 @@ func TestBooks_Variables_Error(t *testing.T) {
 	spClient, _ := ApiClient(config)
 	spClient.client.token = fake.Word()
 
-	_, err := spClient.Emails.Books.Variables(uint(bookID))
+	_, err := spClient.Emails.Books.Variables(bookID)
 	assert.Error(t, err)
 	_, isResponseError := err.(*SendpulseError)
 	assert.True(t, isResponseError)
@@ -110,7 +110,7 @@ func TestBooks_Variables_Success(t *testing.T) {
 	spClient, _ := ApiClient(config)
 	spClient.client.token = fake.Word()
 
-	variables, err := spClient.Emails.Books.Variables(uint(bookID))
+	variables, err := spClient.Emails.Books.Variables(bookID)
 	assert.NoError(t, err)
 	assert.Equal(t, 4, len(variables))
 }

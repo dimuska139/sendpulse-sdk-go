@@ -10,12 +10,12 @@ import (
 )
 
 func TestBooks_Emails_BadJson(t *testing.T) {
-	var bookId uint = 1
+	var bookId int = 1
 	apiUid := fake.CharactersN(50)
 	apiSecret := fake.CharactersN(50)
 
-	var limit uint = 10
-	var offset uint = 0
+	var limit int = 10
+	var offset int = 0
 	url := fmt.Sprintf("%s/addressbooks/%d/emails", apiBaseUrl, bookId)
 
 	httpmock.Activate()
@@ -42,12 +42,12 @@ func TestBooks_Emails_BadJson(t *testing.T) {
 }
 
 func TestBooks_Emails_Error(t *testing.T) {
-	var bookId uint = 1
+	var bookId int = 1
 	apiUid := fake.CharactersN(50)
 	apiSecret := fake.CharactersN(50)
 
-	var limit uint = 10
-	var offset uint = 0
+	var limit int = 10
+	var offset int = 0
 	url := fmt.Sprintf("%s/addressbooks/%d/emails?limit=%d&offset=%d", apiBaseUrl, bookId, limit, offset)
 
 	httpmock.Activate()
@@ -110,12 +110,12 @@ func TestBooks_Emails_Error(t *testing.T) {
 }
 
 func TestBooks_Emails_Success(t *testing.T) {
-	var bookId uint = 1
+	var bookId int = 1
 	apiUid := fake.CharactersN(50)
 	apiSecret := fake.CharactersN(50)
 
-	var limit uint = 10
-	var offset uint = 0
+	var limit int = 10
+	var offset int = 0
 	url := fmt.Sprintf("%s/addressbooks/%d/emails?limit=%d&offset=%d", apiBaseUrl, bookId, limit, offset)
 
 	httpmock.Activate()

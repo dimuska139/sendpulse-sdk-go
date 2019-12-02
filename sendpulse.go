@@ -14,12 +14,14 @@ func ApiClient(config Config) (*SendpulseClient, error) {
 
 	b := books{c}
 	automation := automation360{c}
+	camp := campaigns{c}
 
 	spClient := &SendpulseClient{
 		client: c,
 		Emails: Emails{
 			Books:         b,
 			Automation360: automation,
+			Campaigns:     camp,
 		},
 	}
 

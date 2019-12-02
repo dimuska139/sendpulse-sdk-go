@@ -44,7 +44,7 @@ func TestBooks_AddEmails_BadJson(t *testing.T) {
 	spClient, _ := ApiClient(config)
 	spClient.client.token = fake.Word()
 
-	err := spClient.Emails.Books.AddEmails(uint(addressBookId), emails, make(map[string]string), "")
+	err := spClient.Emails.Books.AddEmails(addressBookId, emails, make(map[string]string), "")
 	assert.Error(t, err)
 
 	_, isResponseError := err.(*SendpulseError)
@@ -87,7 +87,7 @@ func TestBooks_AddEmails_Success(t *testing.T) {
 		"param1": "value1",
 		"param2": "value2",
 	}
-	err := spClient.Emails.Books.AddEmails(uint(addressBookId), emails, extraParams, fake.EmailAddress())
+	err := spClient.Emails.Books.AddEmails(addressBookId, emails, extraParams, fake.EmailAddress())
 	assert.NoError(t, err)
 }
 
@@ -127,7 +127,7 @@ func TestBooks_AddEmails_InvalidResponse(t *testing.T) {
 		"param1": "value1",
 		"param2": "value2",
 	}
-	err := spClient.Emails.Books.AddEmails(uint(addressBookId), emails, extraParams, fake.EmailAddress())
+	err := spClient.Emails.Books.AddEmails(addressBookId, emails, extraParams, fake.EmailAddress())
 	assert.Error(t, err)
 
 	_, isResponseError := err.(*SendpulseError)
@@ -170,7 +170,7 @@ func TestBooks_AddEmails_Error(t *testing.T) {
 		"param1": "value1",
 		"param2": "value2",
 	}
-	err := spClient.Emails.Books.AddEmails(uint(addressBookId), emails, extraParams, fake.EmailAddress())
+	err := spClient.Emails.Books.AddEmails(addressBookId, emails, extraParams, fake.EmailAddress())
 	assert.Error(t, err)
 
 	_, isResponseError := err.(*SendpulseError)

@@ -7,14 +7,14 @@ import (
 	"gopkg.in/jarcoal/httpmock.v1"
 	"net/http"
 	"testing"
+	"time"
 )
 
-func TestBooks_DeleteEmails_BadJson(t *testing.T) {
-	var bookId int = 1
+func TestCampaigns_Update_BadJson(t *testing.T) {
 	apiUid := fake.CharactersN(50)
 	apiSecret := fake.CharactersN(50)
 
-	url := fmt.Sprintf("%s/addressbooks/%d/emails", apiBaseUrl, bookId)
+	url := fmt.Sprintf("%s/campaigns", apiBaseUrl)
 
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
@@ -23,7 +23,7 @@ func TestBooks_DeleteEmails_BadJson(t *testing.T) {
     	result": true
 	}`
 
-	httpmock.RegisterResponder("DELETE", url,
+	httpmock.RegisterResponder("PATCH", url,
 		httpmock.NewStringResponder(http.StatusOK, respBody))
 
 	config := Config{
@@ -34,19 +34,28 @@ func TestBooks_DeleteEmails_BadJson(t *testing.T) {
 	spClient, _ := ApiClient(config)
 	spClient.client.token = fake.Word()
 
-	err := spClient.Emails.Books.DeleteEmails(bookId, []string{fake.EmailAddress(), fake.EmailAddress()})
+	data := UpdateCampaignData{
+		ID:          1,
+		Name:        fake.Word(),
+		SenderName:  fake.MaleFirstName(),
+		SenderEmail: fake.EmailAddress(),
+		Subject:     fake.Word(),
+		Body:        fake.Word(),
+		TemplateID:  1,
+		SendDate:    time.Now(),
+	}
+	err := spClient.Emails.Campaigns.Update(data)
 
 	assert.Error(t, err)
 	_, isResponseError := err.(*SendpulseError)
 	assert.True(t, isResponseError)
 }
 
-func TestBooks_DeleteEmails_InvalidResponse(t *testing.T) {
-	var bookId int = 1
+func TestCampaigns_Update_InvalidResponse(t *testing.T) {
 	apiUid := fake.CharactersN(50)
 	apiSecret := fake.CharactersN(50)
 
-	url := fmt.Sprintf("%s/addressbooks/%d/emails", apiBaseUrl, bookId)
+	url := fmt.Sprintf("%s/campaigns", apiBaseUrl)
 
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
@@ -55,7 +64,7 @@ func TestBooks_DeleteEmails_InvalidResponse(t *testing.T) {
     	"strange_result": true
 	}`
 
-	httpmock.RegisterResponder("DELETE", url,
+	httpmock.RegisterResponder("PATCH", url,
 		httpmock.NewStringResponder(http.StatusOK, respBody))
 
 	config := Config{
@@ -66,29 +75,38 @@ func TestBooks_DeleteEmails_InvalidResponse(t *testing.T) {
 	spClient, _ := ApiClient(config)
 	spClient.client.token = fake.Word()
 
-	err := spClient.Emails.Books.DeleteEmails(bookId, []string{fake.EmailAddress(), fake.EmailAddress()})
+	data := UpdateCampaignData{
+		ID:          1,
+		Name:        fake.Word(),
+		SenderName:  fake.MaleFirstName(),
+		SenderEmail: fake.EmailAddress(),
+		Subject:     fake.Word(),
+		Body:        fake.Word(),
+		TemplateID:  1,
+		SendDate:    time.Now(),
+	}
+	err := spClient.Emails.Campaigns.Update(data)
 
 	assert.Error(t, err)
 	_, isResponseError := err.(*SendpulseError)
 	assert.True(t, isResponseError)
 }
 
-func TestBooks_DeleteEmails_Error(t *testing.T) {
-	var bookId int = 1
+func TestCampaigns_Update_Error(t *testing.T) {
 	apiUid := fake.CharactersN(50)
 	apiSecret := fake.CharactersN(50)
 
-	url := fmt.Sprintf("%s/addressbooks/%d/emails", apiBaseUrl, bookId)
+	url := fmt.Sprintf("%s/campaigns", apiBaseUrl)
 
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
 	respBody := `{
-    	"result": true
+    	"strange_result": true
 	}`
 
-	httpmock.RegisterResponder("DELETE", url,
-		httpmock.NewStringResponder(http.StatusInternalServerError, respBody))
+	httpmock.RegisterResponder("PATCH", url,
+		httpmock.NewStringResponder(http.StatusBadRequest, respBody))
 
 	config := Config{
 		UserID:  apiUid,
@@ -98,19 +116,28 @@ func TestBooks_DeleteEmails_Error(t *testing.T) {
 	spClient, _ := ApiClient(config)
 	spClient.client.token = fake.Word()
 
-	err := spClient.Emails.Books.DeleteEmails(bookId, []string{fake.EmailAddress(), fake.EmailAddress()})
+	data := UpdateCampaignData{
+		ID:          1,
+		Name:        fake.Word(),
+		SenderName:  fake.MaleFirstName(),
+		SenderEmail: fake.EmailAddress(),
+		Subject:     fake.Word(),
+		Body:        fake.Word(),
+		TemplateID:  1,
+		SendDate:    time.Now(),
+	}
+	err := spClient.Emails.Campaigns.Update(data)
 
 	assert.Error(t, err)
 	_, isResponseError := err.(*SendpulseError)
 	assert.True(t, isResponseError)
 }
 
-func TestBooks_DeleteEmails_Success(t *testing.T) {
-	var bookId int = 1
+func TestCampaigns_Update_Success(t *testing.T) {
 	apiUid := fake.CharactersN(50)
 	apiSecret := fake.CharactersN(50)
 
-	url := fmt.Sprintf("%s/addressbooks/%d/emails", apiBaseUrl, bookId)
+	url := fmt.Sprintf("%s/campaigns", apiBaseUrl)
 
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
@@ -119,7 +146,7 @@ func TestBooks_DeleteEmails_Success(t *testing.T) {
     	"result": true
 	}`
 
-	httpmock.RegisterResponder("DELETE", url,
+	httpmock.RegisterResponder("PATCH", url,
 		httpmock.NewStringResponder(http.StatusOK, respBody))
 
 	config := Config{
@@ -130,5 +157,15 @@ func TestBooks_DeleteEmails_Success(t *testing.T) {
 	spClient, _ := ApiClient(config)
 	spClient.client.token = fake.Word()
 
-	assert.NoError(t, spClient.Emails.Books.DeleteEmails(bookId, []string{fake.EmailAddress(), fake.EmailAddress()}))
+	data := UpdateCampaignData{
+		ID:          1,
+		Name:        fake.Word(),
+		SenderName:  fake.MaleFirstName(),
+		SenderEmail: fake.EmailAddress(),
+		Subject:     fake.Word(),
+		Body:        fake.Word(),
+		TemplateID:  1,
+		SendDate:    time.Now(),
+	}
+	assert.NoError(t, spClient.Emails.Campaigns.Update(data))
 }

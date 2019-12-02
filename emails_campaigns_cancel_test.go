@@ -9,21 +9,21 @@ import (
 	"testing"
 )
 
-func TestBooks_Emails_Total_BadJson(t *testing.T) {
-	var bookId int = 1
+func TestCampaigns_Cancel_BadJson(t *testing.T) {
+	campaignID := 1
 	apiUid := fake.CharactersN(50)
 	apiSecret := fake.CharactersN(50)
 
-	url := fmt.Sprintf("%s/addressbooks/%d/emails/total", apiBaseUrl, bookId)
+	url := fmt.Sprintf("%s/campaigns/%d", apiBaseUrl, campaignID)
 
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
-	respBody := `
-		"total": 1
+	respBody := `{
+    	result": true
 	}`
 
-	httpmock.RegisterResponder("GET", url,
+	httpmock.RegisterResponder("DELETE", url,
 		httpmock.NewStringResponder(http.StatusOK, respBody))
 
 	config := Config{
@@ -34,28 +34,60 @@ func TestBooks_Emails_Total_BadJson(t *testing.T) {
 	spClient, _ := ApiClient(config)
 	spClient.client.token = fake.Word()
 
-	total, err := spClient.Emails.Books.EmailsTotal(bookId)
+	err := spClient.Emails.Campaigns.Cancel(campaignID)
+
 	assert.Error(t, err)
 	_, isResponseError := err.(*SendpulseError)
 	assert.True(t, isResponseError)
-	assert.Equal(t, 0, total)
 }
 
-func TestBooks_Emails_Total_Error(t *testing.T) {
-	var bookId int = 1
+func TestCampaigns_Cancel_InvalidResponse(t *testing.T) {
+	campaignID := 1
 	apiUid := fake.CharactersN(50)
 	apiSecret := fake.CharactersN(50)
 
-	url := fmt.Sprintf("%s/addressbooks/%d/emails/total", apiBaseUrl, bookId)
+	url := fmt.Sprintf("%s/campaigns/%d", apiBaseUrl, campaignID)
 
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
 	respBody := `{
-		"total": 1
+    	"strange_result": true
 	}`
 
-	httpmock.RegisterResponder("GET", url,
+	httpmock.RegisterResponder("DELETE", url,
+		httpmock.NewStringResponder(http.StatusOK, respBody))
+
+	config := Config{
+		UserID:  apiUid,
+		Secret:  apiSecret,
+		Timeout: 5,
+	}
+	spClient, _ := ApiClient(config)
+	spClient.client.token = fake.Word()
+
+	err := spClient.Emails.Campaigns.Cancel(campaignID)
+
+	assert.Error(t, err)
+	_, isResponseError := err.(*SendpulseError)
+	assert.True(t, isResponseError)
+}
+
+func TestCampaigns_Cancel_Error(t *testing.T) {
+	campaignID := 1
+	apiUid := fake.CharactersN(50)
+	apiSecret := fake.CharactersN(50)
+
+	url := fmt.Sprintf("%s/campaigns/%d", apiBaseUrl, campaignID)
+
+	httpmock.Activate()
+	defer httpmock.DeactivateAndReset()
+
+	respBody := `{
+    	"result": true
+	}`
+
+	httpmock.RegisterResponder("DELETE", url,
 		httpmock.NewStringResponder(http.StatusInternalServerError, respBody))
 
 	config := Config{
@@ -66,26 +98,28 @@ func TestBooks_Emails_Total_Error(t *testing.T) {
 	spClient, _ := ApiClient(config)
 	spClient.client.token = fake.Word()
 
-	total, err := spClient.Emails.Books.EmailsTotal(bookId)
+	err := spClient.Emails.Campaigns.Cancel(campaignID)
+
 	assert.Error(t, err)
 	_, isResponseError := err.(*SendpulseError)
 	assert.True(t, isResponseError)
-	assert.Equal(t, 0, total)
 }
 
-func TestBooks_Emails_Total_InvalidResponse(t *testing.T) {
-	var bookId int = 1
+func TestCampaigns_Cancel_Success(t *testing.T) {
+	campaignID := 1
 	apiUid := fake.CharactersN(50)
 	apiSecret := fake.CharactersN(50)
 
-	url := fmt.Sprintf("%s/addressbooks/%d/emails/total", apiBaseUrl, bookId)
+	url := fmt.Sprintf("%s/campaigns/%d", apiBaseUrl, campaignID)
 
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
-	respBody := `{}`
+	respBody := `{
+    	"result": true
+	}`
 
-	httpmock.RegisterResponder("GET", url,
+	httpmock.RegisterResponder("DELETE", url,
 		httpmock.NewStringResponder(http.StatusOK, respBody))
 
 	config := Config{
@@ -96,38 +130,5 @@ func TestBooks_Emails_Total_InvalidResponse(t *testing.T) {
 	spClient, _ := ApiClient(config)
 	spClient.client.token = fake.Word()
 
-	total, err := spClient.Emails.Books.EmailsTotal(bookId)
-	assert.Error(t, err)
-	_, isResponseError := err.(*SendpulseError)
-	assert.True(t, isResponseError)
-	assert.Equal(t, 0, total)
-}
-
-func TestBooks_Emails_Total_Success(t *testing.T) {
-	var bookId int = 1
-	var expectedTotal int = 12345
-	apiUid := fake.CharactersN(50)
-	apiSecret := fake.CharactersN(50)
-
-	url := fmt.Sprintf("%s/addressbooks/%d/emails/total", apiBaseUrl, bookId)
-
-	httpmock.Activate()
-	defer httpmock.DeactivateAndReset()
-
-	respBody := `{"total": ` + fmt.Sprintf("%d", expectedTotal) + `}`
-
-	httpmock.RegisterResponder("GET", url,
-		httpmock.NewStringResponder(http.StatusOK, respBody))
-
-	config := Config{
-		UserID:  apiUid,
-		Secret:  apiSecret,
-		Timeout: 5,
-	}
-	spClient, _ := ApiClient(config)
-	spClient.client.token = fake.Word()
-
-	total, err := spClient.Emails.Books.EmailsTotal(bookId)
-	assert.NoError(t, err)
-	assert.Equal(t, expectedTotal, total)
+	assert.NoError(t, spClient.Emails.Campaigns.Cancel(campaignID))
 }

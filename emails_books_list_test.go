@@ -24,7 +24,6 @@ func TestBooks_List_Success(t *testing.T) {
 			AllEmailQty:      1,
 			ActiveEmailQty:   0,
 			InactiveEmailQty: 10,
-			CreationDate:     "2018-12-28 10:13:51",
 			Status:           0,
 			StatusExplain:    "Active",
 		},
@@ -34,7 +33,6 @@ func TestBooks_List_Success(t *testing.T) {
 			AllEmailQty:      1,
 			ActiveEmailQty:   0,
 			InactiveEmailQty: 10,
-			CreationDate:     "2018-12-28 10:13:51",
 			Status:           0,
 			StatusExplain:    "Active",
 		},
@@ -55,7 +53,7 @@ func TestBooks_List_Success(t *testing.T) {
 	responseBooks, err := spClient.Emails.Books.List(0, 10)
 	assert.NoError(t, err)
 
-	assert.Equal(t, books, *responseBooks)
+	assert.Equal(t, books, responseBooks)
 }
 
 func TestBooks_List_BadJson(t *testing.T) {
