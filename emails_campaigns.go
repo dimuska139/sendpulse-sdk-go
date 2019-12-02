@@ -115,12 +115,6 @@ type campaignInfoRaw struct {
 	OverdraftCurrency string
 }
 
-type Task struct {
-	ID     int    `json:"task_id"`
-	Name   string `json:"task_name"`
-	Status int    `json:"task_status"`
-}
-
 type ReferralsStatistics struct {
 	Link  string
 	Count int
@@ -290,27 +284,7 @@ func (c *campaigns) List(limit int, offset int) ([]CampaignInfo, error) {
 	return campaignsList, nil
 }
 
-func (c *campaigns) ListByBook(bookID int, limit int, offset int) ([]Task, error) {
-	path := fmt.Sprintf("/addressbooks/%d/campaigns", bookID)
-	data := map[string]interface{}{
-		"limit":  fmt.Sprint(limit),
-		"offset": fmt.Sprint(offset),
-	}
-
-	body, err := c.Client.makeRequest(path, "GET", data, true)
-	if err != nil {
-		return nil, err
-	}
-
-	var tasks []Task
-	if err := json.Unmarshal(body, &tasks); err != nil {
-		return nil, &SendpulseError{http.StatusOK, path, string(body), err.Error()}
-	}
-
-	return tasks, nil
-}
-
-func (c *campaigns) Countries(campaignID uint) (map[string]int, error) {
+func (c *campaigns) Countries(campaignID int) (map[string]int, error) {
 	path := fmt.Sprintf("/campaigns/%d/countries", campaignID)
 
 	body, err := c.Client.makeRequest(path, "GET", nil, true)

@@ -80,6 +80,12 @@ type CampaignCost struct {
 	Result                    bool
 }
 
+type Task struct {
+	ID     int    `json:"task_id"`
+	Name   string `json:"task_name"`
+	Status int    `json:"task_status"`
+}
+
 func (b *books) Create(addressBookName string) (*int, error) {
 	path := "/addressbooks"
 
@@ -390,4 +396,24 @@ func (b *books) CampaignCost(addressBookId int) (*CampaignCost, error) {
 	}
 
 	return &cost, err
+}
+
+func (b *books) Campaigns(bookID int, limit int, offset int) ([]Task, error) {
+	path := fmt.Sprintf("/addressbooks/%d/campaigns", bookID)
+	data := map[string]interface{}{
+		"limit":  fmt.Sprint(limit),
+		"offset": fmt.Sprint(offset),
+	}
+
+	body, err := b.Client.makeRequest(path, "GET", data, true)
+	if err != nil {
+		return nil, err
+	}
+
+	var tasks []Task
+	if err := json.Unmarshal(body, &tasks); err != nil {
+		return nil, &SendpulseError{http.StatusOK, path, string(body), err.Error()}
+	}
+
+	return tasks, nil
 }
