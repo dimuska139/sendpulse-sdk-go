@@ -15,6 +15,7 @@ func ApiClient(config Config) (*SendpulseClient, error) {
 	b := books{c}
 	automation := automation360{c}
 	camp := campaigns{c}
+	tpl := templates{c}
 
 	spClient := &SendpulseClient{
 		client: c,
@@ -22,6 +23,7 @@ func ApiClient(config Config) (*SendpulseClient, error) {
 			Books:         b,
 			Automation360: automation,
 			Campaigns:     camp,
+			Templates:     tpl,
 		},
 	}
 
