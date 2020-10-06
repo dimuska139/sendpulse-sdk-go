@@ -1,0 +1,21 @@
+{
+  "data": {
+    "flow_id": 467511,
+    "task": {
+      "id": 12018943,
+      "address_book_id": 0,
+      "message_title": "Спасибо за заказ, 7136062",
+      "sender_mail_address": "smtp_test@e.cn.ua",
+      "sender_mail_name": "smtp_test",
+      "created": "2020-06-23 14:06:25"
+    },
+    "sent": 16,
+    "delivered": 16,
+    "opened": 16,
+    "clicked": 0,
+    "errors": 0,
+    "unsubscribed": 0,
+    "marked_as_spam": 0,
+    "last_send": "2020-06-25 17:05:41"
+  }
+}

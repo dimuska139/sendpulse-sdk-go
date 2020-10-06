@@ -5,9 +5,7 @@ import (
 	"errors"
 )
 
-type Float32 struct {
-	float32
-}
+type Float32 float32
 
 func (d *Float32) UnmarshalJSON(b []byte) error {
 	var customFloat float32
@@ -20,8 +18,6 @@ func (d *Float32) UnmarshalJSON(b []byte) error {
 			return errors.New("SendpulseFloat32: UnmarshalJSON: " + err.Error())
 		}
 	}
-	*d = Float32{
-		customFloat,
-	}
+	*d = Float32(customFloat)
 	return nil
 }

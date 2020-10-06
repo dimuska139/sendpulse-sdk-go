@@ -1,0 +1,17 @@
+{
+  "data": [
+    {
+      "id": 12345,
+      "email": "EMAIL",
+      "email_b64": "BASE64 EMAIL",
+      "event_id": "3cc000ab9cff4d41f9fc8d025be2b766",
+      "phone": null,
+      "status": 0,
+      "is_sent": 1,
+      "is_delivered": 0,
+      "is_redirected": 0,
+      "sent_date": "2020-02-28 12:18:23"
+    }
+  ],
+  "total": 1
+}

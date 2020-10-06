@@ -6,35 +6,35 @@ import (
 
 type Autoresponder struct {
 	Autoresponder *struct {
-		ID      *int            `json:"id,omitempty"`
+		ID      *types.Int      `json:"id,omitempty"`
 		Name    *string         `json:"name,omitempty"`
-		Status  *int            `json:"status,omitempty"`
+		Status  *types.Int      `json:"status,omitempty"`
 		Created *types.DateTime `json:"created,omitempty"`
 		Changed *types.DateTime `json:"changed,omitempty"`
 	} `json:"autoresponder,omitempty"`
 	Flows []*struct {
-		ID       *int                    `json:"id,omitempty"`
-		MainID   *int                    `json:"main_id,omitempty"`
+		ID       *types.Int              `json:"id,omitempty"`
+		MainID   *types.Int              `json:"main_id,omitempty"`
 		AfType   *string                 `json:"af_type,omitempty"`
 		Created  *types.DateTime         `json:"created,omitempty"`
 		LastSend *types.DateTime         `json:"created,omitempty"`
 		Task     *map[string]interface{} `json:"task,omitempty"`
 	} `json:"flows,omitempty"`
-	Starts       *int `json:"starts,omitempty"`
-	InQueue      *int `json:"in_queue,omitempty"`
-	EndCount     *int `json:"end_count,omitempty"`
-	SendMessages *int `json:"send_messages,omitempty"`
-	Conversions  *int `json:"conversions,omitempty"`
+	Starts       *types.Int `json:"starts,omitempty"`
+	InQueue      *types.Int `json:"in_queue,omitempty"`
+	EndCount     *types.Int `json:"end_count,omitempty"`
+	SendMessages *types.Int `json:"send_messages,omitempty"`
+	Conversions  *types.Int `json:"conversions,omitempty"`
 }
 
 type MainTriggerBlockStat struct {
-	FlowID   *int `json:"flow_id,omitempty"`
-	Executed *int `json:"executed,omitempty"`
-	Deleted  *int `json:"deleted,omitempty"`
+	FlowID   *types.Int `json:"flow_id,omitempty"`
+	Executed *types.Int `json:"executed,omitempty"`
+	Deleted  *types.Int `json:"deleted,omitempty"`
 }
 
 type MainTriggerBlockRecipient struct {
-	FlowID        *int            `json:"flow_id,omitempty"`
+	FlowID        *types.Int      `json:"flow_id,omitempty"`
 	Email         *string         `json:"email,omitempty"`
 	Phone         *string         `json:"phone,omitempty"`
 	EventID       *string         `json:"event_id,omitempty"`
@@ -43,34 +43,34 @@ type MainTriggerBlockRecipient struct {
 }
 
 type EmailBlockStat struct {
-	FlowID *int `json:"flow_id,omitempty"`
+	FlowID *types.Int `json:"flow_id,omitempty"`
 	Task   *struct {
-		ID                *int            `json:"id,omitempty"`
-		AddressBookID     *int            `json:"address_book_id,omitempty"`
+		ID                *types.Int      `json:"id,omitempty"`
+		AddressBookID     *types.Int      `json:"address_book_id,omitempty"`
 		MessageTitle      *string         `json:"message_title,omitempty"`
 		SenderMailAddress *string         `json:"sender_mail_address,omitempty"`
 		SenderMailName    *string         `json:"sender_mail_name,omitempty"`
 		Created           *types.DateTime `json:"created,omitempty"`
 	} `json:"task,omitempty"`
-	Sent         *int            `json:"sent,omitempty"`
-	Delivered    *int            `json:"delivered,omitempty"`
-	Opened       *int            `json:"opened,omitempty"`
-	Clicked      *int            `json:"clicked,omitempty"`
-	Errors       *int            `json:"errors,omitempty"`
-	Unsubscribed *int            `json:"unsubscribed,omitempty"`
-	MarkedAsSpam *int            `json:"marked_as_spam,omitempty"`
+	Sent         *types.Int      `json:"sent,omitempty"`
+	Delivered    *types.Int      `json:"delivered,omitempty"`
+	Opened       *types.Int      `json:"opened,omitempty"`
+	Clicked      *types.Int      `json:"clicked,omitempty"`
+	Errors       *types.Int      `json:"errors,omitempty"`
+	Unsubscribed *types.Int      `json:"unsubscribed,omitempty"`
+	MarkedAsSpam *types.Int      `json:"marked_as_spam,omitempty"`
 	LastSend     *types.DateTime `json:"last_send,omitempty"`
 }
 
 type EmailBlockRecipient struct {
-	ID                         *int            `json:"id,omitempty"`
+	ID                         *types.Int      `json:"id,omitempty"`
 	Email                      *string         `json:"email,omitempty"`
 	EmailBase64                *string         `json:"email_b64,omitempty"`
 	EventID                    *string         `json:"event_id,omitempty"`
-	DeliveredStatus            *int            `json:"delivered_status,omitempty"`
+	DeliveredStatus            *types.Int      `json:"delivered_status,omitempty"`
 	DeliveredStatusDescription *string         `json:"delivered_status_description,omitempty"`
-	IsSpam                     *int            `json:"is_spam,omitempty"`
-	IsUnsubscribe              *int            `json:"is_unsubscribe,omitempty"`
+	IsSpam                     *types.Int      `json:"is_spam,omitempty"`
+	IsUnsubscribe              *types.Int      `json:"is_unsubscribe,omitempty"`
 	Phone                      *string         `json:"phone,omitempty"`
 	SentDate                   *types.DateTime `json:"sent_date,omitempty"`
 	DeliveredDate              *types.DateTime `json:"delivered_date,omitempty"`
@@ -80,42 +80,42 @@ type EmailBlockRecipient struct {
 }
 
 type PushBlockStat struct {
-	FlowID    *int            `json:"flow_id,omitempty"`
-	Sent      *int            `json:"sent,omitempty"`
-	Delivered *int            `json:"delivered,omitempty"`
-	Clicked   *int            `json:"clicked,omitempty"`
-	Errors    *int            `json:"errors,omitempty"`
+	FlowID    *types.Int      `json:"flow_id,omitempty"`
+	Sent      *types.Int      `json:"sent,omitempty"`
+	Delivered *types.Int      `json:"delivered,omitempty"`
+	Clicked   *types.Int      `json:"clicked,omitempty"`
+	Errors    *types.Int      `json:"errors,omitempty"`
 	LastSend  *types.DateTime `json:"last_send,omitempty"`
 }
 
 type PushBlockRecipient struct {
-	ID           *int            `json:"id,omitempty"`
+	ID           *types.Int      `json:"id,omitempty"`
 	Email        *string         `json:"email,omitempty"`
 	EmailBase64  *string         `json:"email_b64,omitempty"`
 	EventID      *string         `json:"event_id,omitempty"`
 	Phone        *string         `json:"phone,omitempty"`
-	Status       *int            `json:"status,omitempty"`
-	IsSent       *int            `json:"is_spam,omitempty"`
-	IsDelivered  *int            `json:"is_delivered,omitempty"`
-	IsRedirected *int            `json:"is_redirected,omitempty"`
+	Status       *types.Int      `json:"status,omitempty"`
+	IsSent       *types.Int      `json:"is_spam,omitempty"`
+	IsDelivered  *types.Int      `json:"is_delivered,omitempty"`
+	IsRedirected *types.Int      `json:"is_redirected,omitempty"`
 	SentDate     *types.DateTime `json:"sent_date,omitempty"`
 }
 
 type SmsBlockStat struct {
-	FlowID    *int            `json:"flow_id,omitempty"`
-	Executed  *int            `json:"executed,omitempty"`
-	Sent      *int            `json:"sent,omitempty"`
-	Delivered *int            `json:"delivered,omitempty"`
-	Opened    *int            `json:"opened,omitempty"`
-	Clicked   *int            `json:"clicked,omitempty"`
-	Errors    *int            `json:"errors,omitempty"`
+	FlowID    *types.Int      `json:"flow_id,omitempty"`
+	Executed  *types.Int      `json:"executed,omitempty"`
+	Sent      *types.Int      `json:"sent,omitempty"`
+	Delivered *types.Int      `json:"delivered,omitempty"`
+	Opened    *types.Int      `json:"opened,omitempty"`
+	Clicked   *types.Int      `json:"clicked,omitempty"`
+	Errors    *types.Int      `json:"errors,omitempty"`
 	LastSend  *types.DateTime `json:"last_send,omitempty"`
 }
 
 type SmsBlockRecipient struct {
-	ID       *int                      `json:"id,omitempty"`
+	ID       *types.Int                `json:"id,omitempty"`
 	Phone    *string                   `json:"phone,omitempty"`
-	Status   *int                      `json:"status,omitempty"`
+	Status   *types.Int                `json:"status,omitempty"`
 	EventID  *string                   `json:"event_id,omitempty"`
 	Sender   *string                   `json:"sender,omitempty"`
 	Body     *string                   `json:"body,omitempty"`
@@ -126,8 +126,8 @@ type SmsBlockRecipient struct {
 }
 
 type FilterBlockStat struct {
-	FlowID   *int            `json:"flow_id,omitempty"`
-	Executed *int            `json:"executed,omitempty"`
+	FlowID   *types.Int      `json:"flow_id,omitempty"`
+	Executed *types.Int      `json:"executed,omitempty"`
 	LastSend *types.DateTime `json:"last_send,omitempty"`
 }
 
@@ -140,8 +140,8 @@ type FilterBlockRecipient struct {
 }
 
 type ConditionBlockStat struct {
-	FlowID   *int            `json:"flow_id,omitempty"`
-	Executed *int            `json:"executed,omitempty"`
+	FlowID   *types.Int      `json:"flow_id,omitempty"`
+	Executed *types.Int      `json:"executed,omitempty"`
 	LastSend *types.DateTime `json:"last_send,omitempty"`
 }
 
@@ -154,13 +154,13 @@ type ConditionBlockRecipient struct {
 }
 
 type GoalBlockStat struct {
-	FlowID    *int            `json:"flow_id,omitempty"`
-	Executed  *int            `json:"executed,omitempty"`
-	Sent      *int            `json:"sent,omitempty"`
-	Delivered *int            `json:"delivered,omitempty"`
-	Opened    *int            `json:"opened,omitempty"`
-	Clicked   *int            `json:"clicked,omitempty"`
-	Errors    *int            `json:"errors,omitempty"`
+	FlowID    *types.Int      `json:"flow_id,omitempty"`
+	Executed  *types.Int      `json:"executed,omitempty"`
+	Sent      *types.Int      `json:"sent,omitempty"`
+	Delivered *types.Int      `json:"delivered,omitempty"`
+	Opened    *types.Int      `json:"opened,omitempty"`
+	Clicked   *types.Int      `json:"clicked,omitempty"`
+	Errors    *types.Int      `json:"errors,omitempty"`
 	LastSend  *types.DateTime `json:"last_send,omitempty"`
 }
 
@@ -173,8 +173,8 @@ type GoalBlockRecipient struct {
 }
 
 type ActionBlockStat struct {
-	FlowID   *int            `json:"flow_id,omitempty"`
-	Executed *int            `json:"executed,omitempty"`
+	FlowID   *types.Int      `json:"flow_id,omitempty"`
+	Executed *types.Int      `json:"executed,omitempty"`
 	LastSend *types.DateTime `json:"last_send,omitempty"`
 }
 
@@ -187,33 +187,33 @@ type ActionBlockRecipient struct {
 }
 
 type Conversion struct {
-	TotalConversions        *int `json:"total_conversions,omitempty"`
-	MainTrigggerConversions *int `json:"maintrigger_conversions,omitempty"`
-	GoalConversions         *int `json:"goal_conversions,omitempty"`
+	TotalConversions        *types.Int `json:"total_conversions,omitempty"`
+	MainTrigggerConversions *types.Int `json:"maintrigger_conversions,omitempty"`
+	GoalConversions         *types.Int `json:"goal_conversions,omitempty"`
 	Maintrigger             *struct {
-		ID          *int            `json:"id,omitempty"`
+		ID          *types.Int      `json:"id,omitempty"`
 		Name        *string         `json:"name,omitempty"`
-		MainID      *int            `json:"main_id,omitempty"`
+		MainID      *types.Int      `json:"main_id,omitempty"`
 		AfType      *string         `json:"af_type,omitempty"`
 		Created     *types.DateTime `json:"created,omitempty"`
 		LastSend    *types.DateTime `json:"last_send,omitempty"`
-		Conversions *int            `json:"conversions,omitempty"`
+		Conversions *types.Int      `json:"conversions,omitempty"`
 	} `json:"maintrigger,omitempty"`
 	Goals []*struct {
-		ID          *int            `json:"id,omitempty"`
+		ID          *types.Int      `json:"id,omitempty"`
 		Name        *string         `json:"name,omitempty"`
-		MainID      *int            `json:"main_id,omitempty"`
+		MainID      *types.Int      `json:"main_id,omitempty"`
 		AfType      *string         `json:"af_type,omitempty"`
 		Created     *types.DateTime `json:"created,omitempty"`
 		LastSend    *types.DateTime `json:"last_send,omitempty"`
-		Conversions *int            `json:"conversions,omitempty"`
+		Conversions *types.Int      `json:"conversions,omitempty"`
 	} `json:"goals,omitempty"`
 }
 
 type ConversionContact struct {
-	ID             *int            `json:"id,omitempty"`
+	ID             *types.Int      `json:"id,omitempty"`
 	ConversionType *string         `json:"conversion_type,omitempty"`
-	FlowID         *int            `json:"flow_id,omitempty"`
+	FlowID         *types.Int      `json:"flow_id,omitempty"`
 	Email          *string         `json:"email,omitempty"`
 	Phone          *string         `json:"phone,omitempty"`
 	ConversionDate *types.DateTime `json:"conversion_date,omitempty"`

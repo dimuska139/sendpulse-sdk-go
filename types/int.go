@@ -5,9 +5,7 @@ import (
 	"errors"
 )
 
-type Int struct {
-	int
-}
+type Int int
 
 func (d *Int) UnmarshalJSON(data []byte) error {
 	var customInt int
@@ -20,8 +18,6 @@ func (d *Int) UnmarshalJSON(data []byte) error {
 			return errors.New("SendpulseInt: UnmarshalJSON: " + err.Error())
 		}
 	}
-	*d = Int{
-		customInt,
-	}
+	*d = Int(customInt)
 	return nil
 }

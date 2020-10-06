@@ -1,0 +1,13 @@
+{
+  "data": [
+    {
+      "flow_id": 12345,
+      "email": "email подписчика",
+      "phone": "телефон подписчика",
+      "event_id": "{EVENT_ID}",
+      "email_b64": "EMAIL IN BASE64 ENCODE",
+      "execution_date": "2006-01-02 15:04:05"
+    }
+  ],
+  "total": 1
+}

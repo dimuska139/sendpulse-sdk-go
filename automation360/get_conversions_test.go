@@ -1,4 +1,4 @@
-package emails
+package automation360
 
 import (
 	"fmt"
@@ -12,12 +12,13 @@ import (
 	"testing"
 )
 
-func TestEmails_CreateAddressbook(t *testing.T) {
+func TestAutomation360_GetConversions(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
-	responseBody, _ := ioutil.ReadFile("./testdata/createdAddressBook.json")
-	httpmock.RegisterResponder(http.MethodPost, fmt.Sprintf("%s/addressbooks", client.ApiBaseUrl),
+	autoresponderID := 1
+	responseBody, _ := ioutil.ReadFile("./testdata/conversions.json")
+	httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf("%s/a360/autoresponders/%d/conversions", client.ApiBaseUrl, autoresponderID),
 		httpmock.NewBytesResponder(http.StatusOK, responseBody),
 	)
 
@@ -29,16 +30,18 @@ func TestEmails_CreateAddressbook(t *testing.T) {
 
 	spClient := New(http.DefaultClient, &config)
 
-	bookId, err := spClient.CreateAddressbook(fake.Word())
+	conversions, err := spClient.GetConversions(autoresponderID)
 	assert.NoError(t, err)
-	assert.Equal(t, 1038647, *bookId)
+	assert.NotNil(t, conversions)
+	assert.Equal(t, 5, int(*conversions.TotalConversions))
 }
 
-func TestEmails_CreateAddressbook_HttpError(t *testing.T) {
+func TestAutomation360_GetConversions_HttpError(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
-	httpmock.RegisterResponder(http.MethodPost, fmt.Sprintf("%s/addressbooks", client.ApiBaseUrl),
+	autoresponderID := 1
+	httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf("%s/a360/autoresponders/%d/conversions", client.ApiBaseUrl, autoresponderID),
 		httpmock.NewStringResponder(http.StatusInternalServerError, ""),
 	)
 
@@ -49,18 +52,18 @@ func TestEmails_CreateAddressbook_HttpError(t *testing.T) {
 	}
 
 	spClient := New(http.DefaultClient, &config)
-	bookId, err := spClient.CreateAddressbook(fake.Word())
-	assert.Nil(t, bookId)
+
+	conversions, err := spClient.GetConversions(autoresponderID)
 	assert.Error(t, err)
-	_, isResponseError := err.(*client.SendpulseError)
-	assert.True(t, isResponseError)
+	assert.Nil(t, conversions)
 }
 
-func TestEmails_CreateAddressbook_InvalidJson(t *testing.T) {
+func TestAutomation360_GetConversions_InvalidJson(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
-	httpmock.RegisterResponder(http.MethodPost, fmt.Sprintf("%s/addressbooks", client.ApiBaseUrl),
+	autoresponderID := 1
+	httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf("%s/a360/autoresponders/%d/conversions", client.ApiBaseUrl, autoresponderID),
 		httpmock.NewStringResponder(http.StatusOK, ""),
 	)
 
@@ -71,9 +74,8 @@ func TestEmails_CreateAddressbook_InvalidJson(t *testing.T) {
 	}
 
 	spClient := New(http.DefaultClient, &config)
-	bookId, err := spClient.CreateAddressbook(fake.Word())
-	assert.Nil(t, bookId)
+
+	conversions, err := spClient.GetConversions(autoresponderID)
 	assert.Error(t, err)
-	_, isResponseError := err.(*client.SendpulseError)
-	assert.True(t, isResponseError)
+	assert.Nil(t, conversions)
 }

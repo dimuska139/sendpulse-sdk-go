@@ -76,13 +76,13 @@ func TestEmails_UpdateAddressBook_InvalidJson(t *testing.T) {
 	assert.True(t, isResponseError)
 }
 
-func TestEmails_UpdateAddressBook_NoResult(t *testing.T) {
+func TestEmails_UpdateAddressBook_FalseResult(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
 	bookId := 1
 	httpmock.RegisterResponder(http.MethodPut, fmt.Sprintf("%s/addressbooks/%d", client.ApiBaseUrl, bookId),
-		httpmock.NewStringResponder(http.StatusOK, "{}"),
+		httpmock.NewStringResponder(http.StatusOK, "{\"result\":false}"),
 	)
 
 	config := sendpulse.Config{

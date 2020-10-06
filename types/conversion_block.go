@@ -6,13 +6,13 @@ import (
 )
 
 type block struct {
-	ID          *int      `json:"id,omitempty"`
-	Name        *string   `json:"name,omitempty"`
-	MainID      *int      `json:"main_id,omitempty"`
-	AfType      *string   `json:"af_type,omitempty"`
-	Created     *DateTime `json:"created,omitempty"`
-	LastSend    *DateTime `json:"last_send,omitempty"`
-	Conversions *int      `json:"conversions,omitempty"`
+	ID          *json.Number `json:"id,omitempty"`
+	Name        *string      `json:"name,omitempty"`
+	MainID      *json.Number `json:"main_id,omitempty"`
+	AfType      *string      `json:"af_type,omitempty"`
+	Created     *DateTime    `json:"created,omitempty"`
+	LastSend    *DateTime    `json:"last_send,omitempty"`
+	Conversions *int         `json:"conversions,omitempty"`
 }
 
 type ConversionBlock struct {

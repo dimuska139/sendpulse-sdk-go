@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/dimuska139/sendpulse-sdk-go/client"
+	"github.com/dimuska139/sendpulse-sdk-go/types"
 	"net/http"
 )
 
@@ -21,7 +22,11 @@ func (api *Emails) CreateAddressbook(name string) (*int, error) {
 		return nil, err
 	}
 
-	var respData map[string]int
+	type response struct {
+		ID types.Int `json:"id"`
+	}
+
+	var respData response
 	if err := json.Unmarshal(body, &respData); err != nil {
 		return nil, &client.SendpulseError{
 			HttpCode: http.StatusOK,
@@ -31,17 +36,9 @@ func (api *Emails) CreateAddressbook(name string) (*int, error) {
 		}
 	}
 
-	createdBookId, idExists := respData["id"]
-	if !idExists {
-		return nil, &client.SendpulseError{
-			HttpCode: http.StatusOK,
-			Url:      path,
-			Body:     string(body),
-			Message:  "invalid response",
-		}
-	}
+	bookID := int(respData.ID)
 
-	return &createdBookId, err
+	return &bookID, err
 }
 
 func (api *Emails) UpdateAddressbook(id int, name string) error {
@@ -56,20 +53,23 @@ func (api *Emails) UpdateAddressbook(id int, name string) error {
 		return err
 	}
 
-	var respData map[string]interface{}
+	type response struct {
+		Result bool `json:"result"`
+	}
+
+	var respData response
 	if err := json.Unmarshal(body, &respData); err != nil {
 		return &client.SendpulseError{HttpCode: http.StatusOK, Url: path, Body: string(body), Message: err.Error()}
 	}
 
-	result, resultExists := respData["result"]
-	if !resultExists || !result.(bool) {
+	if !respData.Result {
 		return &client.SendpulseError{HttpCode: http.StatusOK, Url: path, Body: string(body), Message: "invalid response"}
 	}
 
 	return nil
 }
 
-func (api *Emails) GetAddressbooks(limit int, offset int) ([]Book, error) {
+func (api *Emails) GetAddressbooks(limit int, offset int) ([]*Book, error) {
 	path := "/addressbooks"
 	data := map[string]interface{}{
 		"limit":  fmt.Sprint(limit),
@@ -81,7 +81,7 @@ func (api *Emails) GetAddressbooks(limit int, offset int) ([]Book, error) {
 		return nil, err
 	}
 
-	var books []Book
+	var books []*Book
 	if err := json.Unmarshal(body, &books); err != nil {
 		return nil, &client.SendpulseError{HttpCode: http.StatusOK, Url: path, Body: string(body), Message: err.Error()}
 	}
