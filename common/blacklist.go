@@ -1,4 +1,4 @@
-package emails
+package common
 
 import (
 	b64 "encoding/base64"
@@ -8,16 +8,16 @@ import (
 	"strings"
 )
 
-func (api *Emails) GetBlacklist() ([]string, error) {
+func (api *Common) GetBlacklist() ([]*string, error) {
 	path := "/blacklist"
 
-	body, err := api.Client.NewRequest(path, "GET", nil, true)
+	body, err := api.Client.NewRequest(path, http.MethodGet, nil, true)
 
 	if err != nil {
 		return nil, err
 	}
 
-	var emails []string
+	var emails []*string
 	if err := json.Unmarshal(body, &emails); err != nil {
 		return nil, &client.SendpulseError{HttpCode: http.StatusOK, Url: path, Body: string(body), Message: err.Error()}
 	}
@@ -25,7 +25,7 @@ func (api *Emails) GetBlacklist() ([]string, error) {
 	return emails, nil
 }
 
-func (api *Emails) AddEmailsToBlacklist(emails []string, comment string) error {
+func (api *Common) AddEmailsToBlacklist(emails []string, comment string) error {
 	path := "/blacklist"
 
 	data := map[string]interface{}{
@@ -36,7 +36,7 @@ func (api *Emails) AddEmailsToBlacklist(emails []string, comment string) error {
 		data["comment"] = comment
 	}
 
-	body, err := api.Client.NewRequest(path, "POST", nil, true)
+	body, err := api.Client.NewRequest(path, http.MethodPost, nil, true)
 	if err != nil {
 		return err
 	}
@@ -54,14 +54,14 @@ func (api *Emails) AddEmailsToBlacklist(emails []string, comment string) error {
 	return nil
 }
 
-func (api *Emails) DeleteEmailsFromBlacklist(emails []string) error {
+func (api *Common) DeleteEmailsFromBlacklist(emails []string) error {
 	path := "/blacklist"
 
 	data := map[string]interface{}{
 		"emails": b64.StdEncoding.EncodeToString([]byte(strings.Join(emails, ","))),
 	}
 
-	body, err := api.Client.NewRequest(path, "DELETE", data, true)
+	body, err := api.Client.NewRequest(path, http.MethodDelete, data, true)
 	if err != nil {
 		return err
 	}

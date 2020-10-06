@@ -1,18 +1,19 @@
-package emails
+package common
 
 import (
 	"encoding/json"
 	"github.com/dimuska139/sendpulse-sdk-go/client"
 	"net/http"
+	"strings"
 )
 
-func (api *Emails) GetBalance(currency string) (*Balance, error) {
+func (api *Common) GetBalance(currency string) (*Balance, error) {
 	path := "/balance"
-	if currency == "" {
-		path += "/" + currency
+	if currency != "" {
+		path += "/" + strings.ToLower(currency)
 	}
 
-	body, err := api.Client.NewRequest(path, "GET", nil, true)
+	body, err := api.Client.NewRequest(path, http.MethodGet, nil, true)
 
 	if err != nil {
 		return nil, err
@@ -26,9 +27,9 @@ func (api *Emails) GetBalance(currency string) (*Balance, error) {
 	return &balance, err
 }
 
-func (api *Emails) GetBalanceDetailed() (*BalanceDetailed, error) {
+func (api *Common) GetBalanceDetailed() (*BalanceDetailed, error) {
 	path := "/user/balance/detail"
-	body, err := api.Client.NewRequest(path, "GET", nil, true)
+	body, err := api.Client.NewRequest(path, http.MethodGet, nil, true)
 
 	if err != nil {
 		return nil, err
