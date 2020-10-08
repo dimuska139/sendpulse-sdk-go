@@ -53,7 +53,7 @@ type CreateCampaignDto struct {
 	ListID       int
 	SegmentID    int
 	SendTestOnly []string
-	SendDate     types.DateTime
+	SendDate     time.Time
 	Name         string
 	Attachments  map[string]string
 	IsDraft      bool
@@ -71,24 +71,12 @@ type UpdateCampaignDto struct {
 }
 
 type MessageInfo struct {
-	SenderName  string `json:"sender_name"`
-	SenderEmail string `json:"sender_email"`
-	Subject     string `json:"subject"`
-	Body        string `json:"body"`
-	Attachments string `json:"attachments"`
-	ListID      int    `json:"list_id"`
-}
-
-type Campaign struct {
-	ID                int
-	Name              string
-	Message           MessageInfo
-	Status            int
-	AllEmailQty       int
-	TariffEmailQty    int
-	PaidEmailQty      int
-	OverdraftPrice    int
-	OverdraftCurrency string
+	SenderName  *string    `json:"sender_name,omitempty"`
+	SenderEmail *string    `json:"sender_email,omitempty"`
+	Subject     *string    `json:"subject,omitempty"`
+	Body        *string    `json:"body,omitempty"`
+	Attachments *string    `json:"attachments,omitempty"`
+	ListID      *types.Int `json:"list_id,omitempty"`
 }
 
 type CampaignStatisticsCounts struct {
@@ -97,34 +85,34 @@ type CampaignStatisticsCounts struct {
 	Explain string
 }
 
-type CampaignInfo struct {
-	ID                int
-	Name              string
-	Message           MessageInfo
-	Status            int
-	AllEmailQty       int
-	TariffEmailQty    int
-	PaidEmailQty      int
-	OverdraftPrice    int
-	OverdraftCurrency string
+type Campaign struct {
+	ID                *types.Int   `json:"id,omitempty"`
+	Name              *string      `json:"name,omitempty"`
+	Message           *MessageInfo `json:"message,omitempty"`
+	Status            *types.Int   `json:"status,omitempty"`
+	AllEmailQty       *types.Int   `json:"all_email_qty,omitempty"`
+	TariffEmailQty    *types.Int   `json:"tariff_email_qty,omitempty"`
+	PaidEmailQty      *types.Int   `json:"paid_email_qty,omitempty"`
+	OverdraftPrice    *types.Int   `json:"overdraft_price,omitempty"`
+	OverdraftCurrency *string      `json:"ovedraft_currency,omitempty"`
 }
 
-type CampaignFullInfo struct {
-	CampaignInfo
-	Statistics []CampaignStatisticsCounts
-	SendDate   time.Time
-	Permalink  string
+type CampaignDetailed struct {
+	Campaign
+	Statistics []*CampaignStatisticsCounts `json:"statistics,omitempty"`
+	SendDate   *types.DateTime             `json:"send_date,omitempty"`
+	Permalink  *string                     `json:"permalink,omitempty"`
 }
 
 type Task struct {
-	TaskID     int    `json:"task_id"`
-	TaskName   string `json:"task_name"`
-	TaskStatus int    `json:"task_status"`
+	TaskID     *types.Int `json:"task_id,omitempty"`
+	TaskName   *string    `json:"task_name,omitempty"`
+	TaskStatus *types.Int `json:"task_status,omitempty"`
 }
 
 type ReferralsStatistics struct {
-	Link  string
-	Count int
+	Link  *string    `json:"link,omitempty"`
+	Count *types.Int `json:"count,omitempty"`
 }
 
 type TemplateCategoryInfo struct {

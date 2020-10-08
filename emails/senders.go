@@ -7,16 +7,16 @@ import (
 	"net/http"
 )
 
-func (api *Emails) GetSenders() ([]Sender, error) {
+func (api *Emails) GetSenders() ([]*Sender, error) {
 	path := "/senders"
 
-	body, err := api.Client.NewRequest(path, "GET", nil, true)
+	body, err := api.Client.NewRequest(path, http.MethodGet, nil, true)
 
 	if err != nil {
 		return nil, err
 	}
 
-	var senders []Sender
+	var senders []*Sender
 	if err := json.Unmarshal(body, &senders); err != nil {
 		return nil, &client.SendpulseError{HttpCode: http.StatusOK, Url: path, Body: string(body), Message: err.Error()}
 	}
@@ -31,7 +31,7 @@ func (api *Emails) AppendSender(email string, name string) error {
 		"email": email,
 		"name":  name,
 	}
-	body, err := api.Client.NewRequest(fmt.Sprintf(path), "POST", data, true)
+	body, err := api.Client.NewRequest(fmt.Sprintf(path), http.MethodPost, data, true)
 	if err != nil {
 		return err
 	}
@@ -55,7 +55,7 @@ func (api *Emails) DeleteSender(email string) error {
 		"email": email,
 	}
 
-	body, err := api.Client.NewRequest(path, "DELETE", data, true)
+	body, err := api.Client.NewRequest(path, http.MethodDelete, data, true)
 	if err != nil {
 		return err
 	}
@@ -74,7 +74,26 @@ func (api *Emails) DeleteSender(email string) error {
 func (api *Emails) ActivateSender(email string) error {
 	path := fmt.Sprintf("/senders/%s/code", email)
 
-	body, err := api.Client.NewRequest(path, "GET", nil, true)
+	body, err := api.Client.NewRequest(path, http.MethodPost, nil, true)
+	if err != nil {
+		return err
+	}
+
+	var respData map[string]interface{}
+	if err := json.Unmarshal(body, &respData); err != nil {
+		return &client.SendpulseError{HttpCode: http.StatusOK, Url: path, Body: string(body), Message: err.Error()}
+	}
+	result, resultExists := respData["result"]
+	if !resultExists || !result.(bool) {
+		return &client.SendpulseError{HttpCode: http.StatusOK, Url: path, Body: string(body), Message: "invalid response"}
+	}
+	return nil
+}
+
+func (api *Emails) ActivateSenderViaEmail(email string) error {
+	path := fmt.Sprintf("/senders/%s/code", email)
+
+	body, err := api.Client.NewRequest(path, http.MethodGet, nil, true)
 	if err != nil {
 		return err
 	}

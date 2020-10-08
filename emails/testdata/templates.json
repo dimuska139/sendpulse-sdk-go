@@ -1,0 +1,40 @@
+[
+  {
+    "id": "c7a94d4f8395ae5a4183423309d5e99b",
+    "real_id": 775667,
+    "lang": "en",
+    "name": "Nov. 9, 2018 08:24:10",
+    "name_slug": "nov-9-2018-08-24-10",
+    "created": "2018-11-09 05:24:10",
+    "full_description": null,
+    "category": "",
+    "category_info": [],
+    "tags": [],
+    "owner": "you",
+    "preview": "https://login.sendpulse.com/files/emailservice/templates/preview/e52678826db12b069358f159fde800726741804/c7a94d4f8395ae5a4183423309d5e99b.png"
+  },
+
+  {
+    "id": "5979adc7712b8c822a28b486f9778a15",
+    "real_id": 508742,
+    "lang": "en",
+    "name": "Valentine\\'s Day: sweet",
+    "name_slug": "sweet-valentines-day",
+    "created": "2018-02-01 08:55:04",
+    "full_description": "",
+    "category": "holiday",
+    "category_info": {
+      "id": 146,
+      "name": "Holiday",
+      "meta_description": "These “Holiday” free email templates were developed by SendPulse. Congratulate your customers, friends or relatives. Use these templates to create your own email campaigns in SendPulse.",
+      "full_description": "",
+      "code": "holiday",
+      "sort": 2
+    },
+    "tags": {
+      "valentine": "valentine"
+    },
+    "owner": "sendpulse",
+    "preview": "https://login.sendpulse.com/files/emailservice/templates/preview/5979adc7712b8c822a28b486f9778a15_thumbnail.png"
+  }
+]

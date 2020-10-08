@@ -356,3 +356,24 @@ func (api *Emails) UnsubscribeEmailsFromAddressbook(addressBookID int, emails []
 	}
 	return nil
 }
+
+func (api *Emails) GetAddressbookCampaigns(addressbookId int, limit int, offset int) ([]*Task, error) {
+	path := fmt.Sprintf("/addressbooks/%d/campaigns", addressbookId)
+
+	data := map[string]interface{}{
+		"limit":  fmt.Sprint(limit),
+		"offset": fmt.Sprint(offset),
+	}
+	body, err := api.Client.NewRequest(path, http.MethodGet, data, true)
+
+	if err != nil {
+		return nil, err
+	}
+
+	var campaigns []*Task
+	if err := json.Unmarshal(body, &campaigns); err != nil {
+		return nil, &client.SendpulseError{HttpCode: http.StatusOK, Url: path, Body: string(body), Message: err.Error()}
+	}
+
+	return campaigns, err
+}

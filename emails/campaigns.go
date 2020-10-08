@@ -41,18 +41,18 @@ func (api *Emails) CreateCampaign(campaignData CreateCampaignDto) (*Campaign, er
 		data["segment_id"] = campaignData.SegmentID
 	}
 
-	method := "POST"
+	method := http.MethodPost
 	if len(campaignData.SendTestOnly) != 0 {
-		method = "PATCH"
+		method = http.MethodPatch
 		encoded, _ := json.Marshal(campaignData.SendTestOnly)
 		data["send_test_only"] = encoded
 	}
 
 	body, err := api.Client.NewRequest(fmt.Sprintf(path), method, data, true)
+
 	if err != nil {
 		return nil, err
 	}
-
 	var campaign Campaign
 	if err := json.Unmarshal(body, &campaign); err != nil {
 		return nil, &client.SendpulseError{HttpCode: http.StatusOK, Url: path, Body: string(body), Message: err.Error()}
@@ -61,8 +61,8 @@ func (api *Emails) CreateCampaign(campaignData CreateCampaignDto) (*Campaign, er
 	return &campaign, err
 }
 
-func (api *Emails) UpdateCampaign(campaignData UpdateCampaignDto) error {
-	path := "/campaigns"
+func (api *Emails) UpdateCampaign(id int, campaignData UpdateCampaignDto) error {
+	path := fmt.Sprintf("/campaigns/%d", campaignData.ID)
 
 	data := map[string]interface{}{
 		"id":           campaignData.ID,
@@ -75,7 +75,7 @@ func (api *Emails) UpdateCampaign(campaignData UpdateCampaignDto) error {
 		"send_date":    campaignData.SendDate.Format("2006-01-02 15:04:05"),
 	}
 
-	body, err := api.Client.NewRequest(fmt.Sprintf(path), "PATCH", data, true)
+	body, err := api.Client.NewRequest(fmt.Sprintf(path), http.MethodPatch, data, true)
 	if err != nil {
 		return err
 	}
@@ -92,15 +92,15 @@ func (api *Emails) UpdateCampaign(campaignData UpdateCampaignDto) error {
 	return nil
 }
 
-func (api *Emails) GetCampaign(id int) (*CampaignFullInfo, error) {
+func (api *Emails) GetCampaign(id int) (*CampaignDetailed, error) {
 	path := fmt.Sprintf("/campaigns/%d", id)
-	body, err := api.Client.NewRequest(path, "GET", nil, true)
+	body, err := api.Client.NewRequest(path, http.MethodGet, nil, true)
 
 	if err != nil {
 		return nil, err
 	}
 
-	var fullInfo CampaignFullInfo
+	var fullInfo CampaignDetailed
 	if err := json.Unmarshal(body, &fullInfo); err != nil {
 		return nil, &client.SendpulseError{HttpCode: http.StatusOK, Url: path, Body: string(body), Message: err.Error()}
 	}
@@ -108,19 +108,19 @@ func (api *Emails) GetCampaign(id int) (*CampaignFullInfo, error) {
 	return &fullInfo, err
 }
 
-func (api *Emails) GetCampaigns(limit int, offset int) ([]CampaignInfo, error) {
+func (api *Emails) GetCampaigns(limit int, offset int) ([]*CampaignDetailed, error) {
 	path := "/campaigns"
 	data := map[string]interface{}{
 		"limit":  fmt.Sprint(limit),
 		"offset": fmt.Sprint(offset),
 	}
-	body, err := api.Client.NewRequest(path, "GET", data, true)
+	body, err := api.Client.NewRequest(path, http.MethodGet, data, true)
 
 	if err != nil {
 		return nil, err
 	}
 
-	var campaigns []CampaignInfo
+	var campaigns []*CampaignDetailed
 	if err := json.Unmarshal(body, &campaigns); err != nil {
 		return nil, &client.SendpulseError{HttpCode: http.StatusOK, Url: path, Body: string(body), Message: err.Error()}
 	}
@@ -128,31 +128,10 @@ func (api *Emails) GetCampaigns(limit int, offset int) ([]CampaignInfo, error) {
 	return campaigns, err
 }
 
-func (api *Emails) GetCampaignsByBook(addressbookId int, limit int, offset int) ([]Task, error) {
-	path := fmt.Sprintf("/addressbooks/%d/campaigns", addressbookId)
-
-	data := map[string]interface{}{
-		"limit":  fmt.Sprint(limit),
-		"offset": fmt.Sprint(offset),
-	}
-	body, err := api.Client.NewRequest(path, "GET", data, true)
-
-	if err != nil {
-		return nil, err
-	}
-
-	var campaigns []Task
-	if err := json.Unmarshal(body, &campaigns); err != nil {
-		return nil, &client.SendpulseError{HttpCode: http.StatusOK, Url: path, Body: string(body), Message: err.Error()}
-	}
-
-	return campaigns, err
-}
-
-func (api *Emails) GetCampaignStatisticsByCountry(campaignID int) (map[string]int, error) {
+func (api *Emails) GetCampaignStatisticsByCountries(campaignID int) (map[string]int, error) {
 	path := fmt.Sprintf("/campaigns/%d/countries", campaignID)
 
-	body, err := api.Client.NewRequest(path, "GET", nil, true)
+	body, err := api.Client.NewRequest(path, http.MethodGet, nil, true)
 	if err != nil {
 		return nil, err
 	}
@@ -170,15 +149,15 @@ func (api *Emails) GetCampaignStatisticsByCountry(campaignID int) (map[string]in
 	return respData, nil
 }
 
-func (api *Emails) GetCampaignStatisticsByReferrals(campaignID int) ([]ReferralsStatistics, error) {
+func (api *Emails) GetCampaignStatisticsByReferrals(campaignID int) ([]*ReferralsStatistics, error) {
 	path := fmt.Sprintf("/campaigns/%d/referrals", campaignID)
 
-	body, err := api.Client.NewRequest(path, "GET", nil, true)
+	body, err := api.Client.NewRequest(path, http.MethodGet, nil, true)
 	if err != nil {
 		return nil, err
 	}
 
-	var respData []ReferralsStatistics
+	var respData []*ReferralsStatistics
 	if err := json.Unmarshal(body, &respData); err != nil {
 		return nil, &client.SendpulseError{HttpCode: http.StatusOK, Url: path, Body: string(body), Message: err.Error()}
 	}
@@ -189,7 +168,7 @@ func (api *Emails) GetCampaignStatisticsByReferrals(campaignID int) ([]Referrals
 func (api *Emails) DeleteCampaign(campaignID int) error {
 	path := fmt.Sprintf("/campaigns/%d", campaignID)
 
-	body, err := api.Client.NewRequest(path, "DELETE", nil, true)
+	body, err := api.Client.NewRequest(path, http.MethodDelete, nil, true)
 	if err != nil {
 		return err
 	}

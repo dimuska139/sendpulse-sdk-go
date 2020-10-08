@@ -12,12 +12,13 @@ import (
 	"testing"
 )
 
-func TestEmails_GetAddressbooks(t *testing.T) {
+func TestEmails_GetTemplate(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
-	responseBody, _ := ioutil.ReadFile("./testdata/addressBooksList.json")
-	httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf("%s/addressbooks?limit=0&offset=10", client.ApiBaseUrl),
+	templateID := 1
+	responseBody, _ := ioutil.ReadFile("./testdata/template.json")
+	httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf("%s/template/%d", client.ApiBaseUrl, templateID),
 		httpmock.NewBytesResponder(http.StatusOK, responseBody),
 	)
 
@@ -29,16 +30,18 @@ func TestEmails_GetAddressbooks(t *testing.T) {
 
 	spClient := New(http.DefaultClient, &config)
 
-	books, err := spClient.GetAddressbooks(0, 10)
+	template, err := spClient.GetTemplate(templateID)
 	assert.NoError(t, err)
-	assert.Equal(t, 2, len(books))
+	assert.NotNil(t, template)
+	assert.Equal(t, "c7a94d4f8395ae5a4183423309d5e99b", *template.ID)
 }
 
-func TestEmails_GetAddressbooks_HttpError(t *testing.T) {
+func TestEmails_GetTemplate_HttpError(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
-	httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf("%s/addressbooks?limit=0&offset=10", client.ApiBaseUrl),
+	templateID := 1
+	httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf("%s/template/%d", client.ApiBaseUrl, templateID),
 		httpmock.NewStringResponder(http.StatusInternalServerError, ""),
 	)
 
@@ -50,16 +53,17 @@ func TestEmails_GetAddressbooks_HttpError(t *testing.T) {
 
 	spClient := New(http.DefaultClient, &config)
 
-	books, err := spClient.GetAddressbooks(0, 10)
+	template, err := spClient.GetTemplate(templateID)
 	assert.Error(t, err)
-	assert.Equal(t, 0, len(books))
+	assert.Nil(t, template)
 }
 
-func TestEmails_GetAddressbooks_InvalidJson(t *testing.T) {
+func TestEmails_GetTemplate_InvalidJson(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
-	httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf("%s/addressbooks?limit=0&offset=10", client.ApiBaseUrl),
+	templateID := 1
+	httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf("%s/template/%d", client.ApiBaseUrl, templateID),
 		httpmock.NewStringResponder(http.StatusOK, ""),
 	)
 
@@ -71,7 +75,7 @@ func TestEmails_GetAddressbooks_InvalidJson(t *testing.T) {
 
 	spClient := New(http.DefaultClient, &config)
 
-	books, err := spClient.GetAddressbooks(0, 10)
+	template, err := spClient.GetTemplate(templateID)
 	assert.Error(t, err)
-	assert.Equal(t, 0, len(books))
+	assert.Nil(t, template)
 }

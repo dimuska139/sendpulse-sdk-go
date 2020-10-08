@@ -12,12 +12,12 @@ import (
 	"testing"
 )
 
-func TestEmails_GetAddressbooks(t *testing.T) {
+func TestEmails_GetCampaigns(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
-	responseBody, _ := ioutil.ReadFile("./testdata/addressBooksList.json")
-	httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf("%s/addressbooks?limit=0&offset=10", client.ApiBaseUrl),
+	responseBody, _ := ioutil.ReadFile("./testdata/campaigns.json")
+	httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf("%s/campaigns?limit=0&offset=10", client.ApiBaseUrl),
 		httpmock.NewBytesResponder(http.StatusOK, responseBody),
 	)
 
@@ -29,16 +29,16 @@ func TestEmails_GetAddressbooks(t *testing.T) {
 
 	spClient := New(http.DefaultClient, &config)
 
-	books, err := spClient.GetAddressbooks(0, 10)
+	campaigns, err := spClient.GetCampaigns(0, 10)
 	assert.NoError(t, err)
-	assert.Equal(t, 2, len(books))
+	assert.Equal(t, 1, len(campaigns))
 }
 
-func TestEmails_GetAddressbooks_HttpError(t *testing.T) {
+func TestEmails_GetCampaigns_HttpError(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
-	httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf("%s/addressbooks?limit=0&offset=10", client.ApiBaseUrl),
+	httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf("%s/campaigns?limit=0&offset=10", client.ApiBaseUrl),
 		httpmock.NewStringResponder(http.StatusInternalServerError, ""),
 	)
 
@@ -50,16 +50,16 @@ func TestEmails_GetAddressbooks_HttpError(t *testing.T) {
 
 	spClient := New(http.DefaultClient, &config)
 
-	books, err := spClient.GetAddressbooks(0, 10)
+	campaigns, err := spClient.GetCampaigns(0, 10)
 	assert.Error(t, err)
-	assert.Equal(t, 0, len(books))
+	assert.Equal(t, 0, len(campaigns))
 }
 
-func TestEmails_GetAddressbooks_InvalidJson(t *testing.T) {
+func TestEmails_GetCampaigns_InvalidJson(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
-	httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf("%s/addressbooks?limit=0&offset=10", client.ApiBaseUrl),
+	httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf("%s/campaigns?limit=0&offset=10", client.ApiBaseUrl),
 		httpmock.NewStringResponder(http.StatusOK, ""),
 	)
 
@@ -71,7 +71,7 @@ func TestEmails_GetAddressbooks_InvalidJson(t *testing.T) {
 
 	spClient := New(http.DefaultClient, &config)
 
-	books, err := spClient.GetAddressbooks(0, 10)
+	campaigns, err := spClient.GetCampaigns(0, 10)
 	assert.Error(t, err)
-	assert.Equal(t, 0, len(books))
+	assert.Equal(t, 0, len(campaigns))
 }

@@ -20,7 +20,7 @@ func (api *Emails) CreateTemplate(name string, body string, lang string) (*int, 
 		data["name"] = name
 	}
 
-	response, err := api.Client.NewRequest(fmt.Sprintf(path), "POST", data, true)
+	response, err := api.Client.NewRequest(fmt.Sprintf(path), http.MethodPost, data, true)
 	if err != nil {
 		return nil, err
 	}
@@ -40,6 +40,10 @@ func (api *Emails) CreateTemplate(name string, body string, lang string) (*int, 
 		}
 	}
 
+	if !respData.Result {
+		return nil, &client.SendpulseError{HttpCode: http.StatusOK, Url: path, Body: string(body), Message: "invalid response"}
+	}
+
 	return &respData.RealID, err
 }
 
@@ -51,19 +55,22 @@ func (api *Emails) UpdateTemplate(templateID int, body string, lang string) erro
 		"lang": lang,
 	}
 
-	response, err := api.Client.NewRequest(fmt.Sprintf(path), "POST", data, true)
+	response, err := api.Client.NewRequest(fmt.Sprintf(path), http.MethodPost, data, true)
 	if err != nil {
 		return err
 	}
 
-	var respData map[string]interface{}
+	type tplResp struct {
+		Result bool
+	}
+
+	var respData tplResp
 	if err := json.Unmarshal(response, &respData); err != nil {
 		return &client.SendpulseError{HttpCode: http.StatusOK, Url: path, Body: body, Message: err.Error()}
 	}
 
-	result, resultExists := respData["result"]
-	if !resultExists || !result.(bool) {
-		return &client.SendpulseError{HttpCode: http.StatusOK, Url: path, Body: body, Message: "invalid response"}
+	if !respData.Result {
+		return &client.SendpulseError{HttpCode: http.StatusOK, Url: path, Body: string(body), Message: "invalid response"}
 	}
 
 	return nil
@@ -71,21 +78,21 @@ func (api *Emails) UpdateTemplate(templateID int, body string, lang string) erro
 
 func (api *Emails) GetTemplate(templateID int) (*Template, error) {
 	path := fmt.Sprintf("/template/%d", templateID)
-	body, err := api.Client.NewRequest(path, "GET", nil, true)
+	body, err := api.Client.NewRequest(path, http.MethodGet, nil, true)
 
 	if err != nil {
 		return nil, err
 	}
 
-	var template Template
+	var template *Template
 	if err := json.Unmarshal(body, &template); err != nil {
 		return nil, &client.SendpulseError{HttpCode: http.StatusOK, Url: path, Body: string(body), Message: err.Error()}
 	}
 
-	return &template, err
+	return template, err
 }
 
-func (api *Emails) GetTemplates(limit int, offset int, owner string) ([]Template, error) {
+func (api *Emails) GetTemplates(limit int, offset int, owner string) ([]*Template, error) {
 	path := "/templates"
 	data := map[string]interface{}{
 		"limit":  fmt.Sprint(limit),
@@ -94,13 +101,13 @@ func (api *Emails) GetTemplates(limit int, offset int, owner string) ([]Template
 	if owner != "" {
 		data["owner"] = owner
 	}
-	body, err := api.Client.NewRequest(path, "GET", data, true)
+	body, err := api.Client.NewRequest(path, http.MethodGet, data, true)
 
 	if err != nil {
 		return nil, err
 	}
 
-	var templates []Template
+	var templates []*Template
 	if err := json.Unmarshal(body, &templates); err != nil {
 		return nil, &client.SendpulseError{HttpCode: http.StatusOK, Url: path, Body: string(body), Message: err.Error()}
 	}
