@@ -11,7 +11,7 @@ import (
 func (api *Emails) GetWebhooks() ([]*Webhook, error) {
 	path := "/v2/email-service/webhook"
 
-	body, err := api.Client.NewRequest(path, "GET", nil, true)
+	body, err := api.Client.NewRequest(path, http.MethodGet, nil, true)
 
 	if err != nil {
 		return nil, err
@@ -37,7 +37,7 @@ func (api *Emails) GetWebhooks() ([]*Webhook, error) {
 func (api *Emails) GetWebhook(webhookID int) (*Webhook, error) {
 	path := fmt.Sprintf("/v2/email-service/webhook/%d", webhookID)
 
-	body, err := api.Client.NewRequest(path, "GET", nil, true)
+	body, err := api.Client.NewRequest(path, http.MethodGet, nil, true)
 	if err != nil {
 		return nil, err
 	}
@@ -72,7 +72,7 @@ func (api *Emails) CreateWebhook(url string, actions []string) ([]*Webhook, erro
 		"url":     url,
 	}
 
-	body, err := api.Client.NewRequest(path, "POST", data, true)
+	body, err := api.Client.NewRequest(path, http.MethodPost, data, true)
 	if err != nil {
 		return nil, err
 	}
@@ -97,7 +97,7 @@ func (api *Emails) CreateWebhook(url string, actions []string) ([]*Webhook, erro
 func (api *Emails) DeleteWebhook(webhookID int) error {
 	path := fmt.Sprintf("/v2/email-service/webhook/%d", webhookID)
 
-	body, err := api.Client.NewRequest(path, "DELETE", nil, true)
+	body, err := api.Client.NewRequest(path, http.MethodDelete, nil, true)
 	if err != nil {
 		return err
 	}
