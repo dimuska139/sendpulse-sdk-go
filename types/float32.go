@@ -3,18 +3,21 @@ package types
 import (
 	"encoding/json"
 	"errors"
+	"strconv"
 )
 
 type Float32 float32
 
-func (d *Float32) UnmarshalJSON(b []byte) error {
+func (d *Float32) UnmarshalJSON(data []byte) error {
 	var customFloat float32
-	if b[0] == 34 {
-		if err := json.Unmarshal(b[1:len(b)-1], &customFloat); err != nil {
+	if data[0] == '"' {
+		f64, err := strconv.ParseFloat(string(data[1:len(data)-1]), 32)
+		if err != nil {
 			return errors.New("SendpulseFloat32: UnmarshalJSON: " + err.Error())
 		}
+		customFloat = float32(f64)
 	} else {
-		if err := json.Unmarshal(b, &customFloat); err != nil {
+		if err := json.Unmarshal(data, &customFloat); err != nil {
 			return errors.New("SendpulseFloat32: UnmarshalJSON: " + err.Error())
 		}
 	}
