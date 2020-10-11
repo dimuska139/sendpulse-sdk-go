@@ -17,8 +17,8 @@ type Book struct {
 }
 
 type Variable struct {
-	Name  *string      `json:"name,omitempty"`
-	Value *interface{} `json:"value,omitempty"`
+	Name  string      `json:"name,omitempty"`
+	Value interface{} `json:"value,omitempty"`
 }
 
 type EmailDetailed struct {
@@ -31,6 +31,13 @@ type EmailDetailed struct {
 type Email struct {
 	Email     string
 	Variables map[string]interface{}
+}
+
+type EmailInfo struct {
+	BookID    types.Int   `json:"book_id,omitempty"`
+	Email     string      `json:"email,omitempty"`
+	Status    types.Int   `json:"status,omitempty"`
+	Variables []*Variable `json:"variables,omitempty"`
 }
 
 type CampaignCost struct {
@@ -148,13 +155,6 @@ type Template struct {
 	Preview string         `json:"preview,omitempty"`
 }
 
-type EmailInfo struct {
-	BookID    types.Int   `json:"book_id,omitempty"`
-	Email     string      `json:"email,omitempty"`
-	Status    types.Int   `json:"status,omitempty"`
-	Variables []*Variable `json:"variables,omitempty"`
-}
-
 type EmailInfoDetails struct {
 	ListName string         `json:"list_name,omitempty"`
 	ListID   types.Int      `json:"list_id,omitempty"`
@@ -162,7 +162,7 @@ type EmailInfoDetails struct {
 	Source   string         `json:"source,omitempty"`
 }
 
-type EmailCampaignStatistics struct {
+type CampaignEmailStatistics struct {
 	SentDate            types.DateTime `json:"sent_date,omitempty"`
 	GlobalStatus        types.Int      `json:"global_status,omitempty"`
 	GlobalStatusExplain string         `json:"global_status_explain,omitempty"`
@@ -185,14 +185,6 @@ type EmailCampaignsStatisticsDetails struct {
 		ID   types.Int `json:"id,omitempty"`
 		Name string    `json:"name,omitempty"`
 	} `json:"adressbooks,omitempty"`
-}
-
-type EmailAddressbookStatistics struct {
-	Email         string      `json:"email,omitempty"`
-	AddressBookID types.Int   `json:"abook_id,omitempty"`
-	Status        types.Int   `json:"status,omitempty"`
-	StatusExplain string      `json:"status_explain,omitempty"`
-	Variables     []*Variable `json:"variables,omitempty"`
 }
 
 type Webhook struct {

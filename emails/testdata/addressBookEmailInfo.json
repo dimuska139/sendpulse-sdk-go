@@ -1,0 +1,23 @@
+{
+  "email": "test@test.com",
+  "abook_id": "34",
+  "status": "1",
+  "status_explain": "Active",
+  "variables": [
+    {
+      "name": "имя переменной",
+      "type": "string",
+      "value": "значение"
+    },
+    {
+      "name": "имя переменной",
+      "type": "string",
+      "value": "значение"
+    },
+    {
+      "name": "имя переменной",
+      "type": "string",
+      "value": "значение"
+    }
+  ]
+}

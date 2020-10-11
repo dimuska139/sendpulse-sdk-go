@@ -146,6 +146,22 @@ func (api *Emails) GetAddressbookEmails(id int, limit int, offset int) ([]*Email
 	return emails, nil
 }
 
+func (api *Emails) GetEmailAddressbookEmail(addressBookID int, email string) (*EmailInfo, error) {
+	path := fmt.Sprintf("/addressbooks/%d/emails/%s", addressBookID, email)
+	body, err := api.Client.NewRequest(path, http.MethodGet, nil, true)
+
+	if err != nil {
+		return nil, err
+	}
+
+	var info EmailInfo
+	if err := json.Unmarshal(body, &info); err != nil {
+		return nil, &client.SendpulseError{HttpCode: http.StatusOK, Url: path, Body: string(body), Message: err.Error()}
+	}
+
+	return &info, nil
+}
+
 func (api *Emails) GetAddressbookEmailsTotal(id int) (int, error) {
 	path := fmt.Sprintf("/addressbooks/%d/emails/total", id)
 
@@ -376,4 +392,44 @@ func (api *Emails) GetAddressbookCampaigns(addressbookId int, limit int, offset 
 	}
 
 	return campaigns, err
+}
+
+func (api *Emails) UpdateAddressbookEmailVariable(addressBookID int, email string, variables map[string]interface{}) error {
+	path := fmt.Sprintf("/addressbooks/%d/emails/variable", addressBookID)
+
+	var variablesData []Variable
+	for key, value := range variables {
+		variablesData = append(variablesData, Variable{
+			Name:  key,
+			Value: value,
+		})
+	}
+
+	variablesJson, err := json.Marshal(variablesData)
+	if err != nil {
+		return err
+	}
+
+	data := map[string]interface{}{
+		"email":     email,
+		"variables": string(variablesJson),
+	}
+
+	body, err := api.Client.NewRequest(fmt.Sprintf(path), http.MethodPost, data, true)
+	if err != nil {
+		return err
+	}
+
+	var response struct {
+		Result bool
+	}
+	if err := json.Unmarshal(body, &response); err != nil {
+		return &client.SendpulseError{HttpCode: http.StatusOK, Url: path, Body: string(body), Message: err.Error()}
+	}
+
+	if !response.Result {
+		return &client.SendpulseError{HttpCode: http.StatusOK, Url: path, Body: string(body), Message: "invalid response"}
+	}
+
+	return nil
 }

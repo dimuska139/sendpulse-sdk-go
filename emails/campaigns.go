@@ -184,3 +184,19 @@ func (api *Emails) DeleteCampaign(campaignID int) error {
 	}
 	return nil
 }
+
+func (api *Emails) GetCampaignEmailStatistics(campaignID int, email string) (*CampaignEmailStatistics, error) {
+	path := fmt.Sprintf("/campaigns/%d/email/%s", campaignID, email)
+	body, err := api.Client.NewRequest(path, http.MethodGet, nil, true)
+
+	if err != nil {
+		return nil, err
+	}
+
+	var info CampaignEmailStatistics
+	if err := json.Unmarshal(body, &info); err != nil {
+		return nil, &client.SendpulseError{HttpCode: http.StatusOK, Url: path, Body: string(body), Message: err.Error()}
+	}
+
+	return &info, nil
+}
