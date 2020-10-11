@@ -1,0 +1,28 @@
+{
+  "example@yourdomain.com": [
+    {
+      "book_id": 391289,
+      "status": 0,
+      "variables": [
+        {
+          "name": "age",
+          "type": "string",
+          "value": "22"
+        }
+      ]
+    }
+  ],
+  "example2@yourdomain.com": [
+    {
+      "book_id": 391141,
+      "status": 0,
+      "variables": [
+        {
+          "name": "age",
+          "type": "string",
+          "value": "13"
+        }
+      ]
+    }
+  ]
+}

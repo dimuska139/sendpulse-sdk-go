@@ -1,0 +1,34 @@
+{
+  "example@yourdomain.com": {
+    "sent": 21,
+    "open": 11,
+    "link": 3,
+    "adressbooks": [
+      {
+        "id": 1375516,
+        "name": "book1"
+      },
+      {
+        "id": 1415158,
+        "name": "book3"
+      },
+      {
+        "id": 1649207,
+        "name": "book10"
+      }
+    ],
+    "blacklist": false
+  },
+  "example2@yourdomain.com": {
+    "sent": 1,
+    "open": 1,
+    "link": 0,
+    "adressbooks": [
+      {
+        "id": 1734397,
+        "name": "тест1"
+      }
+    ],
+    "blacklist": true
+  }
+}

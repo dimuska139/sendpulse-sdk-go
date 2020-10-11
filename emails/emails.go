@@ -51,10 +51,15 @@ func (api *Emails) GetEmailsInfo(emails ...string) (map[string][]*EmailInfo, err
 	if err != nil {
 		return nil, err
 	}
-
 	results := make(map[string][]*EmailInfo)
 	if err := json.Unmarshal(body, &results); err != nil {
 		return nil, &client.SendpulseError{HttpCode: http.StatusOK, Url: path, Body: string(body), Message: err.Error()}
+	}
+
+	for email, items := range results {
+		for _, item := range items {
+			item.Email = email
+		}
 	}
 
 	return results, nil
@@ -92,10 +97,10 @@ func (api *Emails) GetEmailCampaignsStatistics(email string) (*EmailCampaignsSta
 	return &info, nil
 }
 
-func (api *Emails) GetEmailsCampaignsStatistics(emailsList []string) (map[string]*EmailCampaignsStatisticsDetails, error) {
+func (api *Emails) GetEmailsCampaignsStatistics(emails ...string) (map[string]*EmailCampaignsStatisticsDetails, error) {
 	path := "/emails/campaigns"
 
-	encoded, err := json.Marshal(emailsList)
+	encoded, err := json.Marshal(emails)
 	if err != nil {
 		return nil, errors.New("could not to encode emails list")
 	}
