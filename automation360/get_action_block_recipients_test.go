@@ -32,7 +32,7 @@ func TestAutomation360_GetActionBlockRecipients(t *testing.T) {
 
 	recipients, total, err := spClient.GetActionBlockRecipients(blockID, 10, 0, "desc", "id")
 	assert.NoError(t, err)
-	assert.Equal(t, "test@test.com", *recipients[0].Email)
+	assert.Equal(t, "test@test.com", recipients[0].Email)
 	assert.Equal(t, 1, *total)
 }
 

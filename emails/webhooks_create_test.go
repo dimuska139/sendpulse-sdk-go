@@ -31,7 +31,7 @@ func TestEmails_CreateWebhook(t *testing.T) {
 
 	webhooks, err := spClient.CreateWebhook(fake.DomainName(), []string{"open", "unsubscribe"})
 	assert.NoError(t, err)
-	assert.Equal(t, 162241, *webhooks[0].ID)
+	assert.Equal(t, 162241, int(webhooks[0].ID))
 }
 
 func TestEmails_CreateWebhook_HttpError(t *testing.T) {

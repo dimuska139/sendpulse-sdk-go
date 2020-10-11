@@ -32,7 +32,7 @@ func TestCommon_GetBalance(t *testing.T) {
 	balance, err := spClient.GetBalance("")
 	assert.NoError(t, err)
 	assert.NotNil(t, balance)
-	assert.Equal(t, "USD", *balance.Currency)
+	assert.Equal(t, "USD", balance.Currency)
 }
 
 func TestCommon_GetBalanceWithCurrency(t *testing.T) {
@@ -55,7 +55,7 @@ func TestCommon_GetBalanceWithCurrency(t *testing.T) {
 	balance, err := spClient.GetBalance("USD")
 	assert.NoError(t, err)
 	assert.NotNil(t, balance)
-	assert.Equal(t, "USD", *balance.Currency)
+	assert.Equal(t, "USD", balance.Currency)
 }
 
 func TestCommon_GetBalance_HttpError(t *testing.T) {

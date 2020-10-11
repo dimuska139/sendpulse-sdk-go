@@ -33,7 +33,7 @@ func TestEmails_GetAddressbookCampaigns(t *testing.T) {
 	campaigns, err := spClient.GetAddressbookCampaigns(bookID, 0, 10)
 	assert.NoError(t, err)
 	assert.Equal(t, 2, len(campaigns))
-	assert.Equal(t, 9147533, int(*campaigns[0].TaskID))
+	assert.Equal(t, 9147533, int(campaigns[0].TaskID))
 }
 
 func TestEmails_GetAddressbookCampaigns_HttpError(t *testing.T) {

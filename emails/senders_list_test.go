@@ -32,7 +32,7 @@ func TestEmails_GetSenders(t *testing.T) {
 	senders, err := spClient.GetSenders()
 	assert.NoError(t, err)
 	assert.Equal(t, 2, len(senders))
-	assert.Equal(t, "JohnDoe@test.com", *senders[0].Email)
+	assert.Equal(t, "JohnDoe@test.com", senders[0].Email)
 }
 
 func TestEmails_GetSenders_HttpError(t *testing.T) {

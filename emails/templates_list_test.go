@@ -32,7 +32,7 @@ func TestEmails_GetTemplates(t *testing.T) {
 	templates, err := spClient.GetTemplates(0, 10, "")
 	assert.NoError(t, err)
 	assert.Equal(t, 2, len(templates))
-	assert.Equal(t, "c7a94d4f8395ae5a4183423309d5e99b", *templates[0].ID)
+	assert.Equal(t, "c7a94d4f8395ae5a4183423309d5e99b", templates[0].ID)
 }
 
 func TestEmails_GetTemplatesByOwner(t *testing.T) {
@@ -55,7 +55,7 @@ func TestEmails_GetTemplatesByOwner(t *testing.T) {
 	templates, err := spClient.GetTemplates(0, 10, "sendpulse")
 	assert.NoError(t, err)
 	assert.Equal(t, 2, len(templates))
-	assert.Equal(t, "c7a94d4f8395ae5a4183423309d5e99b", *templates[0].ID)
+	assert.Equal(t, "c7a94d4f8395ae5a4183423309d5e99b", templates[0].ID)
 }
 
 func TestEmails_GetTemplates_HttpError(t *testing.T) {

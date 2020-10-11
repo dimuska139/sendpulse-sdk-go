@@ -113,12 +113,15 @@ func (api *Automation360) GetEmailBlockStatistics(blockID int) (*EmailBlockStat,
 		return nil, err
 	}
 
-	var stat EmailBlockStat
-	if err := json.Unmarshal(body, &stat); err != nil {
+	var response struct {
+		Data *EmailBlockStat `json:"data,omitempty"`
+	}
+
+	if err := json.Unmarshal(body, &response); err != nil {
 		return nil, &client.SendpulseError{HttpCode: http.StatusOK, Url: path, Body: string(body), Message: err.Error()}
 	}
 
-	return &stat, err
+	return response.Data, err
 }
 
 func (api *Automation360) GetEmailBlockRecipients(blockID int, limit int, offset int, sortDirection string, sortField string) ([]*EmailBlockRecipient, *int, error) {
@@ -135,21 +138,20 @@ func (api *Automation360) GetEmailBlockRecipients(blockID int, limit int, offset
 		return nil, nil, err
 	}
 
-	type response struct {
+	var response struct {
 		Data  *[]*EmailBlockRecipient `json:"data,omitempty"`
 		Total *int                    `json:"total,omitempty"`
 	}
 
-	var resp response
-	if err := json.Unmarshal(body, &resp); err != nil {
+	if err := json.Unmarshal(body, &response); err != nil {
 		return nil, nil, &client.SendpulseError{HttpCode: http.StatusOK, Url: path, Body: string(body), Message: err.Error()}
 	}
 
-	if resp.Data == nil || resp.Total == nil {
+	if response.Data == nil || response.Total == nil {
 		return nil, nil, &client.SendpulseError{HttpCode: http.StatusOK, Url: path, Body: string(body), Message: "invalid response"}
 	}
 
-	return *resp.Data, resp.Total, nil
+	return *response.Data, response.Total, nil
 }
 
 func (api *Automation360) GetPushBlockStatistics(blockID int) (*PushBlockStat, error) {
@@ -159,13 +161,14 @@ func (api *Automation360) GetPushBlockStatistics(blockID int) (*PushBlockStat, e
 	if err != nil {
 		return nil, err
 	}
-
-	var stat PushBlockStat
-	if err := json.Unmarshal(body, &stat); err != nil {
+	var response struct {
+		Data *PushBlockStat `json:"data,omitempty"`
+	}
+	if err := json.Unmarshal(body, &response); err != nil {
 		return nil, &client.SendpulseError{HttpCode: http.StatusOK, Url: path, Body: string(body), Message: err.Error()}
 	}
 
-	return &stat, err
+	return response.Data, err
 }
 
 func (api *Automation360) GetPushBlockRecipients(blockID int, limit int, offset int, sortDirection string, sortField string) ([]*PushBlockRecipient, *int, error) {
@@ -182,21 +185,20 @@ func (api *Automation360) GetPushBlockRecipients(blockID int, limit int, offset 
 		return nil, nil, err
 	}
 
-	type response struct {
+	var response struct {
 		Data  *[]*PushBlockRecipient `json:"data,omitempty"`
 		Total *int                   `json:"total,omitempty"`
 	}
 
-	var resp response
-	if err := json.Unmarshal(body, &resp); err != nil {
+	if err := json.Unmarshal(body, &response); err != nil {
 		return nil, nil, &client.SendpulseError{HttpCode: http.StatusOK, Url: path, Body: string(body), Message: err.Error()}
 	}
 
-	if resp.Data == nil || resp.Total == nil {
+	if response.Data == nil || response.Total == nil {
 		return nil, nil, &client.SendpulseError{HttpCode: http.StatusOK, Url: path, Body: string(body), Message: "invalid response"}
 	}
 
-	return *resp.Data, resp.Total, nil
+	return *response.Data, response.Total, nil
 }
 
 func (api *Automation360) GetSmsBlockStatistics(blockID int) (*SmsBlockStat, error) {
@@ -207,12 +209,14 @@ func (api *Automation360) GetSmsBlockStatistics(blockID int) (*SmsBlockStat, err
 		return nil, err
 	}
 
-	var stat SmsBlockStat
-	if err := json.Unmarshal(body, &stat); err != nil {
+	var response struct {
+		Data *SmsBlockStat `json:"data,omitempty"`
+	}
+	if err := json.Unmarshal(body, &response); err != nil {
 		return nil, &client.SendpulseError{HttpCode: http.StatusOK, Url: path, Body: string(body), Message: err.Error()}
 	}
 
-	return &stat, err
+	return response.Data, err
 }
 
 func (api *Automation360) GetSmsBlockRecipients(blockID int, limit int, offset int, sortDirection string, sortField string) ([]*SmsBlockRecipient, *int, error) {
@@ -229,21 +233,20 @@ func (api *Automation360) GetSmsBlockRecipients(blockID int, limit int, offset i
 		return nil, nil, err
 	}
 
-	type response struct {
+	var response struct {
 		Data  *[]*SmsBlockRecipient `json:"data,omitempty"`
 		Total *int                  `json:"total,omitempty"`
 	}
 
-	var resp response
-	if err := json.Unmarshal(body, &resp); err != nil {
+	if err := json.Unmarshal(body, &response); err != nil {
 		return nil, nil, &client.SendpulseError{HttpCode: http.StatusOK, Url: path, Body: string(body), Message: err.Error()}
 	}
 
-	if resp.Data == nil || resp.Total == nil {
+	if response.Data == nil || response.Total == nil {
 		return nil, nil, &client.SendpulseError{HttpCode: http.StatusOK, Url: path, Body: string(body), Message: "invalid response"}
 	}
 
-	return *resp.Data, resp.Total, nil
+	return *response.Data, response.Total, nil
 }
 
 func (api *Automation360) GetFilterBlockStatistics(blockID int) (*FilterBlockStat, error) {
@@ -254,12 +257,14 @@ func (api *Automation360) GetFilterBlockStatistics(blockID int) (*FilterBlockSta
 		return nil, err
 	}
 
-	var stat FilterBlockStat
-	if err := json.Unmarshal(body, &stat); err != nil {
+	var response struct {
+		Data *FilterBlockStat `json:"data,omitempty"`
+	}
+	if err := json.Unmarshal(body, &response); err != nil {
 		return nil, &client.SendpulseError{HttpCode: http.StatusOK, Url: path, Body: string(body), Message: err.Error()}
 	}
 
-	return &stat, err
+	return response.Data, err
 }
 
 func (api *Automation360) GetFilterBlockRecipients(blockID int, limit int, offset int, sortDirection string, sortField string) ([]*FilterBlockRecipient, *int, error) {
@@ -276,21 +281,20 @@ func (api *Automation360) GetFilterBlockRecipients(blockID int, limit int, offse
 		return nil, nil, err
 	}
 
-	type response struct {
+	var response struct {
 		Data  *[]*FilterBlockRecipient `json:"data,omitempty"`
 		Total *int                     `json:"total,omitempty"`
 	}
 
-	var resp response
-	if err := json.Unmarshal(body, &resp); err != nil {
+	if err := json.Unmarshal(body, &response); err != nil {
 		return nil, nil, &client.SendpulseError{HttpCode: http.StatusOK, Url: path, Body: string(body), Message: err.Error()}
 	}
 
-	if resp.Data == nil || resp.Total == nil {
+	if response.Data == nil || response.Total == nil {
 		return nil, nil, &client.SendpulseError{HttpCode: http.StatusOK, Url: path, Body: string(body), Message: "invalid response"}
 	}
 
-	return *resp.Data, resp.Total, nil
+	return *response.Data, response.Total, nil
 }
 
 func (api *Automation360) GetConditionBlockStatistics(blockID int) (*ConditionBlockStat, error) {
@@ -301,12 +305,14 @@ func (api *Automation360) GetConditionBlockStatistics(blockID int) (*ConditionBl
 		return nil, err
 	}
 
-	var stat ConditionBlockStat
+	var stat struct {
+		Data *ConditionBlockStat `json:"data,omitempty"`
+	}
 	if err := json.Unmarshal(body, &stat); err != nil {
 		return nil, &client.SendpulseError{HttpCode: http.StatusOK, Url: path, Body: string(body), Message: err.Error()}
 	}
 
-	return &stat, err
+	return stat.Data, err
 }
 
 func (api *Automation360) GetConditionBlockRecipients(blockID int, limit int, offset int, sortDirection string, sortField string) ([]*ConditionBlockRecipient, *int, error) {
@@ -340,7 +346,7 @@ func (api *Automation360) GetConditionBlockRecipients(blockID int, limit int, of
 	return *resp.Data, resp.Total, nil
 }
 
-func (api *Automation360) GetGoalBlockStatistics(blockID int) (*SmsBlockStat, error) {
+func (api *Automation360) GetGoalBlockStatistics(blockID int) (*GoalBlockStat, error) {
 	path := fmt.Sprintf("/a360/stats/goal/%d/group-stat", blockID)
 	body, err := api.Client.NewRequest(path, http.MethodGet, nil, true)
 
@@ -348,12 +354,14 @@ func (api *Automation360) GetGoalBlockStatistics(blockID int) (*SmsBlockStat, er
 		return nil, err
 	}
 
-	var stat SmsBlockStat
-	if err := json.Unmarshal(body, &stat); err != nil {
+	var response struct {
+		Data *GoalBlockStat `json:"data,omitempty"`
+	}
+	if err := json.Unmarshal(body, &response); err != nil {
 		return nil, &client.SendpulseError{HttpCode: http.StatusOK, Url: path, Body: string(body), Message: err.Error()}
 	}
 
-	return &stat, err
+	return response.Data, err
 }
 
 func (api *Automation360) GetGoalBlockRecipients(blockID int, limit int, offset int, sortDirection string, sortField string) ([]*GoalBlockRecipient, *int, error) {
@@ -395,12 +403,14 @@ func (api *Automation360) GetActionBlockStatistics(blockID int) (*ActionBlockSta
 		return nil, err
 	}
 
-	var stat ActionBlockStat
-	if err := json.Unmarshal(body, &stat); err != nil {
+	var response struct {
+		Data *ActionBlockStat `json:"data,omitempty"`
+	}
+	if err := json.Unmarshal(body, &response); err != nil {
 		return nil, &client.SendpulseError{HttpCode: http.StatusOK, Url: path, Body: string(body), Message: err.Error()}
 	}
 
-	return &stat, err
+	return response.Data, err
 }
 
 func (api *Automation360) GetActionBlockRecipients(blockID int, limit int, offset int, sortDirection string, sortField string) ([]*ActionBlockRecipient, *int, error) {

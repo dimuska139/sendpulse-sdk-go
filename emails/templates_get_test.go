@@ -33,7 +33,7 @@ func TestEmails_GetTemplate(t *testing.T) {
 	template, err := spClient.GetTemplate(templateID)
 	assert.NoError(t, err)
 	assert.NotNil(t, template)
-	assert.Equal(t, "c7a94d4f8395ae5a4183423309d5e99b", *template.ID)
+	assert.Equal(t, "c7a94d4f8395ae5a4183423309d5e99b", template.ID)
 }
 
 func TestEmails_GetTemplate_HttpError(t *testing.T) {

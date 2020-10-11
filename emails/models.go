@@ -6,14 +6,14 @@ import (
 )
 
 type Book struct {
-	ID               *types.Int      `json:"id,omitempty"`
-	Name             *string         `json:"name,omitempty"`
-	AllEmailQty      *types.Int      `json:"all_email_qty,omitempty"`
-	ActiveEmailQty   *types.Int      `json:"active_email_qty,omitempty"`
-	InactiveEmailQty *types.Int      `json:"inactive_email_qty,omitempty"`
-	CreationDate     *types.DateTime `json:"creationdate,omitempty"`
-	Status           *types.Int      `json:"status,omitempty"`
-	StatusExplain    *string         `json:"status_explain,omitempty"`
+	ID               types.Int      `json:"id,omitempty"`
+	Name             string         `json:"name,omitempty"`
+	AllEmailQty      types.Int      `json:"all_email_qty,omitempty"`
+	ActiveEmailQty   types.Int      `json:"active_email_qty,omitempty"`
+	InactiveEmailQty types.Int      `json:"inactive_email_qty,omitempty"`
+	CreationDate     types.DateTime `json:"creationdate,omitempty"`
+	Status           types.Int      `json:"status,omitempty"`
+	StatusExplain    string         `json:"status_explain,omitempty"`
 }
 
 type Variable struct {
@@ -22,9 +22,9 @@ type Variable struct {
 }
 
 type EmailDetailed struct {
-	Email         *string                `json:"email,omitempty"`
-	Status        *types.Int             `json:"status,omitempty"`
-	StatusExplain *string                `json:"status_explain,omitempty"`
+	Email         string                 `json:"email,omitempty"`
+	Status        types.Int              `json:"status,omitempty"`
+	StatusExplain string                 `json:"status_explain,omitempty"`
 	Variables     map[string]interface{} `json:"variables,omitempty"`
 }
 
@@ -34,13 +34,13 @@ type Email struct {
 }
 
 type CampaignCost struct {
-	Cur                       *string    `json:"email,omitempty"`
-	SentEmailsQty             *types.Int `json:"sent_emails_qty,omitempty"`
-	OverdraftAllEmailsPrice   *types.Int `json:"overdraft_all_emails_price,omitempty"`
-	AddressesDeltaFromBalance *types.Int `json:"address_delta_from_balance,omitempty"`
-	AddressesDeltaFromTariff  *types.Int `json:"address_delta_from_tariff,omitempty"`
-	MaxEmailsPerTask          *types.Int `json:"max_emails_per_task,omitempty"`
-	Result                    *bool      `json:"result,omitempty"`
+	Cur                       string    `json:"email,omitempty"`
+	SentEmailsQty             types.Int `json:"sent_emails_qty,omitempty"`
+	OverdraftAllEmailsPrice   types.Int `json:"overdraft_all_emails_price,omitempty"`
+	AddressesDeltaFromBalance types.Int `json:"address_delta_from_balance,omitempty"`
+	AddressesDeltaFromTariff  types.Int `json:"address_delta_from_tariff,omitempty"`
+	MaxEmailsPerTask          types.Int `json:"max_emails_per_task,omitempty"`
+	Result                    bool      `json:"result,omitempty"`
 }
 
 type CreateCampaignDto struct {
@@ -71,12 +71,12 @@ type UpdateCampaignDto struct {
 }
 
 type MessageInfo struct {
-	SenderName  *string    `json:"sender_name,omitempty"`
-	SenderEmail *string    `json:"sender_email,omitempty"`
-	Subject     *string    `json:"subject,omitempty"`
-	Body        *string    `json:"body,omitempty"`
-	Attachments *string    `json:"attachments,omitempty"`
-	ListID      *types.Int `json:"list_id,omitempty"`
+	SenderName  string    `json:"sender_name,omitempty"`
+	SenderEmail string    `json:"sender_email,omitempty"`
+	Subject     string    `json:"subject,omitempty"`
+	Body        string    `json:"body,omitempty"`
+	Attachments string    `json:"attachments,omitempty"`
+	ListID      types.Int `json:"list_id,omitempty"`
 }
 
 type CampaignStatisticsCounts struct {
@@ -86,33 +86,33 @@ type CampaignStatisticsCounts struct {
 }
 
 type Campaign struct {
-	ID                *types.Int   `json:"id,omitempty"`
-	Name              *string      `json:"name,omitempty"`
+	ID                types.Int    `json:"id,omitempty"`
+	Name              string       `json:"name,omitempty"`
 	Message           *MessageInfo `json:"message,omitempty"`
-	Status            *types.Int   `json:"status,omitempty"`
-	AllEmailQty       *types.Int   `json:"all_email_qty,omitempty"`
-	TariffEmailQty    *types.Int   `json:"tariff_email_qty,omitempty"`
-	PaidEmailQty      *types.Int   `json:"paid_email_qty,omitempty"`
-	OverdraftPrice    *types.Int   `json:"overdraft_price,omitempty"`
-	OverdraftCurrency *string      `json:"ovedraft_currency,omitempty"`
+	Status            types.Int    `json:"status,omitempty"`
+	AllEmailQty       types.Int    `json:"all_email_qty,omitempty"`
+	TariffEmailQty    types.Int    `json:"tariff_email_qty,omitempty"`
+	PaidEmailQty      types.Int    `json:"paid_email_qty,omitempty"`
+	OverdraftPrice    types.Int    `json:"overdraft_price,omitempty"`
+	OverdraftCurrency string       `json:"ovedraft_currency,omitempty"`
 }
 
 type CampaignDetailed struct {
 	Campaign
 	Statistics []*CampaignStatisticsCounts `json:"statistics,omitempty"`
-	SendDate   *types.DateTime             `json:"send_date,omitempty"`
-	Permalink  *string                     `json:"permalink,omitempty"`
+	SendDate   types.DateTime              `json:"send_date,omitempty"`
+	Permalink  string                      `json:"permalink,omitempty"`
 }
 
 type Task struct {
-	TaskID     *types.Int `json:"task_id,omitempty"`
-	TaskName   *string    `json:"task_name,omitempty"`
-	TaskStatus *types.Int `json:"task_status,omitempty"`
+	TaskID     types.Int `json:"task_id,omitempty"`
+	TaskName   string    `json:"task_name,omitempty"`
+	TaskStatus types.Int `json:"task_status,omitempty"`
 }
 
 type ReferralsStatistics struct {
-	Link  *string    `json:"link,omitempty"`
-	Count *types.Int `json:"count,omitempty"`
+	Link  string    `json:"link,omitempty"`
+	Count types.Int `json:"count,omitempty"`
 }
 
 type TemplateCategoryInfo struct {
@@ -125,79 +125,79 @@ type TemplateCategoryInfo struct {
 }
 
 type Sender struct {
-	Name   *string `json:"name,omitempty"`
-	Email  *string `json:"email,omitempty"`
-	Status *string `json:"status,omitempty"`
+	Name   string `json:"name,omitempty"`
+	Email  string `json:"email,omitempty"`
+	Status string `json:"status,omitempty"`
 }
 
 type Template struct {
-	ID              *string `json:"id,omitempty"`
-	RealID          *int    `json:"real_id,omitempty"`
-	Name            *string `json:"name,omitempty"`
-	NameSlug        *string `json:"name_slug,omitempty"`
-	MetaDescription *string `json:"meta_description,omitempty"`
-	FullDescription *string `json:"full_description,omitempty"`
-	Category        *string `json:"category,omitempty"`
+	ID              string    `json:"id,omitempty"`
+	RealID          types.Int `json:"real_id,omitempty"`
+	Name            string    `json:"name,omitempty"`
+	NameSlug        string    `json:"name_slug,omitempty"`
+	MetaDescription string    `json:"meta_description,omitempty"`
+	FullDescription string    `json:"full_description,omitempty"`
+	Category        string    `json:"category,omitempty"`
 	//CategoryInfo    *TemplateCategoryInfo `json:"category_info,omitempty"`
-	Mark      *string `json:"mark,omitempty"`
-	MarkCount *int    `json:"mark_count,omitempty"`
-	Body      *string `json:"body,omitempty"`
+	Mark      string    `json:"mark,omitempty"`
+	MarkCount types.Int `json:"mark_count,omitempty"`
+	Body      string    `json:"body,omitempty"`
 	//Tags            *map[string]string `json:"tags,omitempty"`
-	Owner   *string         `json:"owner,omitempty"`
-	Created *types.DateTime `json:"created,omitempty"`
-	Preview *string         `json:"preview,omitempty"`
+	Owner   string         `json:"owner,omitempty"`
+	Created types.DateTime `json:"created,omitempty"`
+	Preview string         `json:"preview,omitempty"`
 }
 
 type EmailInfo struct {
-	BookID    *types.Int  `json:"book_id,omitempty"`
-	Email     *string     `json:"email,omitempty"`
-	Status    *types.Int  `json:"status,omitempty"`
+	BookID    types.Int   `json:"book_id,omitempty"`
+	Email     string      `json:"email,omitempty"`
+	Status    types.Int   `json:"status,omitempty"`
 	Variables []*Variable `json:"variables,omitempty"`
 }
 
 type EmailInfoDetails struct {
-	ListName *string         `json:"list_name,omitempty"`
-	ListID   *types.Int      `json:"list_id,omitempty"`
-	AddDate  *types.DateTime `json:"add_date,omitempty"`
-	Source   *string         `json:"source,omitempty"`
+	ListName string         `json:"list_name,omitempty"`
+	ListID   types.Int      `json:"list_id,omitempty"`
+	AddDate  types.DateTime `json:"add_date,omitempty"`
+	Source   string         `json:"source,omitempty"`
 }
 
 type EmailCampaignStatistics struct {
-	SentDate            *types.DateTime `json:"sent_date,omitempty"`
-	GlobalStatus        *int            `json:"global_status,omitempty"`
-	GlobalStatusExplain *string         `json:"global_status_explain,omitempty"`
+	SentDate            types.DateTime `json:"sent_date,omitempty"`
+	GlobalStatus        types.Int      `json:"global_status,omitempty"`
+	GlobalStatusExplain string         `json:"global_status_explain,omitempty"`
 }
 
 type EmailCampaignsStatistics struct {
 	Statistic *struct {
-		Sent *int `json:"sent,omitempty"`
-		Open *int `json:"open,omitempty"`
-		Link *int `json:"link,omitempty"`
+		Sent types.Int `json:"sent,omitempty"`
+		Open types.Int `json:"open,omitempty"`
+		Link types.Int `json:"link,omitempty"`
 	} `json:"statistic,omitempty"`
-	Blacklist *bool
+	Blacklist bool
 }
 
 type EmailCampaignsStatisticsDetails struct {
-	Sent         *int `json:"sent,omitempty"`
-	Open         *int `json:"open,omitempty"`
-	Link         *int `json:"link,omitempty"`
+	Sent         types.Int `json:"sent,omitempty"`
+	Open         types.Int `json:"open,omitempty"`
+	Link         types.Int `json:"link,omitempty"`
 	AddressBooks []*struct {
-		ID   *int    `json:"id,omitempty"`
-		Name *string `json:"name,omitempty"`
+		ID   types.Int `json:"id,omitempty"`
+		Name string    `json:"name,omitempty"`
 	} `json:"adressbooks,omitempty"`
 }
 
 type EmailAddressbookStatistics struct {
-	Email         *string     `json:"email,omitempty"`
-	AddressBookID *types.Int  `json:"abook_id,omitempty"`
-	Status        *types.Int  `json:"status,omitempty"`
-	StatusExplain *string     `json:"status_explain,omitempty"`
+	Email         string      `json:"email,omitempty"`
+	AddressBookID types.Int   `json:"abook_id,omitempty"`
+	Status        types.Int   `json:"status,omitempty"`
+	StatusExplain string      `json:"status_explain,omitempty"`
 	Variables     []*Variable `json:"variables,omitempty"`
 }
 
 type Webhook struct {
-	ID     *int    `json:"id,omitempty"`
-	UserID *int    `json:"user_id,omitempty"`
-	Url    *string `json:"url,omitempty"`
-	Action *string `json:"action,omitempty"`
+	ID     types.Int `json:"id,omitempty"`
+	UserID types.Int `json:"user_id,omitempty"`
+	Url    string    `json:"url,omitempty"`
+	Action string    `json:"action,omitempty"`
 }

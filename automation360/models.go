@@ -179,43 +179,43 @@ type ActionBlockStat struct {
 }
 
 type ActionBlockRecipient struct {
-	Email         *string         `json:"email,omitempty"`
-	EmailBase64   *string         `json:"email_b64,omitempty"`
-	Phone         *string         `json:"phone,omitempty"`
-	EventID       *string         `json:"event_id,omitempty"`
-	ExecutionDate *types.DateTime `json:"execution_date,omitempty"`
+	Email         string         `json:"email,omitempty"`
+	EmailBase64   string         `json:"email_b64,omitempty"`
+	Phone         string         `json:"phone,omitempty"`
+	EventID       string         `json:"event_id,omitempty"`
+	ExecutionDate types.DateTime `json:"execution_date,omitempty"`
 }
 
 type Conversion struct {
-	TotalConversions        *types.Int `json:"total_conversions,omitempty"`
-	MainTrigggerConversions *types.Int `json:"maintrigger_conversions,omitempty"`
-	GoalConversions         *types.Int `json:"goal_conversions,omitempty"`
+	TotalConversions        types.Int `json:"total_conversions,omitempty"`
+	MainTrigggerConversions types.Int `json:"maintrigger_conversions,omitempty"`
+	GoalConversions         types.Int `json:"goal_conversions,omitempty"`
 	Maintrigger             *struct {
-		ID          *types.Int      `json:"id,omitempty"`
-		Name        *string         `json:"name,omitempty"`
-		MainID      *types.Int      `json:"main_id,omitempty"`
-		AfType      *string         `json:"af_type,omitempty"`
-		Created     *types.DateTime `json:"created,omitempty"`
-		LastSend    *types.DateTime `json:"last_send,omitempty"`
-		Conversions *types.Int      `json:"conversions,omitempty"`
+		ID          types.Int      `json:"id,omitempty"`
+		Name        string         `json:"name,omitempty"`
+		MainID      types.Int      `json:"main_id,omitempty"`
+		AfType      string         `json:"af_type,omitempty"`
+		Created     types.DateTime `json:"created,omitempty"`
+		LastSend    types.DateTime `json:"last_send,omitempty"`
+		Conversions types.Int      `json:"conversions,omitempty"`
 	} `json:"maintrigger,omitempty"`
 	Goals []*struct {
-		ID          *types.Int      `json:"id,omitempty"`
-		Name        *string         `json:"name,omitempty"`
-		MainID      *types.Int      `json:"main_id,omitempty"`
-		AfType      *string         `json:"af_type,omitempty"`
-		Created     *types.DateTime `json:"created,omitempty"`
-		LastSend    *types.DateTime `json:"last_send,omitempty"`
-		Conversions *types.Int      `json:"conversions,omitempty"`
+		ID          types.Int      `json:"id,omitempty"`
+		Name        string         `json:"name,omitempty"`
+		MainID      types.Int      `json:"main_id,omitempty"`
+		AfType      string         `json:"af_type,omitempty"`
+		Created     types.DateTime `json:"created,omitempty"`
+		LastSend    types.DateTime `json:"last_send,omitempty"`
+		Conversions types.Int      `json:"conversions,omitempty"`
 	} `json:"goals,omitempty"`
 }
 
 type ConversionContact struct {
-	ID             *types.Int      `json:"id,omitempty"`
-	ConversionType *string         `json:"conversion_type,omitempty"`
-	FlowID         *types.Int      `json:"flow_id,omitempty"`
-	Email          *string         `json:"email,omitempty"`
-	Phone          *string         `json:"phone,omitempty"`
-	ConversionDate *types.DateTime `json:"conversion_date,omitempty"`
-	StartDate      *types.DateTime `json:"start_date,omitempty"`
+	ID             types.Int      `json:"id,omitempty"`
+	ConversionType string         `json:"conversion_type,omitempty"`
+	FlowID         types.Int      `json:"flow_id,omitempty"`
+	Email          string         `json:"email,omitempty"`
+	Phone          string         `json:"phone,omitempty"`
+	ConversionDate types.DateTime `json:"conversion_date,omitempty"`
+	StartDate      types.DateTime `json:"start_date,omitempty"`
 }

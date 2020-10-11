@@ -49,7 +49,7 @@ func TestEmails_CreateCampaign(t *testing.T) {
 		IsDraft: true,
 	})
 	assert.NoError(t, err)
-	assert.Equal(t, 27, int(*created.ID))
+	assert.Equal(t, 27, int(created.ID))
 }
 
 func TestEmails_CreateCampaignWithTestEmails(t *testing.T) {
@@ -88,7 +88,7 @@ func TestEmails_CreateCampaignWithTestEmails(t *testing.T) {
 		IsDraft: true,
 	})
 	assert.NoError(t, err)
-	assert.Equal(t, 27, int(*created.ID))
+	assert.Equal(t, 27, int(created.ID))
 }
 
 func TestEmails_CreateCampaign_HttpError(t *testing.T) {

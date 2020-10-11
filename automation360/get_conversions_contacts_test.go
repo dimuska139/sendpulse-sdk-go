@@ -32,7 +32,7 @@ func TestAutomation360_GetConversionsContacts(t *testing.T) {
 
 	contacts, total, err := spClient.GetConversionsContacts(autoresponderID)
 	assert.NoError(t, err)
-	assert.Equal(t, 40941, int(*contacts[0].ID))
+	assert.Equal(t, 40941, int(contacts[0].ID))
 	assert.Equal(t, 5, *total)
 }
 

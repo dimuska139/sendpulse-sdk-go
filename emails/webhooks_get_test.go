@@ -32,7 +32,7 @@ func TestEmails_GetWebhook(t *testing.T) {
 
 	webhook, err := spClient.GetWebhook(webhookID)
 	assert.NoError(t, err)
-	assert.Equal(t, 162242, *webhook.ID)
+	assert.Equal(t, 162242, int(webhook.ID))
 }
 
 func TestEmails_GetWebhook_Error(t *testing.T) {

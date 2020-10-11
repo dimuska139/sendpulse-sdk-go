@@ -32,7 +32,7 @@ func TestAutomation360_GetGoalBlockConversionsContacts(t *testing.T) {
 
 	contacts, total, err := spClient.GetGoalBlockConversionsContacts(autoresponderID, 0)
 	assert.NoError(t, err)
-	assert.Equal(t, 40941, int(*contacts[0].ID))
+	assert.Equal(t, 40941, int(contacts[0].ID))
 	assert.Equal(t, 5, *total)
 }
 
@@ -57,7 +57,7 @@ func TestAutomation360_GetGoalBlockConversionsContactsWithGoalID(t *testing.T) {
 
 	contacts, total, err := spClient.GetGoalBlockConversionsContacts(autoresponderID, goalID)
 	assert.NoError(t, err)
-	assert.Equal(t, 40941, int(*contacts[0].ID))
+	assert.Equal(t, 40941, int(contacts[0].ID))
 	assert.Equal(t, 5, *total)
 }
 

@@ -33,7 +33,7 @@ func TestAutomation360_GetConversions(t *testing.T) {
 	conversions, err := spClient.GetConversions(autoresponderID)
 	assert.NoError(t, err)
 	assert.NotNil(t, conversions)
-	assert.Equal(t, 5, int(*conversions.TotalConversions))
+	assert.Equal(t, 5, int(conversions.TotalConversions))
 }
 
 func TestAutomation360_GetConversions_HttpError(t *testing.T) {

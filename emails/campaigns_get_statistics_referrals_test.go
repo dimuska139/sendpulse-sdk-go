@@ -32,7 +32,7 @@ func TestEmails_GetCampaignStatisticsByReferrals(t *testing.T) {
 
 	statistics, err := spClient.GetCampaignStatisticsByReferrals(campaignID)
 	assert.NoError(t, err)
-	assert.Equal(t, "http://first_link.com", *statistics[0].Link)
+	assert.Equal(t, "http://first_link.com", statistics[0].Link)
 }
 
 func TestEmails_GetCampaignStatisticsByReferrals_HttpError(t *testing.T) {

@@ -32,7 +32,7 @@ func TestCommon_GetBalanceDetailed(t *testing.T) {
 	balance, err := spClient.GetBalanceDetailed()
 	assert.NoError(t, err)
 	assert.NotNil(t, balance)
-	assert.Equal(t, "Пакет 10 000 писем", *balance.Email.TariffName)
+	assert.Equal(t, "Пакет 10 000 писем", balance.Email.TariffName)
 }
 
 func TestCommon_GetBalanceDetailed_HttpError(t *testing.T) {
