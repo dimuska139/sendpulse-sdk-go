@@ -1,0 +1,12 @@
+[
+  {
+    "id": "1",
+    "name": "My first book",
+    "all_email_qty": "1",
+    "active_email_qty": "0",
+    "inactive_email_qty": "1",
+    "creationdate": null,
+    "status": "0",
+    "status_explain": "Active"
+  }
+]

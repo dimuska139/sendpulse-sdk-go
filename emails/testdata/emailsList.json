@@ -1,0 +1,20 @@
+[
+  {
+    "email":"test@test.com",
+    "status": 0,
+    "status_explain":"New",
+    "variables":{
+      "имя":"Евгения",
+      "город":"Киев"
+    }
+  },
+  {
+    "email":"test2@test.com",
+    "status": 0,
+    "status_explain":"New",
+    "variables":{
+      "имя":"Михаил",
+      "город":"Москва"
+    }
+  }
+]

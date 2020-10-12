@@ -1,0 +1,36 @@
+[
+  {
+    "book_id": "39359",
+    "email": "test@test.com",
+    "status": "3",
+    "variables": [
+      {
+        "name": "имя переменной",
+        "type": "string",
+        "value": "значение переменной"
+      },
+      {
+        "name": "имя переменной",
+        "type": "string",
+        "value": "значение переменной"
+      },
+      {
+        "name": "имя переменной",
+        "type": "string",
+        "value": "значение переменной"
+      }
+    ]
+  },
+  {
+    "book_id": "39362",
+    "email": "test@test.com",
+    "status": "3",
+    "variables": [
+      {
+        "name": "имя переменной",
+        "type": "string",
+        "value": "значение переменной"
+      }
+    ]
+  }
+]

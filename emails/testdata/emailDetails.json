@@ -1,0 +1,20 @@
+[
+  {
+    "list_name": "bookname1",
+    "list_id": 1375516,
+    "add_date": "2017-11-21 11:45:41",
+    "source": "panel"
+  },
+  {
+    "list_name": "bookname2",
+    "list_id": 1415158,
+    "add_date": "2018-01-23 07:07:08",
+    "source": "panel"
+  },
+  {
+    "list_name": "subscribers",
+    "list_id": 1649207,
+    "add_date": "2018-04-02 13:55:38",
+    "source": "form"
+  }
+]

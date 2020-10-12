@@ -1,0 +1,21 @@
+{
+  "data": [
+    {
+      "id": 12345,
+      "email": "email подписчика",
+      "email_b64": "BASE64 EMAIL",
+      "event_id": "dcf8e501483f4582fdb76a1831a74477",
+      "delivered_status": 1,
+      "delivered_status_description": "sent",
+      "is_spam": 0,
+      "is_unsubscribe": 0,
+      "phone": "телефон подписчика",
+      "sent_date": "2020-04-09 11:17:43",
+      "delivered_date": "2020-04-09 11:17:47",
+      "open_date": null,
+      "redirect_date": null,
+      "updated": "2020-04-09 11:17:47"
+    }
+  ],
+  "total": 1
+}

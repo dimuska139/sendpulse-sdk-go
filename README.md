@@ -8,40 +8,37 @@ API Documentation [https://sendpulse.com/api](https://sendpulse.com/api)
 [![Go Report Card](https://goreportcard.com/badge/github.com/dimuska139/sendpulse-sdk-go)](https://goreportcard.com/report/github.com/dimuska139/sendpulse-sdk-go)
 [![License](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/dimuska139/sendpulse-sdk-go/blob/master/LICENSE)
 
-### Download
+### Installation
 
 ```shell
 go get -u github.com/dimuska139/sendpulse-sdk-go
 ```
 
-### Example
+### Usage
 ```go
 package main
 
 import (
 	"fmt"
-	sendpulse "github.com/dimuska139/sendpulse-sdk-go"
+    "github.com/dimuska139/sendpulse-sdk-go"
+	"github.com/dimuska139/sendpulse-sdk-go/emails"
+    "net/http"
 )
 const ApiUserId = "12345"
 const ApiSecret = "12345"
-const ApiTimeout = 5
 
 func main() {
-	addressBookId := 12345
-    
-        config := sendpulse.Config{
-            UserID: ApiUserId,
-            Secret: ApiSecret,
-            Timeout: ApiTimeout,
-        }
-
-	client, e := sendpulse.ApiClient(config)
-	if e != nil {
-		fmt.Println(e)
+    config := sendpulse.Config{
+		UserID: ApiUserId,
+		Secret: ApiSecret,
 	}
 
+
+	client := emails.New(http.DefaultClient, &config)
+
+
 	// Get address book info by id
-	bookInfo, e := client.Emails.Books.Get(uint(addressBookId))
+	bookInfo, e := client.GetAddressbook(12345)
 	if e != nil {
 		fmt.Println(e)
 	} else {
@@ -49,3 +46,5 @@ func main() {
 	}
 }
 ```
+
+The tests should be considered a part of the documentation.

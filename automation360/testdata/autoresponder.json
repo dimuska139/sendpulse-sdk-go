@@ -1,0 +1,69 @@
+{
+  "autoresponder": {
+    "id": 281013,
+    "name": "Новая авторассылка 2020-06-23",
+    "status": 1,
+    "created": "2020-06-23 11:06:25",
+    "changed": "2020-06-23 11:06:25"
+  },
+  "flows": [
+    {
+      "id": 467510,
+      "main_id": 281013,
+      "af_type": "maintrigger",
+      "created": "2020-06-23 14:06:25",
+      "last_send": "2020-06-25 17:05:40",
+      "task": null
+    },
+    {
+      "id": 467511,
+      "main_id": 281013,
+      "af_type": "email",
+      "created": "2020-06-23 14:06:25",
+      "last_send": "2020-06-25 17:05:41",
+      "task": {
+        "id": 12018943,
+        "address_book_id": 0,
+        "message_title": "Спасибо за заказ, 7136062",
+        "sender_mail_address": "smtp_test@e.cn.ua",
+        "sender_mail_name": "smtp_test",
+        "created": "2020-06-23 14:06:25"
+      }
+    },
+    {
+      "id": 486649,
+      "main_id": 281013,
+      "af_type": "push",
+      "created": "2020-07-09 15:40:12",
+      "last_send": null,
+      "task": {
+        "id": 3016415,
+        "website_id": 14699,
+        "title": "заголовок для пуш",
+        "body": "текст пуш уведомления",
+        "icon": "/files/push/7023639/tasks/3016415/icons/577416720c24.png",
+        "url_for_click": "https://google.com",
+        "created": "2020-07-09 15:40:12"
+      }
+    },
+    {
+      "id": 486657,
+      "main_id": 281013,
+      "af_type": "sms",
+      "created": "2020-07-09 15:48:22",
+      "last_send": null,
+      "task": {
+        "id": 12110431,
+        "address_book_id": 0,
+        "sms_body": "текст смс уведомления",
+        "sms_sender_name": "Bakler",
+        "created": "2020-07-09 15:48:22"
+      }
+    }
+  ],
+  "starts": 18,
+  "in_queue": 0,
+  "end_count": 18,
+  "send_messages": 16,
+  "conversions": 0
+}

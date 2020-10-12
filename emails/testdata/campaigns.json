@@ -1,0 +1,19 @@
+[
+  {
+    "id": "27",
+    "name": "Тестовая рассылка",
+    "message": {
+      "sender_name": "John Doe",
+      "sender_email": "JohnDoe@test.com",
+      "subject": "Моя первая рассылка",
+      "list_id": "28",
+      "attachments": "file.zip, file2.zip"
+    },
+    "status": "3",
+    "all_email_qty": 9712,
+    "tariff_email_qty": "9712",
+    "paid_email_qty": "0",
+    "overdraft_price": 0,
+    "overdraft_currency": "RUR"
+  }
+]

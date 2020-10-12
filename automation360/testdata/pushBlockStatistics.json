@@ -1,0 +1,10 @@
+{
+  "data": {
+    "flow_id": 12345,
+    "sent": 9,
+    "delivered": 3,
+    "clicked": 6,
+    "errors": 0,
+    "last_send": "2020-02-28 12:18:23"
+  }
+}
