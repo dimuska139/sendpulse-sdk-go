@@ -31,10 +31,9 @@ func main() {
     config := sendpulse.Config{
         UserID: ApiUserId, 
         Secret: ApiSecret,
-	}
+    }
 	
     client := emails.New(http.DefaultClient, &config)
-
 
     // Get address book info by id 
     bookInfo, e := client.GetAddressbook(12345)
