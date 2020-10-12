@@ -19,9 +19,9 @@ go get -u github.com/dimuska139/sendpulse-sdk-go
 package main
 
 import (
-	"fmt"
+    "fmt"
     "github.com/dimuska139/sendpulse-sdk-go"
-	"github.com/dimuska139/sendpulse-sdk-go/emails"
+    "github.com/dimuska139/sendpulse-sdk-go/emails"
     "net/http"
 )
 const ApiUserId = "12345"
@@ -29,21 +29,20 @@ const ApiSecret = "12345"
 
 func main() {
     config := sendpulse.Config{
-		UserID: ApiUserId,
-		Secret: ApiSecret,
+        UserID: ApiUserId, 
+        Secret: ApiSecret,
 	}
+	
+    client := emails.New(http.DefaultClient, &config)
 
 
-	client := emails.New(http.DefaultClient, &config)
-
-
-	// Get address book info by id
-	bookInfo, e := client.GetAddressbook(12345)
-	if e != nil {
-		fmt.Println(e)
-	} else {
-		fmt.Println(*bookInfo)
-	}
+    // Get address book info by id 
+    bookInfo, e := client.GetAddressbook(12345)
+    if e != nil {
+        fmt.Println(e)
+    } else {
+        fmt.Println(*bookInfo)
+    }
 }
 ```
 
