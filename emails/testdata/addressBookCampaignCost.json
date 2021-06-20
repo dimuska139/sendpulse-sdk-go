@@ -1,9 +1,0 @@
-{
-  "cur": "RUR",
-  "sent_emails_qty": 16,
-  "overdraftAllEmailsPrice": 0,
-  "addressesDeltaFromBalance": 0,
-  "addressesDeltaFromTariff": 16,
-  "max_emails_per_task": "500",
-  "result": true
-}
