@@ -1,6 +1,8 @@
 package models
 
 import (
+	"encoding/json"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -21,5 +23,24 @@ func (d *DateTimeType) UnmarshalJSON(b []byte) error {
 	}
 
 	d.Time = t
+	return nil
+}
+
+type Float32Type float32
+
+func (d *Float32Type) UnmarshalJSON(b []byte) error {
+	var value float32
+	if b[0] == '"' {
+		f64, err := strconv.ParseFloat(string(b[1:len(b)-1]), 32)
+		if err != nil {
+			return err
+		}
+		value = float32(f64)
+	} else {
+		if err := json.Unmarshal(b, &value); err != nil {
+			return err
+		}
+	}
+	*d = Float32Type(value)
 	return nil
 }

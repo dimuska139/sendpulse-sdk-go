@@ -29,6 +29,7 @@ type Client struct {
 	token     string
 	tokenLock *sync.RWMutex
 	Emails    *EmailsService
+	Balance   *BalanceService
 }
 
 func NewClient(client *http.Client, config *Config) *Client {
@@ -39,6 +40,7 @@ func NewClient(client *http.Client, config *Config) *Client {
 		tokenLock: new(sync.RWMutex),
 	}
 	cl.Emails = newEmailsService(cl)
+	cl.Balance = newBalanceService(cl)
 	return cl
 }
 

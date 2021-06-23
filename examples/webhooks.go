@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"github.com/dimuska139/sendpulse-sdk-go/sendpulse"
-	"github.com/dimuska139/sendpulse-sdk-go/sendpulse/models"
 	"net/http"
 )
 
@@ -22,14 +21,10 @@ func main() {
 		fmt.Println(err)
 	}*/
 
-	emails := make([]*models.EmailToAdd, 0)
-	emails = append(emails, &models.EmailToAdd{
-		Email:     "test@test.com",
-		Variables: map[string]interface{}{"age": 21, "weight": 99},
-	})
-
-	if err := client.Emails.AddressBooks.SingleOptIn(1266208, emails); err != nil {
+	webhooks, err := client.Emails.Webhooks.Create([]string{"spam", "redirect"}, "https://test.ru")
+	if err != nil {
 		fmt.Println(err)
 	}
-	fmt.Println(*emails[0])
+	fmt.Println(*webhooks[0])
+	fmt.Println(*webhooks[1])
 }

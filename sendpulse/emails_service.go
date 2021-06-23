@@ -6,6 +6,7 @@ type EmailsService struct {
 	Templates    *TemplatesService
 	Senders      *SendersService
 	Blacklist    *BlacklistService
+	Webhooks     *WebhooksService
 }
 
 func newEmailsService(cl *Client) *EmailsService {
@@ -15,5 +16,6 @@ func newEmailsService(cl *Client) *EmailsService {
 		Templates:    newTemplatesService(cl),
 		Senders:      newSendersService(cl),
 		Blacklist:    newBlacklistService(cl),
+		Webhooks:     newWebhooksService(cl),
 	}
 }
