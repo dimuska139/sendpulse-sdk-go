@@ -2,9 +2,9 @@ package models
 
 type BalanceDetailed struct {
 	Balance *struct {
-		Main     Float32Type `json:"main"`
-		Bonus    Float32Type `json:"bonus"`
-		Currency string      `json:"currency"`
+		Main     float32 `json:"main,string"`
+		Bonus    float32 `json:"bonus,string"`
+		Currency string  `json:"currency"`
 	} `json:"balance"`
 	Email *struct {
 		TariffName         string       `json:"tariff_name"`

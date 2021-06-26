@@ -27,23 +27,21 @@ func (service *SendersService) Create(name string, email string) error {
 		Email: email,
 	}
 
-	type response struct {
-		Result bool
+	var response struct {
+		Result bool `json:"result"`
 	}
 
-	var respData response
-	_, err := service.client.NewRequest(http.MethodPost, fmt.Sprintf(path), params, &respData, true)
+	_, err := service.client.NewRequest(http.MethodPost, fmt.Sprintf(path), params, &response, true)
 	return err
 }
 
 func (service *SendersService) GetActivationCode(email string) error {
 	path := fmt.Sprintf("/senders/%s/code", email)
 
-	type response struct {
-		Result bool
+	var response struct {
+		Result bool `json:"result"`
 	}
-	var respData response
-	_, err := service.client.NewRequest(http.MethodGet, fmt.Sprintf(path), nil, &respData, true)
+	_, err := service.client.NewRequest(http.MethodGet, fmt.Sprintf(path), nil, &response, true)
 	return err
 }
 
@@ -58,11 +56,10 @@ func (service *SendersService) Activate(email, code string) error {
 		Code: code,
 	}
 
-	type response struct {
-		Result bool
+	var response struct {
+		Result bool `json:"result"`
 	}
-	var respData response
-	_, err := service.client.NewRequest(http.MethodPost, fmt.Sprintf(path), params, &respData, true)
+	_, err := service.client.NewRequest(http.MethodPost, fmt.Sprintf(path), params, &response, true)
 	return err
 }
 
@@ -85,10 +82,9 @@ func (service *SendersService) Delete(email string) error {
 		Email: email,
 	}
 
-	type response struct {
-		Result bool
+	var response struct {
+		Result bool `json:"result"`
 	}
-	var respData response
-	_, err := service.client.NewRequest(http.MethodDelete, fmt.Sprintf(path), params, &respData, true)
+	_, err := service.client.NewRequest(http.MethodDelete, fmt.Sprintf(path), params, &response, true)
 	return err
 }

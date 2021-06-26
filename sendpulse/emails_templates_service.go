@@ -33,13 +33,12 @@ func (service *TemplatesService) Create(name string, body string, lang string) (
 		params.Name = name
 	}
 
-	type response struct {
-		Result bool
-		RealID int `json:"real_id"`
+	var response struct {
+		Result bool `json:"result"`
+		RealID int  `json:"real_id"`
 	}
-	var respData response
-	_, err := service.client.NewRequest(http.MethodPost, fmt.Sprintf(path), params, &respData, true)
-	return respData.RealID, err
+	_, err := service.client.NewRequest(http.MethodPost, fmt.Sprintf(path), params, &response, true)
+	return response.RealID, err
 }
 
 func (service *TemplatesService) Update(templateID int, body string, lang string) error {
@@ -55,11 +54,10 @@ func (service *TemplatesService) Update(templateID int, body string, lang string
 		Lang: lang,
 	}
 
-	type response struct {
-		Result bool
+	var response struct {
+		Result bool `json:"result"`
 	}
-	var respData response
-	_, err := service.client.NewRequest(http.MethodPost, fmt.Sprintf(path), params, &respData, true)
+	_, err := service.client.NewRequest(http.MethodPost, fmt.Sprintf(path), params, &response, true)
 	return err
 }
 

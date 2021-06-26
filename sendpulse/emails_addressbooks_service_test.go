@@ -238,28 +238,6 @@ func (suite *SendpulseTestSuite) TestEmailsService_AddressBooksService_EmailsUns
 	suite.NoError(suite.client.Emails.AddressBooks.Unsubscribe(1, emails))
 }
 
-func (suite *SendpulseTestSuite) TestEmailsService_AddressBooksService_Campaigns() {
-	suite.mux.HandleFunc("/addressbooks/1/campaigns", func(w http.ResponseWriter, r *http.Request) {
-		suite.Equal(http.MethodGet, r.Method)
-		fmt.Fprintf(w, `[
-			{
-				"task_id": 9147533,
-				"task_name": "тест",
-				"task_status": 3
-			},
-			{
-				"task_id": 9156025,
-				"task_name": "Campaign_6741804_UM99",
-				"task_status": 3
-			}
-		]`)
-	})
-
-	tasks, err := suite.client.Emails.AddressBooks.CampaignsList(1, 10, 0)
-	suite.NoError(err)
-	suite.Equal(2, len(tasks))
-}
-
 func (suite *SendpulseTestSuite) TestEmailsService_AddressBooksService_UpdateEmailVariables() {
 	suite.mux.HandleFunc("/addressbooks/1/emails/variable", func(w http.ResponseWriter, r *http.Request) {
 		suite.Equal(http.MethodPost, r.Method)

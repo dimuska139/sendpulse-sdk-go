@@ -1,7 +1,7 @@
 package models
 
 type Task struct {
-	TaskID     int    `json:"task_id"`
-	TaskName   string `json:"task_name"`
-	TaskStatus int    `json:"task_status"`
+	ID     int    `json:"task_id"`
+	Name   string `json:"task_name"`
+	Status int    `json:"task_status"`
 }

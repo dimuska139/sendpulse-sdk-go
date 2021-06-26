@@ -23,13 +23,12 @@ func (service *AddressBooksService) Create(name string) (int, error) {
 		BookName string `json:"bookName"`
 	}
 
-	type response struct {
+	var response struct {
 		ID int `json:"id"`
 	}
-	var respData response
 	params := data{BookName: name}
-	_, err := service.client.NewRequest(http.MethodPost, fmt.Sprintf(path), params, &respData, true)
-	return respData.ID, err
+	_, err := service.client.NewRequest(http.MethodPost, fmt.Sprintf(path), params, &response, true)
+	return response.ID, err
 }
 
 // Update method makes request to update the name of address book.
@@ -183,13 +182,6 @@ func (service *AddressBooksService) Unsubscribe(addressBookID int, emails []stri
 
 	_, err := service.client.NewRequest(http.MethodPost, path, body, &response, true)
 	return err
-}
-
-func (service *AddressBooksService) CampaignsList(addressBookID, limit, offset int) ([]*models.Task, error) {
-	path := fmt.Sprintf("/addressbooks/%d/campaigns?limit=%d&offset=%d", addressBookID, limit, offset)
-	var tasks []*models.Task
-	_, err := service.client.NewRequest(http.MethodGet, path, nil, &tasks, true)
-	return tasks, err
 }
 
 func (service *AddressBooksService) UpdateEmailVariables(addressBookID int, email string, variables []*models.Variable) error {
