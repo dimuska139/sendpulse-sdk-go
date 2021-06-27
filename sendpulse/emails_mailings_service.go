@@ -1,6 +1,7 @@
 package sendpulse
 
 import (
+	b64 "encoding/base64"
 	"fmt"
 	"github.com/dimuska139/sendpulse-sdk-go/sendpulse/models"
 	"net/http"
@@ -15,11 +16,19 @@ func newMailingsService(cl *Client) *MailingsService {
 	return &MailingsService{client: cl}
 }
 
-func (service *MailingsService) CreateMailing(data *models.MailingDto) (*models.Mailing, error) {
+func (service *MailingsService) CreateMailing(data models.MailingDto) (*models.Mailing, error) {
 	path := "/campaigns"
 	var innerMailing struct {
 		models.Mailing
 		OverdraftPrice string `json:"overdraft_price"`
+	}
+
+	if data.Body != nil {
+		*data.Body = b64.StdEncoding.EncodeToString([]byte(*data.Body))
+	}
+
+	if data.BodyAMP != nil {
+		*data.BodyAMP = b64.StdEncoding.EncodeToString([]byte(*data.BodyAMP))
 	}
 
 	_, err := service.client.NewRequest(http.MethodPost, fmt.Sprintf(path), data, &innerMailing, true)
@@ -34,12 +43,21 @@ func (service *MailingsService) CreateMailing(data *models.MailingDto) (*models.
 	return &innerMailing.Mailing, err
 }
 
-func (service *MailingsService) UpdateMailing(id int, data *models.MailingDto) error {
+func (service *MailingsService) UpdateMailing(id int, data models.MailingDto) error {
 	path := fmt.Sprintf("/campaigns/%d", id)
 	var respData struct {
 		Result bool `json:"result"`
 		Id     int  `json:"id"`
 	}
+
+	if data.Body != nil {
+		*data.Body = b64.StdEncoding.EncodeToString([]byte(*data.Body))
+	}
+
+	if data.BodyAMP != nil {
+		*data.BodyAMP = b64.StdEncoding.EncodeToString([]byte(*data.BodyAMP))
+	}
+
 	_, err := service.client.NewRequest(http.MethodPatch, fmt.Sprintf(path), data, &respData, true)
 	return err
 }

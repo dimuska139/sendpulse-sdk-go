@@ -23,7 +23,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_MailingsService_CreateMailing
 	body := "<h1>Hello!</h1>"
 	addressBookID := 12345
 	sendDate := models.DateTimeType(time.Now())
-	mailing, err := suite.client.Emails.Mailings.CreateMailing(&models.MailingDto{
+	mailing, err := suite.client.Emails.Mailings.CreateMailing(models.MailingDto{
 		SenderName:    "Admin",
 		SenderEmail:   "test@sendpulse.com",
 		Subject:       "Test message",
@@ -51,7 +51,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_MailingsService_UpdateMailing
 	body := "<h1>Hello!</h1>"
 	addressBookID := 12345
 	sendDate := models.DateTimeType(time.Now())
-	err := suite.client.Emails.Mailings.UpdateMailing(1, &models.MailingDto{
+	err := suite.client.Emails.Mailings.UpdateMailing(1, models.MailingDto{
 		SenderName:    "Admin",
 		SenderEmail:   "test@sendpulse.com",
 		Subject:       "Test message",
