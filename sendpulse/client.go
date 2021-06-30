@@ -31,6 +31,7 @@ type Client struct {
 	Emails    *EmailsService
 	Balance   *BalanceService
 	SMTP      *SmtpService
+	Push      *PushService
 }
 
 func NewClient(client *http.Client, config *Config) *Client {
@@ -43,6 +44,7 @@ func NewClient(client *http.Client, config *Config) *Client {
 	cl.Emails = newEmailsService(cl)
 	cl.Balance = newBalanceService(cl)
 	cl.SMTP = newSmtpService(cl)
+	cl.Push = newPushService(cl)
 	return cl
 }
 
