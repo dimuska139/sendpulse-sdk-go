@@ -56,7 +56,7 @@ func (service *PushService) List(params PushListParams) ([]Push, error) {
 	}
 
 	var respData []Push
-	_, err := service.client.NewRequest(http.MethodGet, fmt.Sprintf(path), nil, &respData, true)
+	_, err := service.client.NewRequest(http.MethodGet, path, nil, &respData, true)
 	return respData, err
 }
 
