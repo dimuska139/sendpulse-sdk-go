@@ -7,7 +7,7 @@ type CampaignsEmailStatistics struct {
 		Link int `json:"link"`
 	} `json:"statistic"`
 	Addressbooks []*struct {
-		Id   int    `json:"int"`
+		Id   int    `json:"id"`
 		Name string `json:"address_book_name"`
 	}
 	Blacklist bool

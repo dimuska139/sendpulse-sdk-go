@@ -86,7 +86,7 @@ func (service *ValidatorService) GetAddressBookValidationResult(addressBookID in
 func (service *ValidatorService) GetValidatedAddressBooksList(limit, offset int) ([]*AddressBookValidationResult, error) {
 	path := fmt.Sprintf("/verifier-service/check-list?start=%d&count=%d", offset, limit)
 	var response struct {
-		Total int                            `json:"int"`
+		Total int                            `json:"total"`
 		List  []*AddressBookValidationResult `json:"list"`
 	}
 	_, err := service.client.NewRequest(http.MethodGet, fmt.Sprintf(path), nil, &response, true)

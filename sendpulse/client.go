@@ -33,6 +33,8 @@ type Client struct {
 	SMTP      *SmtpService
 	Push      *PushService
 	Sms       *SmsService
+	Viber     *ViberService
+	VkOk      *VkOkService
 }
 
 func NewClient(client *http.Client, config *Config) *Client {
@@ -47,6 +49,8 @@ func NewClient(client *http.Client, config *Config) *Client {
 	cl.SMTP = newSmtpService(cl)
 	cl.Push = newPushService(cl)
 	cl.Sms = newSmsService(cl)
+	cl.Viber = newViberService(cl)
+	cl.VkOk = newVkOkService(cl)
 	return cl
 }
 
@@ -137,6 +141,54 @@ func (c *Client) NewRequest(method string, path string, body interface{}, result
 	}
 
 	if resp.StatusCode != http.StatusOK {
+		return nil, &SendpulseError{resp.StatusCode, path, string(respBody), ""}
+	}
+
+	if err := json.Unmarshal(respBody, &result); err != nil {
+		return nil, &SendpulseError{resp.StatusCode, path, string(respBody), err.Error()}
+	}
+
+	return resp, nil
+}
+
+func (c *Client) NewFormDataRequest(path string, buffer *bytes.Buffer, contentType string, result interface{}, useToken bool) (*http.Response, error) {
+	fullPath := apiBaseUrl + path
+	req, e := http.NewRequest(http.MethodPost, fullPath, buffer)
+	if e != nil {
+		return nil, e
+	}
+
+	req.Header.Set("Content-Type", contentType)
+
+	if useToken {
+		token, err := c.getToken()
+		if err != nil {
+			return nil, err
+		}
+		req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", token))
+	}
+	resp, err := c.client.Do(req)
+	if err != nil {
+		return nil, &SendpulseError{http.StatusServiceUnavailable, path, "", err.Error()}
+	}
+
+	defer resp.Body.Close()
+
+	if resp.StatusCode == http.StatusUnauthorized && useToken {
+		c.clearToken()
+		respData, err := c.NewFormDataRequest(path, buffer, contentType, result, useToken)
+		if err != nil {
+			return nil, err
+		}
+		return respData, nil
+	}
+
+	respBody, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, &SendpulseError{resp.StatusCode, path, string(respBody), err.Error()}
+	}
+
+	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusCreated {
 		return nil, &SendpulseError{resp.StatusCode, path, string(respBody), ""}
 	}
 
