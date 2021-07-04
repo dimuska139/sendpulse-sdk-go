@@ -43,7 +43,7 @@ func (service *BotsTelegramService) GetAccount() (*TelegramAccount, error) {
 		Success bool             `json:"success"`
 		Data    *TelegramAccount `json:"data"`
 	}
-	_, err := service.client.NewRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -78,7 +78,7 @@ func (service *BotsTelegramService) GetBots() ([]*TelegramBot, error) {
 		Success bool           `json:"success"`
 		Data    []*TelegramBot `json:"data"`
 	}
-	_, err := service.client.NewRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -108,7 +108,7 @@ func (service *BotsTelegramService) GetContact(contactID string) (*TelegramBotCo
 		Success bool                `json:"success"`
 		Data    *TelegramBotContact `json:"data"`
 	}
-	_, err := service.client.NewRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -119,7 +119,7 @@ func (service *BotsTelegramService) GetContactsByTag(tag, botID string) ([]*Tele
 		Success bool                  `json:"success"`
 		Data    []*TelegramBotContact `json:"data"`
 	}
-	_, err := service.client.NewRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -141,7 +141,7 @@ func (service *BotsTelegramService) GetContactsByVariable(params BotContactsByVa
 		Success bool                  `json:"success"`
 		Data    []*TelegramBotContact `json:"data"`
 	}
-	_, err := service.client.NewRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -160,7 +160,7 @@ func (service *BotsTelegramService) SendTextToContact(contactID string, text str
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.NewRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
 	return err
 }
 
@@ -183,7 +183,7 @@ func (service *BotsTelegramService) SetVariableToContact(contactID string, varia
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.NewRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
 	return err
 }
 
@@ -202,7 +202,7 @@ func (service *BotsTelegramService) SetTagsToContact(contactID string, tags []st
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.NewRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
 	return err
 }
 
@@ -221,7 +221,7 @@ func (service *BotsTelegramService) DeleteTagFromContact(contactID string, tag s
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.NewRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
 	return err
 }
 
@@ -238,7 +238,7 @@ func (service *BotsTelegramService) DisableContact(contactID string) error {
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.NewRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
 	return err
 }
 
@@ -255,7 +255,7 @@ func (service *BotsTelegramService) EnableContact(contactID string) error {
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.NewRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
 	return err
 }
 
@@ -272,7 +272,7 @@ func (service *BotsTelegramService) DeleteContact(contactID string) error {
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.NewRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
 	return err
 }
 
@@ -285,7 +285,7 @@ func (service *BotsTelegramService) GetPauseAutomation(contactID string) (int, e
 			Minutes int `json:"minutes"`
 		} `json:"data"`
 	}
-	_, err := service.client.NewRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData.Data.Minutes, err
 }
 
@@ -303,7 +303,7 @@ func (service *BotsTelegramService) SetPauseAutomation(contactID string, minutes
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.NewRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
 	return err
 }
 
@@ -319,7 +319,7 @@ func (service *BotsTelegramService) DeletePauseAutomation(contactID string) erro
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.NewRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
 	return err
 }
 
@@ -330,7 +330,7 @@ func (service *BotsTelegramService) GetBotVariables(botID string) ([]*BotVariabl
 		Success bool           `json:"success"`
 		Data    []*BotVariable `json:"data"`
 	}
-	_, err := service.client.NewRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -341,7 +341,7 @@ func (service *BotsTelegramService) GetFlows(botID string) ([]*BotFlow, error) {
 		Success bool       `json:"success"`
 		Data    []*BotFlow `json:"data"`
 	}
-	_, err := service.client.NewRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -362,7 +362,7 @@ func (service *BotsTelegramService) RunFlow(contactID, flowID string, externalDa
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.NewRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
 	return err
 }
 
@@ -383,7 +383,7 @@ func (service *BotsTelegramService) RunFlowByTrigger(contactID, triggerKeyword s
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.NewRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
 	return err
 }
 
@@ -394,7 +394,7 @@ func (service *BotsTelegramService) GetBotTriggers(botID string) ([]*BotTrigger,
 		Success bool          `json:"success"`
 		Data    []*BotTrigger `json:"data"`
 	}
-	_, err := service.client.NewRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -422,7 +422,7 @@ func (service *BotsTelegramService) GetBotChats(botID string) ([]*TelegramBotCha
 		Success bool               `json:"success"`
 		Data    []*TelegramBotChat `json:"data"`
 	}
-	_, err := service.client.NewRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -433,7 +433,7 @@ func (service *BotsTelegramService) GetContactMessages(contactID string) ([]*Tel
 		Success bool                  `json:"success"`
 		Data    []*TelegramBotMessage `json:"data"`
 	}
-	_, err := service.client.NewRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -457,6 +457,6 @@ func (service *BotsTelegramService) SendCampaign(params TelegramBotSendCampaignP
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.NewRequest(http.MethodPost, path, params, &respData, true)
+	_, err := service.client.newRequest(http.MethodPost, path, params, &respData, true)
 	return err
 }

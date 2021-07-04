@@ -24,7 +24,7 @@ func (service *ValidatorService) ValidateAddressBook(addressBookID int) error {
 		ID int `json:"id"`
 	}
 	body := bodyFormat{ID: addressBookID}
-	_, err := service.client.NewRequest(http.MethodPost, fmt.Sprintf(path), body, &response, true)
+	_, err := service.client.newRequest(http.MethodPost, fmt.Sprintf(path), body, &response, true)
 	return err
 }
 
@@ -40,7 +40,7 @@ func (service *ValidatorService) GetAddressBookValidationProgress(addressBookID 
 		Result bool                `json:"result"`
 		Data   *ValidationProgress `json:"data"`
 	}
-	_, err := service.client.NewRequest(http.MethodGet, fmt.Sprintf(path), nil, &response, true)
+	_, err := service.client.newRequest(http.MethodGet, fmt.Sprintf(path), nil, &response, true)
 	return response.Data, err
 }
 
@@ -78,7 +78,7 @@ type AddressBookValidationResultDetailed struct {
 func (service *ValidatorService) GetAddressBookValidationResult(addressBookID int) (*AddressBookValidationResultDetailed, error) {
 	path := fmt.Sprintf("/verifier-service/check/?id=%d", addressBookID)
 	var response *AddressBookValidationResultDetailed
-	_, err := service.client.NewRequest(http.MethodGet, fmt.Sprintf(path), nil, &response, true)
+	_, err := service.client.newRequest(http.MethodGet, fmt.Sprintf(path), nil, &response, true)
 	return response, err
 }
 
@@ -88,7 +88,7 @@ func (service *ValidatorService) GetValidatedAddressBooksList(limit, offset int)
 		Total int                            `json:"total"`
 		List  []*AddressBookValidationResult `json:"list"`
 	}
-	_, err := service.client.NewRequest(http.MethodGet, fmt.Sprintf(path), nil, &response, true)
+	_, err := service.client.newRequest(http.MethodGet, fmt.Sprintf(path), nil, &response, true)
 	return response.List, err
 }
 
@@ -101,7 +101,7 @@ func (service *ValidatorService) ValidateEmail(email string) error {
 		Email string `json:"email"`
 	}
 	body := bodyFormat{Email: email}
-	_, err := service.client.NewRequest(http.MethodPost, fmt.Sprintf(path), body, &response, true)
+	_, err := service.client.newRequest(http.MethodPost, fmt.Sprintf(path), body, &response, true)
 	return err
 }
 
@@ -123,7 +123,7 @@ func (service *ValidatorService) GetEmailValidationResult(email string) (*EmailV
 		Result bool                   `json:"result"`
 		Data   *EmailValidationResult `json:"data"`
 	}
-	_, err := service.client.NewRequest(http.MethodGet, fmt.Sprintf(path), nil, &response, true)
+	_, err := service.client.newRequest(http.MethodGet, fmt.Sprintf(path), nil, &response, true)
 	return response.Data, err
 }
 
@@ -136,7 +136,7 @@ func (service *ValidatorService) DeleteEmailValidationResult(email string) error
 		Email string `json:"email"`
 	}
 	body := bodyFormat{Email: email}
-	_, err := service.client.NewRequest(http.MethodGet, fmt.Sprintf(path), body, &response, true)
+	_, err := service.client.newRequest(http.MethodGet, fmt.Sprintf(path), body, &response, true)
 	return err
 }
 
@@ -174,13 +174,13 @@ func (service *ValidatorService) CreateAddressBookValidationReport(params Addres
 		body.Statuses = "[" + strings.Join(strStatuses, ",") + "]"
 	}
 
-	_, err := service.client.NewRequest(http.MethodPost, fmt.Sprintf(path), params, &response, true)
+	_, err := service.client.newRequest(http.MethodPost, fmt.Sprintf(path), params, &response, true)
 	return err
 }
 
 func (service *ValidatorService) GetAddressBookValidationReport(addressBookID int) (*AddressBookValidationResultDetailed, error) {
 	path := fmt.Sprintf("/verifier-service/check-report?id=%d", addressBookID)
 	var response *AddressBookValidationResultDetailed
-	_, err := service.client.NewRequest(http.MethodGet, fmt.Sprintf(path), nil, &response, true)
+	_, err := service.client.newRequest(http.MethodGet, fmt.Sprintf(path), nil, &response, true)
 	return response, err
 }

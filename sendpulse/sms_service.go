@@ -43,7 +43,7 @@ func (service *SmsService) AddPhones(addressBookID int, phones []string) (*AddPh
 		Result   bool               `json:"result"`
 		Counters *AddPhonesCounters `json:"counters"`
 	}
-	_, err := service.client.NewRequest(http.MethodPost, path, data, &respData, true)
+	_, err := service.client.newRequest(http.MethodPost, path, data, &respData, true)
 	return respData.Counters, err
 }
 
@@ -73,7 +73,7 @@ func (service *SmsService) AddPhonesWithVariables(addressBookID int, phones []*P
 		Result   bool               `json:"result"`
 		Counters *AddPhonesCounters `json:"counters"`
 	}
-	_, err := service.client.NewRequest(http.MethodPost, path, data, &respData, true)
+	_, err := service.client.newRequest(http.MethodPost, path, data, &respData, true)
 	return respData.Counters, err
 }
 
@@ -89,7 +89,7 @@ func (service *SmsService) UpdateVariablesSingle(addressBookID int, phone string
 	var respData struct {
 		Result bool `json:"result"`
 	}
-	_, err := service.client.NewRequest(http.MethodPost, path, data, &respData, true)
+	_, err := service.client.newRequest(http.MethodPost, path, data, &respData, true)
 	return err
 }
 
@@ -110,7 +110,7 @@ func (service *SmsService) UpdateVariablesMultiple(addressBookID int, phones []s
 	var respData struct {
 		Result bool `json:"result"`
 	}
-	_, err := service.client.NewRequest(http.MethodPut, path, data, &respData, true)
+	_, err := service.client.newRequest(http.MethodPut, path, data, &respData, true)
 	return err
 }
 
@@ -129,7 +129,7 @@ func (service *SmsService) DeletePhones(addressBookID int, phones []string) erro
 	var respData struct {
 		Result bool `json:"result"`
 	}
-	_, err := service.client.NewRequest(http.MethodDelete, path, data, &respData, true)
+	_, err := service.client.newRequest(http.MethodDelete, path, data, &respData, true)
 	return err
 }
 
@@ -145,7 +145,7 @@ func (service *SmsService) GetPhoneInfo(addressBookID int, phone string) (*Phone
 		Result bool       `json:"result"`
 		Data   *PhoneInfo `json:"data"`
 	}
-	_, err := service.client.NewRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -165,7 +165,7 @@ func (service *SmsService) AddToBlacklist(phones []string, description string) e
 	var respData struct {
 		Result bool `json:"result"`
 	}
-	_, err := service.client.NewRequest(http.MethodPost, path, data, &respData, true)
+	_, err := service.client.newRequest(http.MethodPost, path, data, &respData, true)
 	return err
 }
 
@@ -183,7 +183,7 @@ func (service *SmsService) RemoveFromBlacklist(phones []string) error {
 	var respData struct {
 		Result bool `json:"result"`
 	}
-	_, err := service.client.NewRequest(http.MethodDelete, path, data, &respData, true)
+	_, err := service.client.newRequest(http.MethodDelete, path, data, &respData, true)
 	return err
 }
 
@@ -209,7 +209,7 @@ func (service *SmsService) GetBlacklistedPhones(phones []string) ([]*BlacklistPh
 		Data   []*BlacklistPhoneInternal `json:"data"`
 	}
 
-	_, err := service.client.NewRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	if err != nil {
 		return nil, err
 	}
@@ -240,7 +240,7 @@ func (service *SmsService) CreateCampaignByAddressBook(params CreateSmsCampaignB
 		Result     bool `json:"result"`
 		CampaignID int  `json:"campaign_id"`
 	}
-	_, err := service.client.NewRequest(http.MethodPost, path, params, &respData, true)
+	_, err := service.client.newRequest(http.MethodPost, path, params, &respData, true)
 	return respData.CampaignID, err
 }
 
@@ -261,7 +261,7 @@ func (service *SmsService) CreateCampaignByPhones(params CreateSmsCampaignByPhon
 		Result     bool `json:"result"`
 		CampaignID int  `json:"campaign_id"`
 	}
-	_, err := service.client.NewRequest(http.MethodPost, path, params, &respData, true)
+	_, err := service.client.newRequest(http.MethodPost, path, params, &respData, true)
 	return respData.CampaignID, err
 }
 
@@ -288,7 +288,7 @@ func (service *SmsService) GetCampaigns(dateFrom, dateTo time.Time) ([]*SmsCampa
 		Result bool           `json:"result"`
 		Data   []*SmsCampaign `json:"data"`
 	}
-	_, err := service.client.NewRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -316,7 +316,7 @@ func (service *SmsService) GetCampaignInfo(id int) (*SmsCampaignInfo, error) {
 		Result bool             `json:"result"`
 		Data   *SmsCampaignInfo `json:"data"`
 	}
-	_, err := service.client.NewRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -326,7 +326,7 @@ func (service *SmsService) CancelCampaign(id int) error {
 	var respData struct {
 		Result bool `json:"result"`
 	}
-	_, err := service.client.NewRequest(http.MethodPut, path, nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodPut, path, nil, &respData, true)
 	return err
 }
 
@@ -369,7 +369,7 @@ func (service *SmsService) GetCampaignCost(params SmsCampaignCostParams) (*SmsCa
 		Result bool                     `json:"result"`
 		Data   *SmsCampaignCampaignCost `json:"data"`
 	}
-	_, err := service.client.NewRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -386,7 +386,7 @@ func (service *SmsService) GetSenders() ([]*SmsSender, error) {
 	path := "/sms/senders"
 
 	var respData []*SmsSender
-	_, err := service.client.NewRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData, err
 }
 
@@ -404,6 +404,6 @@ func (service *SmsService) DeleteCampaign(id int) error {
 	var respData struct {
 		Result bool `json:"result"`
 	}
-	_, err := service.client.NewRequest(http.MethodDelete, path, data, &respData, true)
+	_, err := service.client.newRequest(http.MethodDelete, path, data, &respData, true)
 	return err
 }

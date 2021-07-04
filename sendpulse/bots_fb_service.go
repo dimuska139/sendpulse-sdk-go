@@ -44,7 +44,7 @@ func (service *BotsFbService) GetAccount() (*FbAccount, error) {
 		Success bool       `json:"success"`
 		Data    *FbAccount `json:"data"`
 	}
-	_, err := service.client.NewRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -71,7 +71,7 @@ func (service *BotsFbService) GetBots() ([]*FbBot, error) {
 		Success bool     `json:"success"`
 		Data    []*FbBot `json:"data"`
 	}
-	_, err := service.client.NewRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -104,7 +104,7 @@ func (service *BotsFbService) GetContact(contactID string) (*FbBotContact, error
 		Success bool          `json:"success"`
 		Data    *FbBotContact `json:"data"`
 	}
-	_, err := service.client.NewRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -115,7 +115,7 @@ func (service *BotsFbService) GetContactsByTag(tag, botID string) ([]*FbBotConta
 		Success bool            `json:"success"`
 		Data    []*FbBotContact `json:"data"`
 	}
-	_, err := service.client.NewRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -144,7 +144,7 @@ func (service *BotsFbService) GetContactsByVariable(params BotContactsByVariable
 		Success bool            `json:"success"`
 		Data    []*FbBotContact `json:"data"`
 	}
-	_, err := service.client.NewRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -161,7 +161,7 @@ func (service *BotsFbService) SendTextToContact(params FbBotSendTextParams) erro
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.NewRequest(http.MethodPost, path, params, &respData, true)
+	_, err := service.client.newRequest(http.MethodPost, path, params, &respData, true)
 	return err
 }
 
@@ -184,7 +184,7 @@ func (service *BotsFbService) SetVariableToContact(contactID string, variableID 
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.NewRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
 	return err
 }
 
@@ -203,7 +203,7 @@ func (service *BotsFbService) SetTagsToContact(contactID string, tags []string) 
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.NewRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
 	return err
 }
 
@@ -222,7 +222,7 @@ func (service *BotsFbService) DeleteTagFromContact(contactID string, tag string)
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.NewRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
 	return err
 }
 
@@ -239,7 +239,7 @@ func (service *BotsFbService) DisableContact(contactID string) error {
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.NewRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
 	return err
 }
 
@@ -256,7 +256,7 @@ func (service *BotsFbService) EnableContact(contactID string) error {
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.NewRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
 	return err
 }
 
@@ -273,7 +273,7 @@ func (service *BotsFbService) DeleteContact(contactID string) error {
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.NewRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
 	return err
 }
 
@@ -286,7 +286,7 @@ func (service *BotsFbService) GetPauseAutomation(contactID string) (int, error) 
 			Minutes int `json:"minutes"`
 		} `json:"data"`
 	}
-	_, err := service.client.NewRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData.Data.Minutes, err
 }
 
@@ -304,7 +304,7 @@ func (service *BotsFbService) SetPauseAutomation(contactID string, minutes int) 
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.NewRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
 	return err
 }
 
@@ -320,7 +320,7 @@ func (service *BotsFbService) DeletePauseAutomation(contactID string) error {
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.NewRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
 	return err
 }
 
@@ -342,7 +342,7 @@ func (service *BotsFbService) GetBotVariables(botID string) ([]*BotVariable, err
 		Success bool           `json:"success"`
 		Data    []*BotVariable `json:"data"`
 	}
-	_, err := service.client.NewRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -365,7 +365,7 @@ func (service *BotsFbService) GetFlows(botID string) ([]*BotFlow, error) {
 		Success bool       `json:"success"`
 		Data    []*BotFlow `json:"data"`
 	}
-	_, err := service.client.NewRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -386,7 +386,7 @@ func (service *BotsFbService) RunFlow(contactID, flowID string, externalData map
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.NewRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
 	return err
 }
 
@@ -407,7 +407,7 @@ func (service *BotsFbService) RunFlowByTrigger(contactID, triggerKeyword string,
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.NewRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
 	return err
 }
 
@@ -433,7 +433,7 @@ func (service *BotsFbService) GetBotTriggers(botID string) ([]*BotTrigger, error
 		Success bool          `json:"success"`
 		Data    []*BotTrigger `json:"data"`
 	}
-	_, err := service.client.NewRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -464,7 +464,7 @@ func (service *BotsFbService) GetBotChats(botID string) ([]*FbBotChat, error) {
 		Success bool         `json:"success"`
 		Data    []*FbBotChat `json:"data"`
 	}
-	_, err := service.client.NewRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -475,7 +475,7 @@ func (service *BotsFbService) GetContactMessages(contactID string) ([]*FbBotMess
 		Success bool            `json:"success"`
 		Data    []*FbBotMessage `json:"data"`
 	}
-	_, err := service.client.NewRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -501,6 +501,6 @@ func (service *BotsFbService) SendCampaign(params FbBotSendCampaignParams) error
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.NewRequest(http.MethodPost, path, params, &respData, true)
+	_, err := service.client.newRequest(http.MethodPost, path, params, &respData, true)
 	return err
 }

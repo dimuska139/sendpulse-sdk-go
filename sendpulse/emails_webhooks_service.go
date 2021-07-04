@@ -28,7 +28,7 @@ func (service *WebhooksService) GetWebhooks() ([]*Webhook, error) {
 		Data    []*Webhook `json:"data"`
 	}
 
-	_, err := service.client.NewRequest(http.MethodGet, fmt.Sprintf(path), nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, fmt.Sprintf(path), nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -40,7 +40,7 @@ func (service *WebhooksService) GetWebhook(id int) (*Webhook, error) {
 		Data    *Webhook `json:"data"`
 	}
 
-	_, err := service.client.NewRequest(http.MethodGet, fmt.Sprintf(path), nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, fmt.Sprintf(path), nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -57,7 +57,7 @@ func (service *WebhooksService) CreateWebhook(actions []string, url string) ([]*
 		Data    []*Webhook `json:"data"`
 	}
 	params := data{Actions: actions, Url: url}
-	_, err := service.client.NewRequest(http.MethodPost, path, params, &respData, true)
+	_, err := service.client.newRequest(http.MethodPost, path, params, &respData, true)
 	return respData.Data, err
 }
 
@@ -73,7 +73,7 @@ func (service *WebhooksService) UpdateWebhook(id int, url string) error {
 		Data    []bool `json:"data"`
 	}
 	params := data{Url: url}
-	_, err := service.client.NewRequest(http.MethodPut, path, params, &respData, true)
+	_, err := service.client.newRequest(http.MethodPut, path, params, &respData, true)
 	return err
 }
 
@@ -84,6 +84,6 @@ func (service *WebhooksService) DeleteWebhook(id int) error {
 		Success bool   `json:"success"`
 		Data    []bool `json:"data"`
 	}
-	_, err := service.client.NewRequest(http.MethodDelete, path, nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodDelete, path, nil, &respData, true)
 	return err
 }

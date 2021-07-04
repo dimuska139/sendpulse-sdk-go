@@ -75,7 +75,7 @@ func (c *Client) getToken() (string, error) {
 		AccessToken string `json:"access_token"`
 	}
 
-	_, err := c.NewRequest(http.MethodPost, path, data, &respData, false)
+	_, err := c.newRequest(http.MethodPost, path, data, &respData, false)
 	if err != nil {
 		return "", err
 	}
@@ -94,7 +94,7 @@ func (c *Client) clearToken() {
 	c.tokenLock.Unlock()
 }
 
-func (c *Client) NewRequest(method string, path string, body interface{}, result interface{}, useToken bool) (*http.Response, error) {
+func (c *Client) newRequest(method string, path string, body interface{}, result interface{}, useToken bool) (*http.Response, error) {
 	fullPath := apiBaseUrl + path
 	var buf io.ReadWriter
 	if body != nil {
@@ -130,7 +130,7 @@ func (c *Client) NewRequest(method string, path string, body interface{}, result
 
 	if resp.StatusCode == http.StatusUnauthorized && useToken {
 		c.clearToken()
-		respData, err := c.NewRequest(method, path, body, result, useToken)
+		respData, err := c.newRequest(method, path, body, result, useToken)
 		if err != nil {
 			return nil, err
 		}
@@ -153,7 +153,7 @@ func (c *Client) NewRequest(method string, path string, body interface{}, result
 	return resp, nil
 }
 
-func (c *Client) NewFormDataRequest(path string, buffer *bytes.Buffer, contentType string, result interface{}, useToken bool) (*http.Response, error) {
+func (c *Client) newFormDataRequest(path string, buffer *bytes.Buffer, contentType string, result interface{}, useToken bool) (*http.Response, error) {
 	fullPath := apiBaseUrl + path
 	req, e := http.NewRequest(http.MethodPost, fullPath, buffer)
 	if e != nil {
@@ -178,7 +178,7 @@ func (c *Client) NewFormDataRequest(path string, buffer *bytes.Buffer, contentTy
 
 	if resp.StatusCode == http.StatusUnauthorized && useToken {
 		c.clearToken()
-		respData, err := c.NewFormDataRequest(path, buffer, contentType, result, useToken)
+		respData, err := c.newFormDataRequest(path, buffer, contentType, result, useToken)
 		if err != nil {
 			return nil, err
 		}

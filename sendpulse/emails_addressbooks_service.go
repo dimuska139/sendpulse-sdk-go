@@ -26,7 +26,7 @@ func (service *AddressBooksService) CreateAddressBook(name string) (int, error) 
 		ID int `json:"id"`
 	}
 	params := data{BookName: name}
-	_, err := service.client.NewRequest(http.MethodPost, fmt.Sprintf(path), params, &response, true)
+	_, err := service.client.newRequest(http.MethodPost, fmt.Sprintf(path), params, &response, true)
 	return response.ID, err
 }
 
@@ -42,7 +42,7 @@ func (service *AddressBooksService) UpdateAddressBook(id int, name string) error
 		Result bool
 	}
 	params := data{Name: name}
-	_, err := service.client.NewRequest(http.MethodPut, path, params, &response, true)
+	_, err := service.client.newRequest(http.MethodPut, path, params, &response, true)
 	return err
 }
 
@@ -61,7 +61,7 @@ type Book struct {
 func (service *AddressBooksService) GetAddressbooks(limit int, offset int) ([]*Book, error) {
 	path := fmt.Sprintf("/addressbooks?limit=%d&offset=%d", limit, offset)
 	var books []*Book
-	_, err := service.client.NewRequest(http.MethodGet, path, nil, &books, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &books, true)
 	return books, err
 }
 
@@ -69,7 +69,7 @@ func (service *AddressBooksService) GetAddressbooks(limit int, offset int) ([]*B
 func (service *AddressBooksService) GetAddressbook(addressBookID int) (*Book, error) {
 	path := fmt.Sprintf("/addressbooks/%d", addressBookID)
 	var books []*Book
-	_, err := service.client.NewRequest(http.MethodGet, path, nil, &books, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &books, true)
 	var book *Book
 	if len(books) != 0 {
 		book = books[0]
@@ -86,7 +86,7 @@ type VariableMeta struct {
 func (service *AddressBooksService) GetAddressbookVariables(addressBookID int) ([]*VariableMeta, error) {
 	path := fmt.Sprintf("/addressbooks/%d/variables", addressBookID)
 	var variables []*VariableMeta
-	_, err := service.client.NewRequest(http.MethodGet, path, nil, &variables, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &variables, true)
 	return variables, err
 }
 
@@ -101,7 +101,7 @@ type Email struct {
 func (service *AddressBooksService) GetAddressBookEmails(id, limit, offset int) ([]*Email, error) {
 	path := fmt.Sprintf("/addressbooks/%d/emails?limit=%d&offset=%d", id, limit, offset)
 	var emails []*Email
-	_, err := service.client.NewRequest(http.MethodGet, path, nil, &emails, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &emails, true)
 	return emails, err
 }
 
@@ -110,7 +110,7 @@ func (service *AddressBooksService) CountAddressBookEmails(addressBookID int) (i
 	var response struct {
 		Total int
 	}
-	_, err := service.client.NewRequest(http.MethodGet, path, nil, &response, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &response, true)
 	return response.Total, err
 }
 
@@ -122,7 +122,7 @@ type EmailToAdd struct {
 func (service *AddressBooksService) GetAddressBookEmailsByVariable(addressBookID int, variable string, value interface{}) ([]*Email, error) {
 	path := fmt.Sprintf("/addressbooks/%d/variables/%s/%v", addressBookID, variable, value)
 	var emails []*Email
-	_, err := service.client.NewRequest(http.MethodGet, path, nil, &emails, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &emails, true)
 	return emails, err
 }
 
@@ -136,7 +136,7 @@ func (service *AddressBooksService) SingleOptIn(addressBookID int, emails []*Ema
 	}
 
 	body := bodyFormat{Emails: emails}
-	_, err := service.client.NewRequest(http.MethodPost, path, body, &response, true)
+	_, err := service.client.newRequest(http.MethodPost, path, body, &response, true)
 	return err
 }
 
@@ -163,7 +163,7 @@ func (service *AddressBooksService) DoubleOptIn(addressBookID int, emails []*Ema
 	if templateID != "" {
 		body.TemplateID = templateID
 	}
-	_, err := service.client.NewRequest(http.MethodPost, path, body, &response, true)
+	_, err := service.client.newRequest(http.MethodPost, path, body, &response, true)
 	return err
 }
 
@@ -177,7 +177,7 @@ func (service *AddressBooksService) DeleteAddressBookEmails(addressBookID int, e
 	}
 	body := bodyFormat{Emails: emails}
 
-	_, err := service.client.NewRequest(http.MethodDelete, path, body, &response, true)
+	_, err := service.client.newRequest(http.MethodDelete, path, body, &response, true)
 	return err
 }
 
@@ -186,7 +186,7 @@ func (service *AddressBooksService) DeleteAddressBook(addressBookID int) error {
 	var response struct {
 		Result bool `json:"result"`
 	}
-	_, err := service.client.NewRequest(http.MethodDelete, path, nil, &response, true)
+	_, err := service.client.newRequest(http.MethodDelete, path, nil, &response, true)
 	return err
 }
 
@@ -204,7 +204,7 @@ func (service *AddressBooksService) CountCampaignCost(addressBookID int) (*Campa
 	path := fmt.Sprintf("/addressbooks/%d/cost", addressBookID)
 	var cost CampaignCost
 
-	_, err := service.client.NewRequest(http.MethodGet, path, nil, &cost, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &cost, true)
 	return &cost, err
 }
 
@@ -218,7 +218,7 @@ func (service *AddressBooksService) UnsubscribeEmails(addressBookID int, emails 
 	}
 	body := bodyFormat{Emails: emails}
 
-	_, err := service.client.NewRequest(http.MethodPost, path, body, &response, true)
+	_, err := service.client.newRequest(http.MethodPost, path, body, &response, true)
 	return err
 }
 
@@ -233,6 +233,6 @@ func (service *AddressBooksService) UpdateEmailVariables(addressBookID int, emai
 	}
 
 	body := bodyFormat{Email: email, Variables: variables}
-	_, err := service.client.NewRequest(http.MethodPost, path, body, &response, true)
+	_, err := service.client.newRequest(http.MethodPost, path, body, &response, true)
 	return err
 }

@@ -47,7 +47,7 @@ func (service *ViberService) CreateCampaign(params CreateViberCampaignParams) (i
 			TaskID int `json:"task_id"`
 		} `json:"data"`
 	}
-	_, err := service.client.NewRequest(http.MethodPost, path, params, &respData, true)
+	_, err := service.client.newRequest(http.MethodPost, path, params, &respData, true)
 	return respData.Data.TaskID, err
 }
 
@@ -71,7 +71,7 @@ func (service *ViberService) UpdateCampaign(params UpdateViberCampaignParams) er
 	var respData struct {
 		Result bool `json:"result"`
 	}
-	_, err := service.client.NewRequest(http.MethodPost, path, params, &respData, true)
+	_, err := service.client.newRequest(http.MethodPost, path, params, &respData, true)
 	return err
 }
 
@@ -95,7 +95,7 @@ func (service *ViberService) GetCampaigns(limit, offset int) ([]*ViberCampaign, 
 	path := fmt.Sprintf("/viber/task?limit=%d&offset=%d", limit, offset)
 
 	var respData []*ViberCampaign
-	_, err := service.client.NewRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData, err
 }
 
@@ -125,7 +125,7 @@ func (service *ViberService) GetStatistics(campaignID int) (*ViberCampaignStatis
 	path := fmt.Sprintf("/viber/task/%d", campaignID)
 
 	var respData *ViberCampaignStatistics
-	_, err := service.client.NewRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData, err
 }
 
@@ -146,7 +146,7 @@ func (service *ViberService) GetSenders() ([]*ViberSender, error) {
 	path := "/viber/senders"
 
 	var respData []*ViberSender
-	_, err := service.client.NewRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData, err
 }
 
@@ -154,7 +154,7 @@ func (service *ViberService) GetSender(senderID int) (*ViberSender, error) {
 	path := fmt.Sprintf("/viber/senders/%d", senderID)
 
 	var respData *ViberSender
-	_, err := service.client.NewRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData, err
 }
 
@@ -175,6 +175,6 @@ func (service *ViberService) GetRecipients(taskID int) ([]*ViberRecipient, error
 		TaskID     int               `json:"task_id"`
 		Recipients []*ViberRecipient `json:"recipients"`
 	}
-	_, err := service.client.NewRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData.Recipients, err
 }

@@ -56,7 +56,7 @@ func (service *VkOkService) CreateSender(params CreateVkOkSenderParams) (int, er
 	var respData struct {
 		ID int `json:"id"`
 	}
-	_, err := service.client.NewFormDataRequest(path, body, writer.FormDataContentType(), &respData, true)
+	_, err := service.client.newFormDataRequest(path, body, writer.FormDataContentType(), &respData, true)
 	return respData.ID, err
 }
 
@@ -76,7 +76,7 @@ func (service *VkOkService) CreateTemplate(params CreateVkOkTemplateParams) (int
 			ID int `json:"id"`
 		} `json:"data"`
 	}
-	_, err := service.client.NewRequest(http.MethodPost, path, params, &respData, true)
+	_, err := service.client.newRequest(http.MethodPost, path, params, &respData, true)
 	return respData.Data.ID, err
 }
 
@@ -110,7 +110,7 @@ func (service *VkOkService) GetTemplates() ([]*VkOkTemplate, error) {
 		Total int             `json:"total"`
 		Data  []*VkOkTemplate `json:"data"`
 	}
-	_, err := service.client.NewRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -121,7 +121,7 @@ func (service *VkOkService) GetTemplate(templateID int) (*VkOkTemplate, error) {
 		Total int           `json:"total"`
 		Data  *VkOkTemplate `json:"data"`
 	}
-	_, err := service.client.NewRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -148,7 +148,7 @@ func (service *VkOkService) Send(params SendVkOkTemplateParams) (int, error) {
 			ID int `json:"id"`
 		}
 	}
-	_, err := service.client.NewRequest(http.MethodPost, path, params, &respData, true)
+	_, err := service.client.newRequest(http.MethodPost, path, params, &respData, true)
 	return respData.Data.ID, err
 }
 
@@ -193,7 +193,7 @@ func (service *VkOkService) GetCampaignsStatistics() ([]*VkOkCampaignStatistics,
 		Total int                       `json:"total"`
 		Data  []*VkOkCampaignStatistics `json:"data"`
 	}
-	_, err := service.client.NewRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -202,7 +202,7 @@ func (service *VkOkService) GetCampaignStatistics(campaignID int) (*VkOkCampaign
 
 	var respData *VkOkCampaignStatistics
 
-	_, err := service.client.NewRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData, err
 }
 
@@ -232,6 +232,6 @@ func (service *VkOkService) GetCampaignPhones(campaignID int) ([]*VkOkCampaignPh
 		Data  []*VkOkCampaignPhone `json:"data"`
 	}
 
-	_, err := service.client.NewRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
