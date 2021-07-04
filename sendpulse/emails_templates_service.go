@@ -2,9 +2,10 @@ package sendpulse
 
 import (
 	b64 "encoding/base64"
+	"encoding/json"
 	"fmt"
-	"github.com/dimuska139/sendpulse-sdk-go/sendpulse/models"
 	"net/http"
+	"strings"
 )
 
 type TemplatesService struct {
@@ -15,7 +16,7 @@ func newTemplatesService(cl *Client) *TemplatesService {
 	return &TemplatesService{client: cl}
 }
 
-func (service *TemplatesService) Create(name string, body string, lang string) (int, error) {
+func (service *TemplatesService) CreateTemplate(name string, body string, lang string) (int, error) {
 	path := "/template"
 
 	type paramsFormat struct {
@@ -41,7 +42,7 @@ func (service *TemplatesService) Create(name string, body string, lang string) (
 	return response.RealID, err
 }
 
-func (service *TemplatesService) Update(templateID int, body string, lang string) error {
+func (service *TemplatesService) UpdateTemplate(templateID int, body string, lang string) error {
 	path := fmt.Sprintf("/template/edit/%d", templateID)
 
 	type paramsFormat struct {
@@ -61,20 +62,60 @@ func (service *TemplatesService) Update(templateID int, body string, lang string
 	return err
 }
 
-func (service *TemplatesService) Get(templateID int) (*models.Template, error) {
+type TemplateCategory struct {
+	ID              int    `json:"id"`
+	Name            string `json:"name"`
+	MetaDescription string `json:"meta_description"`
+	FullDescription string `json:"full_description"`
+	Code            string `json:"code"`
+	Sort            int    `json:"sort"`
+}
+
+type Template struct {
+	ID              string            `json:"id"`
+	RealID          int               `json:"real_id"`
+	Name            string            `json:"name"`
+	NameSlug        string            `json:"name_slug"`
+	Lang            string            `json:"lang"`
+	MetaDescription string            `json:"meta_description"`
+	FullDescription string            `json:"full_description"`
+	Category        string            `json:"category"`
+	CategoryInfo    *TemplateCategory `json:"category_info"`
+	Tags            map[string]string `json:"tags"`
+	Mark            string            `json:"mark"`       //
+	MarkCount       int               `json:"mark_count"` //
+	Body            string            `json:"body"`       //
+	Owner           string            `json:"owner"`
+	Created         DateTimeType      `json:"created"`
+	Preview         string            `json:"preview"`
+	IsStructure     bool              `json:"is_structure"`
+}
+
+func (t *Template) UnmarshalJSON(data []byte) error {
+	raw := string(data)
+	data = []byte(strings.ReplaceAll(raw, `"category_info": []`, `"category_info": null`))
+
+	type template Template
+	if err := json.Unmarshal(data, (*template)(t)); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (service *TemplatesService) GetTemplate(templateID int) (*Template, error) {
 	path := fmt.Sprintf("/template/%d", templateID)
-	var respData models.Template
+	var respData Template
 	_, err := service.client.NewRequest(http.MethodGet, fmt.Sprintf(path), nil, &respData, true)
 	return &respData, err
 }
 
-func (service *TemplatesService) List(limit, offset int, owner string) ([]*models.Template, error) {
+func (service *TemplatesService) GetTemplates(limit, offset int, owner string) ([]*Template, error) {
 	path := fmt.Sprintf("/templates?limit=%d&offset=%d", limit, offset)
 	if owner != "" {
 		path += fmt.Sprintf("&owner=%s", owner)
 	}
 
-	var respData []*models.Template
+	var respData []*Template
 	_, err := service.client.NewRequest(http.MethodGet, fmt.Sprintf(path), nil, &respData, true)
 	return respData, err
 }

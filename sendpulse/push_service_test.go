@@ -2,7 +2,6 @@ package sendpulse
 
 import (
 	"fmt"
-	"github.com/dimuska139/sendpulse-sdk-go/sendpulse/models"
 	"io"
 	"net/http"
 	"time"
@@ -24,7 +23,7 @@ func (suite *SendpulseTestSuite) TestPushService_List() {
 		]`)
 	})
 
-	list, err := suite.client.Push.List(PushListParams{
+	list, err := suite.client.Push.GetMessages(PushListParams{
 		Limit:     10,
 		Offset:    0,
 		From:      time.Now(),
@@ -43,7 +42,7 @@ func (suite *SendpulseTestSuite) TestPushService_WebsitesTotal() {
 		}`)
 	})
 
-	total, err := suite.client.Push.WebsitesTotal()
+	total, err := suite.client.Push.CountWebsites()
 	suite.NoError(err)
 	suite.Equal(2, total)
 }
@@ -61,7 +60,7 @@ func (suite *SendpulseTestSuite) TestPushService_WebsitesList() {
 		]`)
 	})
 
-	list, err := suite.client.Push.WebsitesList(10, 0)
+	list, err := suite.client.Push.GetWebsites(10, 0)
 	suite.NoError(err)
 	suite.Equal(53, list[0].ID)
 }
@@ -79,7 +78,7 @@ func (suite *SendpulseTestSuite) TestPushService_WebsiteVariables() {
 		]`)
 	})
 
-	variables, err := suite.client.Push.WebsiteVariables(websiteID)
+	variables, err := suite.client.Push.GetWebsiteVariables(websiteID)
 	suite.NoError(err)
 	suite.Equal("uname", variables[0].Name)
 }
@@ -114,7 +113,7 @@ func (suite *SendpulseTestSuite) TestPushService_WebsiteSubscriptions() {
 		]`)
 	})
 
-	subscriptions, err := suite.client.Push.WebsiteSubscriptions(websiteID, WebsiteSubscriptionsParams{
+	subscriptions, err := suite.client.Push.GetWebsiteSubscriptions(websiteID, WebsiteSubscriptionsParams{
 		Limit:  10,
 		Offset: 0,
 		From:   time.Now(),
@@ -133,7 +132,7 @@ func (suite *SendpulseTestSuite) TestPushService_SubscriptionsTotal() {
 		}`)
 	})
 
-	total, err := suite.client.Push.SubscriptionsTotal(websiteID)
+	total, err := suite.client.Push.CountWebsiteSubscriptions(websiteID)
 	suite.NoError(err)
 	suite.Equal(2, total)
 }
@@ -155,7 +154,7 @@ func (suite *SendpulseTestSuite) TestPushService_WebsiteInfo() {
 		}`)
 	})
 
-	info, err := suite.client.Push.WebsiteInfo(websiteID)
+	info, err := suite.client.Push.GetWebsiteInfo(websiteID)
 	suite.NoError(err)
 	suite.Equal("https://login.sendpulse.com/img/my/push/push-default-icons/icon.png", info.Icon)
 }
@@ -202,7 +201,7 @@ func (suite *SendpulseTestSuite) TestPushService_CreatePushTask() {
 		}`)
 	})
 
-	taskID, err := suite.client.Push.CreatePushTask(PushTaskParams{
+	taskID, err := suite.client.Push.CreatePushMessage(PushMessageParams{
 		Title:                "Title",
 		WebsiteID:            10,
 		Body:                 "Hello",
@@ -216,7 +215,7 @@ func (suite *SendpulseTestSuite) TestPushService_CreatePushTask() {
 		SubscriptionDateTo:   time.Now(),
 		Filter:               nil,
 		StretchTimeSec:       10,
-		SendDate:             models.DateTimeType(time.Now()),
+		SendDate:             DateTimeType(time.Now()),
 		Buttons:              nil,
 		Image:                nil,
 		Icon:                 nil,
@@ -246,7 +245,7 @@ func (suite *SendpulseTestSuite) TestPushService_PushTaskStatistics() {
 		}`)
 	})
 
-	stat, err := suite.client.Push.PushTaskStatistics(taskID)
+	stat, err := suite.client.Push.GetPushMessagesStatistics(taskID)
 	suite.NoError(err)
 	suite.Equal(36, stat.ID)
 }

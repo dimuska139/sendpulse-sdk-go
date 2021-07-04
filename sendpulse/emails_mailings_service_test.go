@@ -2,12 +2,11 @@ package sendpulse
 
 import (
 	"fmt"
-	"github.com/dimuska139/sendpulse-sdk-go/sendpulse/models"
 	"net/http"
 	"time"
 )
 
-func (suite *SendpulseTestSuite) TestEmailsService_MailingsService_CreateMailing() {
+func (suite *SendpulseTestSuite) TestEmailsService_MailingsService_CreateCampaign() {
 	suite.mux.HandleFunc("/campaigns", func(w http.ResponseWriter, r *http.Request) {
 		suite.Equal(http.MethodPost, r.Method)
 		fmt.Fprintf(w, `{
@@ -20,22 +19,19 @@ func (suite *SendpulseTestSuite) TestEmailsService_MailingsService_CreateMailing
 		}`)
 	})
 
-	body := "<h1>Hello!</h1>"
-	addressBookID := 12345
-	sendDate := models.DateTimeType(time.Now())
-	mailing, err := suite.client.Emails.Mailings.CreateMailing(models.MailingDto{
+	mailing, err := suite.client.Emails.Campaigns.CreateCampaign(CampaignParams{
 		SenderName:    "Admin",
 		SenderEmail:   "test@sendpulse.com",
 		Subject:       "Test message",
-		Body:          &body,
-		AddressBookID: &addressBookID,
-		SendDate:      &sendDate,
+		Body:          "<h1>Hello!</h1>",
+		AddressBookID: 12345,
+		SendDate:      DateTimeType(time.Now()),
 	})
 	suite.NoError(err)
 	suite.Equal(245587, mailing.ID)
 }
 
-func (suite *SendpulseTestSuite) TestEmailsService_MailingsService_UpdateMailing() {
+func (suite *SendpulseTestSuite) TestEmailsService_MailingsService_UpdateCampaign() {
 	suite.mux.HandleFunc("/campaigns/1", func(w http.ResponseWriter, r *http.Request) {
 		suite.Equal(http.MethodPatch, r.Method)
 		fmt.Fprintf(w, `{
@@ -48,21 +44,18 @@ func (suite *SendpulseTestSuite) TestEmailsService_MailingsService_UpdateMailing
 		}`)
 	})
 
-	body := "<h1>Hello!</h1>"
-	addressBookID := 12345
-	sendDate := models.DateTimeType(time.Now())
-	err := suite.client.Emails.Mailings.UpdateMailing(1, models.MailingDto{
+	err := suite.client.Emails.Campaigns.UpdateCampaign(1, CampaignParams{
 		SenderName:    "Admin",
 		SenderEmail:   "test@sendpulse.com",
 		Subject:       "Test message",
-		Body:          &body,
-		AddressBookID: &addressBookID,
-		SendDate:      &sendDate,
+		Body:          "<h1>Hello!</h1>",
+		AddressBookID: 12345,
+		SendDate:      DateTimeType(time.Now()),
 	})
 	suite.NoError(err)
 }
 
-func (suite *SendpulseTestSuite) TestEmailsService_MailingsService_GetMailing() {
+func (suite *SendpulseTestSuite) TestEmailsService_MailingsService_GetCampaign() {
 	suite.mux.HandleFunc("/campaigns/1", func(w http.ResponseWriter, r *http.Request) {
 		suite.Equal(http.MethodGet, r.Method)
 		fmt.Fprintf(w, `{
@@ -86,12 +79,12 @@ func (suite *SendpulseTestSuite) TestEmailsService_MailingsService_GetMailing() 
 		}`)
 	})
 
-	mailing, err := suite.client.Emails.Mailings.GetMailing(1)
+	mailing, err := suite.client.Emails.Campaigns.GetCampaign(1)
 	suite.NoError(err)
 	suite.Equal(4164892, mailing.ID)
 }
 
-func (suite *SendpulseTestSuite) TestEmailsService_MailingsService_GetMailings() {
+func (suite *SendpulseTestSuite) TestEmailsService_MailingsService_GetCampaigns() {
 	suite.mux.HandleFunc("/campaigns", func(w http.ResponseWriter, r *http.Request) {
 		suite.Equal(http.MethodGet, r.Method)
 		fmt.Fprintf(w, `[
@@ -132,13 +125,13 @@ func (suite *SendpulseTestSuite) TestEmailsService_MailingsService_GetMailings()
 		]`)
 	})
 
-	mailing, err := suite.client.Emails.Mailings.List(10, 0)
+	mailing, err := suite.client.Emails.Campaigns.GetCampaigns(10, 0)
 	suite.NoError(err)
 	suite.Equal(4164892, mailing[0].ID)
 	suite.Equal(7723666, mailing[1].ID)
 }
 
-func (suite *SendpulseTestSuite) TestEmailsService_MailingsService_MailingsByAddressBook() {
+func (suite *SendpulseTestSuite) TestEmailsService_MailingsService_GetCampaignsByAddressBook() {
 	suite.mux.HandleFunc("/addressbooks/1/campaigns", func(w http.ResponseWriter, r *http.Request) {
 		suite.Equal(http.MethodGet, r.Method)
 		fmt.Fprintf(w, `[
@@ -155,12 +148,12 @@ func (suite *SendpulseTestSuite) TestEmailsService_MailingsService_MailingsByAdd
 		]`)
 	})
 
-	tasks, err := suite.client.Emails.Mailings.MailingsByAddressBook(1, 10, 0)
+	tasks, err := suite.client.Emails.Campaigns.GetCampaignsByAddressBook(1, 10, 0)
 	suite.NoError(err)
 	suite.Equal(2, len(tasks))
 }
 
-func (suite *SendpulseTestSuite) TestEmailsService_MailingsService_CountriesStatistics() {
+func (suite *SendpulseTestSuite) TestEmailsService_MailingsService_GetCampaignCountriesStatistics() {
 	suite.mux.HandleFunc("/campaigns/1/countries", func(w http.ResponseWriter, r *http.Request) {
 		suite.Equal(http.MethodGet, r.Method)
 		fmt.Fprintf(w, `{
@@ -169,14 +162,14 @@ func (suite *SendpulseTestSuite) TestEmailsService_MailingsService_CountriesStat
 		}`)
 	})
 
-	statistics, err := suite.client.Emails.Mailings.CountriesStatistics(1)
+	statistics, err := suite.client.Emails.Campaigns.GetCampaignCountriesStatistics(1)
 	suite.NoError(err)
 	ua, ok := statistics["UA"]
 	suite.True(ok)
 	suite.Equal(23, ua)
 }
 
-func (suite *SendpulseTestSuite) TestEmailsService_MailingsService_ReferralsStatistics() {
+func (suite *SendpulseTestSuite) TestEmailsService_MailingsService_GetCampaignReferralsStatistics() {
 	suite.mux.HandleFunc("/campaigns/1/referrals", func(w http.ResponseWriter, r *http.Request) {
 		suite.Equal(http.MethodGet, r.Method)
 		fmt.Fprintf(w, `[
@@ -191,12 +184,12 @@ func (suite *SendpulseTestSuite) TestEmailsService_MailingsService_ReferralsStat
 		]`)
 	})
 
-	statistics, err := suite.client.Emails.Mailings.ReferralsStatistics(1)
+	statistics, err := suite.client.Emails.Campaigns.GetCampaignReferralsStatistics(1)
 	suite.NoError(err)
 	suite.Equal(2, len(statistics))
 }
 
-func (suite *SendpulseTestSuite) TestEmailsService_MailingsService_Cancel() {
+func (suite *SendpulseTestSuite) TestEmailsService_MailingsService_CancelCampaign() {
 	suite.mux.HandleFunc("/campaigns/1", func(w http.ResponseWriter, r *http.Request) {
 		suite.Equal(http.MethodDelete, r.Method)
 		fmt.Fprintf(w, `{
@@ -204,6 +197,6 @@ func (suite *SendpulseTestSuite) TestEmailsService_MailingsService_Cancel() {
 		}`)
 	})
 
-	err := suite.client.Emails.Mailings.Cancel(1)
+	err := suite.client.Emails.Campaigns.CancelCampaign(1)
 	suite.NoError(err)
 }

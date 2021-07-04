@@ -15,7 +15,7 @@ func newBlacklistService(cl *Client) *BlacklistService {
 	return &BlacklistService{client: cl}
 }
 
-func (service *BlacklistService) Add(emails []string, comment string) error {
+func (service *BlacklistService) AddToBlacklist(emails []string, comment string) error {
 	path := "/blacklist"
 
 	type paramsFormat struct {
@@ -40,7 +40,7 @@ func (service *BlacklistService) Add(emails []string, comment string) error {
 	return err
 }
 
-func (service *BlacklistService) Remove(emails []string) error {
+func (service *BlacklistService) RemoveFromBlacklist(emails []string) error {
 	path := "/blacklist"
 
 	type paramsFormat struct {
@@ -60,7 +60,7 @@ func (service *BlacklistService) Remove(emails []string) error {
 	return err
 }
 
-func (service *BlacklistService) List() ([]string, error) {
+func (service *BlacklistService) GetEmails() ([]string, error) {
 	path := "/blacklist"
 
 	var respData []string

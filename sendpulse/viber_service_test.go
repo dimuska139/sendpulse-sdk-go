@@ -2,7 +2,6 @@ package sendpulse
 
 import (
 	"fmt"
-	"github.com/dimuska139/sendpulse-sdk-go/sendpulse/models"
 	"net/http"
 	"time"
 )
@@ -37,7 +36,7 @@ func (suite *SendpulseTestSuite) TestViberService_CreateCampaign() {
 		MessageType:     2,
 		SenderID:        2222,
 		MessageLiveTime: 1000,
-		SentDate:        models.DateTimeType(time.Now()),
+		SentDate:        DateTimeType(time.Now()),
 		AddressBookID:   12345,
 		Recipients:      []int{380931111111, 380931111112, 380931111113},
 		Message:         "Ciao! Вас вітає офіційний viber-канал бренду Yamamay та нагадує, що Ви - найчарівніша.",
@@ -80,7 +79,7 @@ func (suite *SendpulseTestSuite) TestViberService_UpdateCampaign() {
 		AddressBookID:   12345,
 		SenderID:        222,
 		MessageLiveTime: 1000,
-		SentDate:        models.DateTimeType(time.Now()),
+		SentDate:        DateTimeType(time.Now()),
 	})
 	suite.NoError(err)
 }
@@ -123,7 +122,7 @@ func (suite *SendpulseTestSuite) TestViberService_Campaigns() {
 		]`)
 	})
 
-	campaigns, err := suite.client.Viber.Campaigns(10, 0)
+	campaigns, err := suite.client.Viber.GetCampaigns(10, 0)
 	suite.NoError(err)
 	suite.Equal(2, len(campaigns))
 }

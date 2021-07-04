@@ -2,7 +2,6 @@ package sendpulse
 
 import (
 	"fmt"
-	"github.com/dimuska139/sendpulse-sdk-go/sendpulse/models"
 	"net/http"
 )
 
@@ -15,14 +14,14 @@ func newViberService(cl *Client) *ViberService {
 }
 
 type CreateViberCampaignParams struct {
-	TaskName        string              `json:"task_name"`
-	MessageType     int                 `json:"message_type,omitempty"`
-	SenderID        int                 `json:"sender_id"`
-	MessageLiveTime int                 `json:"message_live_time"`
-	SentDate        models.DateTimeType `json:"sent_date"`
-	AddressBookID   int                 `json:"address_book"`
-	Recipients      []int               `json:"recipients"`
-	Message         string              `json:"message"`
+	TaskName        string       `json:"task_name"`
+	MessageType     int          `json:"message_type,omitempty"`
+	SenderID        int          `json:"sender_id"`
+	MessageLiveTime int          `json:"message_live_time"`
+	SentDate        DateTimeType `json:"sent_date"`
+	AddressBookID   int          `json:"address_book"`
+	Recipients      []int        `json:"recipients"`
+	Message         string       `json:"message"`
 	Additional      *struct {
 		Button *struct {
 			Text string `json:"text"`
@@ -53,17 +52,17 @@ func (service *ViberService) CreateCampaign(params CreateViberCampaignParams) (i
 }
 
 type UpdateViberCampaignParams struct {
-	TaskID          int                 `json:"main_task_id"`
-	TaskName        string              `json:"task_name"`
-	Message         string              `json:"message"`
-	MessageType     int                 `json:"message_type"`
-	ButtonText      string              `json:"button_text,omitempty"`
-	ButtonLink      string              `json:"button_link,omitempty"`
-	ImageLink       string              `json:"image_link,omitempty"`
-	AddressBookID   int                 `json:"address_book,omitempty"`
-	SenderID        int                 `json:"sender_id"`
-	MessageLiveTime int                 `json:"message_live_time"`
-	SentDate        models.DateTimeType `json:"sent_date"`
+	TaskID          int          `json:"main_task_id"`
+	TaskName        string       `json:"task_name"`
+	Message         string       `json:"message"`
+	MessageType     int          `json:"message_type"`
+	ButtonText      string       `json:"button_text,omitempty"`
+	ButtonLink      string       `json:"button_link,omitempty"`
+	ImageLink       string       `json:"image_link,omitempty"`
+	AddressBookID   int          `json:"address_book,omitempty"`
+	SenderID        int          `json:"sender_id"`
+	MessageLiveTime int          `json:"message_live_time"`
+	SentDate        DateTimeType `json:"sent_date"`
 }
 
 func (service *ViberService) UpdateCampaign(params UpdateViberCampaignParams) error {
@@ -77,22 +76,22 @@ func (service *ViberService) UpdateCampaign(params UpdateViberCampaignParams) er
 }
 
 type ViberCampaign struct {
-	ID              int                 `json:"id"`
-	Name            string              `json:"name"`
-	Message         string              `json:"message"`
-	ButtonText      string              `json:"button_text"`
-	ButtonLink      string              `json:"button_link"`
-	ImageLink       string              `json:"image_link"`
-	AddressBookID   int                 `json:"address_book"`
-	SenderName      string              `json:"sender_name"`
-	SenderID        int                 `json:"sender_id"`
-	MessageLiveTime int                 `json:"message_live_time"`
-	SendDate        models.DateTimeType `json:"send_date"`
-	Status          string              `json:"status"`
-	Created         models.DateTimeType `json:"created"`
+	ID              int          `json:"id"`
+	Name            string       `json:"name"`
+	Message         string       `json:"message"`
+	ButtonText      string       `json:"button_text"`
+	ButtonLink      string       `json:"button_link"`
+	ImageLink       string       `json:"image_link"`
+	AddressBookID   int          `json:"address_book"`
+	SenderName      string       `json:"sender_name"`
+	SenderID        int          `json:"sender_id"`
+	MessageLiveTime int          `json:"message_live_time"`
+	SendDate        DateTimeType `json:"send_date"`
+	Status          string       `json:"status"`
+	Created         DateTimeType `json:"created"`
 }
 
-func (service *ViberService) Campaigns(limit, offset int) ([]*ViberCampaign, error) {
+func (service *ViberService) GetCampaigns(limit, offset int) ([]*ViberCampaign, error) {
 	path := fmt.Sprintf("/viber/task?limit=%d&offset=%d", limit, offset)
 
 	var respData []*ViberCampaign
@@ -101,16 +100,16 @@ func (service *ViberService) Campaigns(limit, offset int) ([]*ViberCampaign, err
 }
 
 type ViberCampaignStatistics struct {
-	ID            int                 `json:"id"`
-	Name          string              `json:"name"`
-	Message       string              `json:"message"`
-	ButtonText    string              `json:"button_text"`
-	ButtonLink    string              `json:"button_link"`
-	ImageLink     string              `json:"image_link"`
-	AddressBookID int                 `json:"address_book"`
-	SenderName    string              `json:"sender_name"`
-	SendDate      models.DateTimeType `json:"send_date"`
-	Status        string              `json:"status"`
+	ID            int          `json:"id"`
+	Name          string       `json:"name"`
+	Message       string       `json:"message"`
+	ButtonText    string       `json:"button_text"`
+	ButtonLink    string       `json:"button_link"`
+	ImageLink     string       `json:"image_link"`
+	AddressBookID int          `json:"address_book"`
+	SenderName    string       `json:"sender_name"`
+	SendDate      DateTimeType `json:"send_date"`
+	Status        string       `json:"status"`
 	Statistics    struct {
 		Sent        int `json:"sent"`
 		Delivered   int `json:"delivered"`
@@ -119,7 +118,7 @@ type ViberCampaignStatistics struct {
 		Undelivered int `json:"undelivered"`
 		Errors      int `json:"errors"`
 	} `json:"statistic"`
-	Created models.DateTimeType `json:"created"`
+	Created DateTimeType `json:"created"`
 }
 
 func (service *ViberService) GetStatistics(campaignID int) (*ViberCampaignStatistics, error) {
@@ -160,13 +159,13 @@ func (service *ViberService) GetSender(senderID int) (*ViberSender, error) {
 }
 
 type ViberRecipient struct {
-	Phone         int                 `json:"phone"`
-	AddressBookID int                 `json:"address_book_id"`
-	Status        string              `json:"status"`
-	SentDate      models.DateTimeType `json:"sent_date"`
-	Price         float32             `json:"price"`
-	Currency      string              `json:"currency"`
-	LastUpdate    models.DateTimeType `json:"last_update"`
+	Phone         int          `json:"phone"`
+	AddressBookID int          `json:"address_book_id"`
+	Status        string       `json:"status"`
+	SentDate      DateTimeType `json:"sent_date"`
+	Price         float32      `json:"price"`
+	Currency      string       `json:"currency"`
+	LastUpdate    DateTimeType `json:"last_update"`
 }
 
 func (service *ViberService) GetRecipients(taskID int) ([]*ViberRecipient, error) {

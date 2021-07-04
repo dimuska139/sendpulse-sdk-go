@@ -2,7 +2,6 @@ package sendpulse
 
 import (
 	"fmt"
-	"github.com/dimuska139/sendpulse-sdk-go/sendpulse/models"
 	"net/http"
 	"strings"
 	"time"
@@ -25,16 +24,16 @@ type PushListParams struct {
 }
 
 type Push struct {
-	ID        int                 `json:"id"`
-	Title     string              `json:"title"`
-	Body      string              `json:"body"`
-	WebsiteID int                 `json:"website_id"`
-	From      models.DateTimeType `json:"from"`
-	To        models.DateTimeType `json:"to"`
-	Status    int                 `json:"status"`
+	ID        int          `json:"id"`
+	Title     string       `json:"title"`
+	Body      string       `json:"body"`
+	WebsiteID int          `json:"website_id"`
+	From      DateTimeType `json:"from"`
+	To        DateTimeType `json:"to"`
+	Status    int          `json:"status"`
 }
 
-func (service *PushService) List(params PushListParams) ([]Push, error) {
+func (service *PushService) GetMessages(params PushListParams) ([]Push, error) {
 	path := "/push/tasks/"
 	var urlParts []string
 	urlParts = append(urlParts, fmt.Sprintf("offset=%d", params.Offset))
@@ -60,7 +59,7 @@ func (service *PushService) List(params PushListParams) ([]Push, error) {
 	return respData, err
 }
 
-func (service *PushService) WebsitesTotal() (int, error) {
+func (service *PushService) CountWebsites() (int, error) {
 	path := "/push/websites/total"
 	var respData struct {
 		Total int `json:"total"`
@@ -70,13 +69,13 @@ func (service *PushService) WebsitesTotal() (int, error) {
 }
 
 type PushWebsite struct {
-	ID      int                 `json:"id"`
-	Url     string              `json:"url"`
-	AddDate models.DateTimeType `json:"add_date"`
-	Status  int                 `json:"status"`
+	ID      int          `json:"id"`
+	Url     string       `json:"url"`
+	AddDate DateTimeType `json:"add_date"`
+	Status  int          `json:"status"`
 }
 
-func (service *PushService) WebsitesList(limit, offset int) ([]*PushWebsite, error) {
+func (service *PushService) GetWebsites(limit, offset int) ([]*PushWebsite, error) {
 	path := fmt.Sprintf("/push/websites/?limit=%d&offset=%d", limit, offset)
 	var respData []*PushWebsite
 	_, err := service.client.NewRequest(http.MethodGet, fmt.Sprintf(path), nil, &respData, true)
@@ -89,7 +88,7 @@ type PushWebsiteVariable struct {
 	Type string `json:"type"`
 }
 
-func (service *PushService) WebsiteVariables(websiteID int) ([]*PushWebsiteVariable, error) {
+func (service *PushService) GetWebsiteVariables(websiteID int) ([]*PushWebsiteVariable, error) {
 	path := fmt.Sprintf("/push/websites/%d/variables", websiteID)
 	var respData []*PushWebsiteVariable
 	_, err := service.client.NewRequest(http.MethodGet, fmt.Sprintf(path), nil, &respData, true)
@@ -111,11 +110,11 @@ type WebsiteSubscription struct {
 	CountryCode      string                `json:"country_code"`
 	City             string                `json:"city"`
 	Variables        []PushWebsiteVariable `json:"variables"`
-	SubscriptionDate models.DateTimeType   `json:"subscription_date"`
+	SubscriptionDate DateTimeType          `json:"subscription_date"`
 	Status           int                   `json:"status"`
 }
 
-func (service *PushService) WebsiteSubscriptions(websiteID int, params WebsiteSubscriptionsParams) ([]*WebsiteSubscription, error) {
+func (service *PushService) GetWebsiteSubscriptions(websiteID int, params WebsiteSubscriptionsParams) ([]*WebsiteSubscription, error) {
 	path := fmt.Sprintf("/push/websites/%d/subscriptions", websiteID)
 
 	var urlParts []string
@@ -139,7 +138,7 @@ func (service *PushService) WebsiteSubscriptions(websiteID int, params WebsiteSu
 	return respData, err
 }
 
-func (service *PushService) SubscriptionsTotal(websiteID int) (int, error) {
+func (service *PushService) CountWebsiteSubscriptions(websiteID int) (int, error) {
 	path := fmt.Sprintf("/push/websites/%d/subscriptions/total", websiteID)
 	var respData struct {
 		Total int `json:"total"`
@@ -149,18 +148,18 @@ func (service *PushService) SubscriptionsTotal(websiteID int) (int, error) {
 }
 
 type WebsiteInfo struct {
-	ID                int                 `json:"id"`
-	Url               string              `json:"url"`
-	Status            string              `json:"status"`
-	Icon              string              `json:"icon"`
-	AddDate           models.DateTimeType `json:"add_date"`
-	TotalSubscribers  int                 `json:"total_subscribers"`
-	Unsubscribed      int                 `json:"unsubscribed"`
-	SubscribersToday  int                 `json:"subscribers_today"`
-	ActiveSubscribers int                 `json:"active_subscribers"`
+	ID                int          `json:"id"`
+	Url               string       `json:"url"`
+	Status            string       `json:"status"`
+	Icon              string       `json:"icon"`
+	AddDate           DateTimeType `json:"add_date"`
+	TotalSubscribers  int          `json:"total_subscribers"`
+	Unsubscribed      int          `json:"unsubscribed"`
+	SubscribersToday  int          `json:"subscribers_today"`
+	ActiveSubscribers int          `json:"active_subscribers"`
 }
 
-func (service *PushService) WebsiteInfo(websiteID int) (*WebsiteInfo, error) {
+func (service *PushService) GetWebsiteInfo(websiteID int) (*WebsiteInfo, error) {
 	path := fmt.Sprintf("/push/websites/info/%d", websiteID)
 	var respData *WebsiteInfo
 	_, err := service.client.NewRequest(http.MethodGet, fmt.Sprintf(path), nil, &respData, true)
@@ -199,7 +198,7 @@ func (service *PushService) DeactivateSubscription(subscriptionID int) error {
 	return err
 }
 
-type PushTaskParams struct {
+type PushMessageParams struct {
 	Title                string    `json:"title"`
 	WebsiteID            int       `json:"website_id"`
 	Body                 string    `json:"body"`
@@ -219,8 +218,8 @@ type PushTaskParams struct {
 			Value     interface{} `json:"value"`
 		} `json:"conditions"`
 	} `json:"filter,omitempty"`
-	StretchTimeSec int                 `json:"stretch_time"`
-	SendDate       models.DateTimeType `json:"send_date"`
+	StretchTimeSec int          `json:"stretch_time"`
+	SendDate       DateTimeType `json:"send_date"`
 	Buttons        *struct {
 		Text string `json:"text"`
 		Link string `json:"link"`
@@ -235,7 +234,7 @@ type PushTaskParams struct {
 	} `json:"icon,omitempty"`
 }
 
-func (service *PushService) CreatePushTask(params PushTaskParams) (int, error) {
+func (service *PushService) CreatePushMessage(params PushMessageParams) (int, error) {
 	path := "/push/tasks"
 
 	var respData struct {
@@ -246,7 +245,7 @@ func (service *PushService) CreatePushTask(params PushTaskParams) (int, error) {
 	return respData.ID, err
 }
 
-type PushTasksStatistics struct {
+type PushMessagesStatistics struct {
 	ID      int `json:"id"`
 	Message struct {
 		Title string `json:"title"`
@@ -261,10 +260,10 @@ type PushTasksStatistics struct {
 	Redirect  int    `json:"redirect"`
 }
 
-func (service *PushService) PushTaskStatistics(taskID int) (*PushTasksStatistics, error) {
+func (service *PushService) GetPushMessagesStatistics(taskID int) (*PushMessagesStatistics, error) {
 	path := fmt.Sprintf("/push/tasks/%d", taskID)
 
-	var respData *PushTasksStatistics
+	var respData *PushMessagesStatistics
 	_, err := service.client.NewRequest(http.MethodGet, fmt.Sprintf(path), nil, &respData, true)
 	return respData, err
 }

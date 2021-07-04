@@ -2,7 +2,6 @@ package sendpulse
 
 import (
 	"fmt"
-	"github.com/dimuska139/sendpulse-sdk-go/sendpulse/models"
 	"net/http"
 )
 
@@ -12,7 +11,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_AddressBooksService_Create() 
 		fmt.Fprintf(w, `{"id": 12345}`)
 	})
 
-	id, err := suite.client.Emails.AddressBooks.Create("name")
+	id, err := suite.client.Emails.AddressBooks.CreateAddressBook("name")
 	suite.NoError(err)
 	suite.Equal(12345, id)
 }
@@ -23,7 +22,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_AddressBooksService_Update() 
 		fmt.Fprintf(w, `{"result": true}`)
 	})
 
-	err := suite.client.Emails.AddressBooks.Update(1, "name")
+	err := suite.client.Emails.AddressBooks.UpdateAddressBook(1, "name")
 	suite.NoError(err)
 }
 
@@ -54,7 +53,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_AddressBooksService_List() {
 		]`)
 	})
 
-	books, err := suite.client.Emails.AddressBooks.List(10, 0)
+	books, err := suite.client.Emails.AddressBooks.GetAddressbooks(10, 0)
 	suite.NoError(err)
 	suite.Equal(2, len(books))
 }
@@ -76,7 +75,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_AddressBooksService_Get() {
 		]`)
 	})
 
-	book, err := suite.client.Emails.AddressBooks.Get(1)
+	book, err := suite.client.Emails.AddressBooks.GetAddressbook(1)
 	suite.NoError(err)
 	suite.NotNil(book)
 }
@@ -96,7 +95,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_AddressBooksService_Variables
 		]`)
 	})
 
-	variables, err := suite.client.Emails.AddressBooks.Variables(1)
+	variables, err := suite.client.Emails.AddressBooks.GetAddressbookVariables(1)
 	suite.NoError(err)
 	suite.Equal(2, len(variables))
 }
@@ -117,7 +116,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_AddressBooksService_Emails() 
 		]`)
 	})
 
-	emails, err := suite.client.Emails.AddressBooks.Emails(1, 100, 0)
+	emails, err := suite.client.Emails.AddressBooks.GetAddressBookEmails(1, 100, 0)
 	suite.NoError(err)
 	suite.Equal("test@test.com", emails[0].Email)
 }
@@ -130,7 +129,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_AddressBooksService_EmailsTot
 		}`)
 	})
 
-	total, err := suite.client.Emails.AddressBooks.EmailsTotal(1)
+	total, err := suite.client.Emails.AddressBooks.CountAddressBookEmails(1)
 	suite.NoError(err)
 	suite.Equal(12, total)
 }
@@ -147,7 +146,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_AddressBooksService_EmailsByV
 		]`)
 	})
 
-	emails, err := suite.client.Emails.AddressBooks.EmailsByVariable(1, "age", 12)
+	emails, err := suite.client.Emails.AddressBooks.GetAddressBookEmailsByVariable(1, "age", 12)
 	suite.NoError(err)
 	suite.Equal("test@test.com", (*emails[0]).Email)
 }
@@ -160,8 +159,8 @@ func (suite *SendpulseTestSuite) TestEmailsService_AddressBooksService_SingleOpt
 		}`)
 	})
 
-	emails := make([]*models.EmailToAdd, 0)
-	emails = append(emails, &models.EmailToAdd{
+	emails := make([]*EmailToAdd, 0)
+	emails = append(emails, &EmailToAdd{
 		Email:     "test@test.com",
 		Variables: map[string]interface{}{"age": 21, "weight": 99},
 	})
@@ -177,8 +176,8 @@ func (suite *SendpulseTestSuite) TestEmailsService_AddressBooksService_DoubleOpt
 		}`)
 	})
 
-	emails := make([]*models.EmailToAdd, 0)
-	emails = append(emails, &models.EmailToAdd{
+	emails := make([]*EmailToAdd, 0)
+	emails = append(emails, &EmailToAdd{
 		Email:     "test@test.com",
 		Variables: map[string]interface{}{"age": 21, "weight": 99},
 	})
@@ -194,7 +193,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_AddressBooksService_EmailsDel
 	})
 
 	emails := []string{"test@test.com"}
-	suite.NoError(suite.client.Emails.AddressBooks.DeleteEmails(1, emails))
+	suite.NoError(suite.client.Emails.AddressBooks.DeleteAddressBookEmails(1, emails))
 }
 
 func (suite *SendpulseTestSuite) TestEmailsService_AddressBooksService_Delete() {
@@ -205,7 +204,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_AddressBooksService_Delete() 
 		}`)
 	})
 
-	suite.NoError(suite.client.Emails.AddressBooks.Delete(1))
+	suite.NoError(suite.client.Emails.AddressBooks.DeleteAddressBook(1))
 }
 
 func (suite *SendpulseTestSuite) TestEmailsService_AddressBooksService_CampaignCost() {
@@ -221,7 +220,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_AddressBooksService_CampaignC
 			"result": true
 		}`)
 	})
-	cost, err := suite.client.Emails.AddressBooks.CampaignCost(1)
+	cost, err := suite.client.Emails.AddressBooks.CountCampaignCost(1)
 	suite.NoError(err)
 	suite.NotNil(cost)
 }
@@ -235,7 +234,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_AddressBooksService_EmailsUns
 	})
 
 	emails := []string{"test@test.com"}
-	suite.NoError(suite.client.Emails.AddressBooks.Unsubscribe(1, emails))
+	suite.NoError(suite.client.Emails.AddressBooks.UnsubscribeEmails(1, emails))
 }
 
 func (suite *SendpulseTestSuite) TestEmailsService_AddressBooksService_UpdateEmailVariables() {
@@ -246,7 +245,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_AddressBooksService_UpdateEma
 		}`)
 	})
 
-	variables := []*models.Variable{
+	variables := []*Variable{
 		{
 			Name:  "age",
 			Value: 12,

@@ -3,7 +3,6 @@ package sendpulse
 import (
 	"encoding/base64"
 	"fmt"
-	"github.com/dimuska139/sendpulse-sdk-go/sendpulse/models"
 	"net/http"
 	"os"
 	"time"
@@ -140,7 +139,7 @@ func (suite *SendpulseTestSuite) TestVkOkService_Templates() {
 		}`)
 	})
 
-	templates, err := suite.client.VkOk.Templates()
+	templates, err := suite.client.VkOk.GetTemplates()
 	suite.NoError(err)
 	suite.Equal(6615360, templates[0].UserID)
 }
@@ -177,7 +176,7 @@ func (suite *SendpulseTestSuite) TestVkOkService_Template() {
 		}`)
 	})
 
-	template, err := suite.client.VkOk.Template(tplID)
+	template, err := suite.client.VkOk.GetTemplate(tplID)
 	suite.NoError(err)
 	suite.Equal(6615360, template.UserID)
 }
@@ -209,7 +208,7 @@ func (suite *SendpulseTestSuite) TestVkOkService_Send() {
 		LifeType:   "min",
 		Name:       "Test",
 		Routes:     nil,
-		SendDate:   models.DateTimeType(time.Now()),
+		SendDate:   DateTimeType(time.Now()),
 		TemplateID: 12345,
 	})
 	suite.NoError(err)
@@ -268,7 +267,7 @@ func (suite *SendpulseTestSuite) TestVkOkService_CampaignsStatistics() {
 		}`)
 	})
 
-	statistics, err := suite.client.VkOk.CampaignsStatistics()
+	statistics, err := suite.client.VkOk.GetCampaignsStatistics()
 	suite.NoError(err)
 	suite.Equal(6615360, statistics[0].UserID)
 }
@@ -342,7 +341,7 @@ func (suite *SendpulseTestSuite) TestVkOkService_CampaignStatistics() {
 		}`)
 	})
 
-	statistics, err := suite.client.VkOk.CampaignStatistics(campaignID)
+	statistics, err := suite.client.VkOk.GetCampaignStatistics(campaignID)
 	suite.NoError(err)
 	suite.Equal(6615360, statistics.UserID)
 }
@@ -404,7 +403,7 @@ func (suite *SendpulseTestSuite) TestVkOkService_CampaignPhones() {
 		}`)
 	})
 
-	phones, err := suite.client.VkOk.CampaignPhones(campaignID)
+	phones, err := suite.client.VkOk.GetCampaignPhones(campaignID)
 	suite.NoError(err)
 	suite.Equal(2, len(phones))
 }

@@ -11,7 +11,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_BlacklistService_Add() {
 		fmt.Fprintf(w, `{"result": true}`)
 	})
 
-	err := suite.client.Emails.Blacklist.Add([]string{"test@sendpulse.com"}, "Added to blacklist")
+	err := suite.client.Emails.Blacklist.AddToBlacklist([]string{"test@sendpulse.com"}, "Added to blacklist")
 	suite.NoError(err)
 }
 
@@ -23,7 +23,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_BlacklistService_Remove() {
 		}`)
 	})
 
-	err := suite.client.Emails.Blacklist.Remove([]string{"test@sendpulse.com"})
+	err := suite.client.Emails.Blacklist.RemoveFromBlacklist([]string{"test@sendpulse.com"})
 	suite.NoError(err)
 }
 
@@ -36,7 +36,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_BlacklistService_List() {
 		]`)
 	})
 
-	blacklist, err := suite.client.Emails.Blacklist.List()
+	blacklist, err := suite.client.Emails.Blacklist.GetEmails()
 	suite.NoError(err)
 	suite.Equal(2, len(blacklist))
 }

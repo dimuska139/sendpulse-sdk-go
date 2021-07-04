@@ -11,7 +11,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_TemplatesService_Create() {
 		fmt.Fprintf(w, `{"result": true,"real_id":1}`)
 	})
 
-	tplID, err := suite.client.Emails.Templates.Create("First template", "<h1>Message</h1>", "ru")
+	tplID, err := suite.client.Emails.Templates.CreateTemplate("First template", "<h1>Message</h1>", "ru")
 	suite.NoError(err)
 	suite.Equal(1, tplID)
 }
@@ -22,7 +22,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_TemplatesService_Update() {
 		fmt.Fprintf(w, `{"result": true}`)
 	})
 
-	err := suite.client.Emails.Templates.Update(1, "<h1>Message</h1>", "ru")
+	err := suite.client.Emails.Templates.UpdateTemplate(1, "<h1>Message</h1>", "ru")
 	suite.NoError(err)
 }
 
@@ -54,7 +54,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_TemplatesService_Get() {
 		}`)
 	})
 
-	tpl, err := suite.client.Emails.Templates.Get(1)
+	tpl, err := suite.client.Emails.Templates.GetTemplate(1)
 	suite.NoError(err)
 	suite.Equal(1, tpl.RealID)
 }
@@ -112,7 +112,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_TemplatesService_List() {
 				"preview": "https://login.sendpulse.com/files/emailservice/userfiles/templates/preview/2a7c59e5bcb0db1dee02c60208fbb498_thumbnail_300.png"
 			}]`)
 	})
-	templates, err := suite.client.Emails.Templates.List(10, 0, "me")
+	templates, err := suite.client.Emails.Templates.GetTemplates(10, 0, "me")
 	suite.NoError(err)
 	suite.Equal(2, len(templates))
 }

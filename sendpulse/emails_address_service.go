@@ -2,7 +2,6 @@ package sendpulse
 
 import (
 	"fmt"
-	"github.com/dimuska139/sendpulse-sdk-go/sendpulse/models"
 	"net/http"
 )
 
@@ -14,42 +13,77 @@ func newAddressService(cl *Client) *AddressService {
 	return &AddressService{client: cl}
 }
 
-func (service *AddressService) GetEmailInfo(email string) ([]*models.EmailInfo, error) {
+type Variable struct {
+	Name  string      `json:"name"`
+	Type  string      `json:"type,omitempty"`
+	Value interface{} `json:"value"`
+}
+
+type EmailInfo struct {
+	BookID    int         `json:"book_id"`
+	Status    int         `json:"status"`
+	Variables []*Variable `json:"variables"`
+}
+
+func (service *AddressService) GetEmailInfo(email string) ([]*EmailInfo, error) {
 	path := fmt.Sprintf("/emails/%s", email)
-	var response []*models.EmailInfo
+	var response []*EmailInfo
 	_, err := service.client.NewRequest(http.MethodGet, fmt.Sprintf(path), nil, &response, true)
 	return response, err
 }
 
-func (service *AddressService) GetEmailsInfo(emails []string) (map[string][]*models.EmailInfo, error) {
+func (service *AddressService) GetEmailsInfo(emails []string) (map[string][]*EmailInfo, error) {
 	path := "/emails"
 	type data struct {
 		Emails []string `json:"emails"`
 	}
 
 	params := data{Emails: emails}
-	respData := make(map[string][]*models.EmailInfo)
+	respData := make(map[string][]*EmailInfo)
 	_, err := service.client.NewRequest(http.MethodPost, fmt.Sprintf(path), params, &respData, true)
 	return respData, err
 }
 
-func (service *AddressService) GetDetails(email string) ([]*models.EmailInfoList, error) {
+type EmailInfoList struct {
+	ListName string       `json:"list_name"`
+	ListID   int          `json:"list_id"`
+	AddDate  DateTimeType `json:"add_date"`
+	Source   string       `json:"source"`
+}
+
+func (service *AddressService) GetDetails(email string) ([]*EmailInfoList, error) {
 	path := fmt.Sprintf("/emails/%s/details", email)
-	var response []*models.EmailInfoList
+	var response []*EmailInfoList
 	_, err := service.client.NewRequest(http.MethodGet, fmt.Sprintf(path), nil, &response, true)
 	return response, err
 }
 
-func (service *AddressService) GetStatisticsByCampaign(campaignID int, email string) (*models.CampaignEmailStatistics, error) {
+func (service *AddressService) GetStatisticsByCampaign(campaignID int, email string) (*CampaignEmailStatistics, error) {
 	path := fmt.Sprintf("/campaigns/%d/email/%s", campaignID, email)
-	var respData *models.CampaignEmailStatistics
+	var respData *CampaignEmailStatistics
 	_, err := service.client.NewRequest(http.MethodGet, fmt.Sprintf(path), nil, &respData, true)
 	return respData, err
 }
 
-func (service *AddressService) GetStatisticsByAddressBook(addressBookID int, email string) (*models.AddressBookEmailStatistics, error) {
+type AddressBookEmailStatistics struct {
+	Email         string      `json:"email"`
+	AddressBookID int         `json:"abook_id,string"`
+	Status        int         `json:"status"`
+	StatusExplain string      `json:"status_explain"`
+	Variables     []*Variable `json:"variables"`
+}
+
+type CampaignEmailStatistics struct {
+	SentDate            DateTimeType `json:"sent_date"`
+	GlobalStatus        int          `json:"global_status"`
+	GlobalStatusExplain string       `json:"global_status_explain"`
+	DetailStatus        int          `json:"detail_status"`
+	DetailStatusExplain string       `json:"detail_status_explain"`
+}
+
+func (service *AddressService) GetStatisticsByAddressBook(addressBookID int, email string) (*AddressBookEmailStatistics, error) {
 	path := fmt.Sprintf("/addressbooks/%d/emails/%s", addressBookID, email)
-	var respData models.AddressBookEmailStatistics
+	var respData AddressBookEmailStatistics
 	_, err := service.client.NewRequest(http.MethodGet, fmt.Sprintf(path), nil, &respData, true)
 	return &respData, err
 }
@@ -63,16 +97,40 @@ func (service *AddressService) DeleteFromAllAddressBooks(email string) error {
 	return err
 }
 
-func (service *AddressService) GetEmailStatisticsByCampaignsAndAddressBooks(email string) (*models.CampaignsEmailStatistics, error) {
+type CampaignsEmailStatistics struct {
+	Statistic *struct {
+		Sent int `json:"sent"`
+		Open int `json:"open"`
+		Link int `json:"link"`
+	} `json:"statistic"`
+	Addressbooks []*struct {
+		Id   int    `json:"id"`
+		Name string `json:"address_book_name"`
+	}
+	Blacklist bool
+}
+
+func (service *AddressService) GetEmailStatisticsByCampaignsAndAddressBooks(email string) (*CampaignsEmailStatistics, error) {
 	path := fmt.Sprintf("/emails/%s/campaigns", email)
-	var respData *models.CampaignsEmailStatistics
+	var respData *CampaignsEmailStatistics
 	_, err := service.client.NewRequest(http.MethodGet, fmt.Sprintf(path), nil, &respData, true)
 	return respData, err
 }
 
-func (service *AddressService) GetEmailsStatisticsByCampaignsAndAddressBooks(emails []string) (map[string]*models.CampaignsAndAddressBooksEmailStatistics, error) {
+type CampaignsAndAddressBooksEmailStatistics struct {
+	Sent         int `json:"sent"`
+	Open         int `json:"open"`
+	Link         int `json:"link"`
+	Addressbooks []*struct {
+		ID   int    `json:"id"`
+		Name string `json:"name"`
+	} `json:"adressbooks"`
+	Blacklist bool
+}
+
+func (service *AddressService) GetEmailsStatisticsByCampaignsAndAddressBooks(emails []string) (map[string]*CampaignsAndAddressBooksEmailStatistics, error) {
 	path := "/emails/campaigns"
-	respData := make(map[string]*models.CampaignsAndAddressBooksEmailStatistics)
+	respData := make(map[string]*CampaignsAndAddressBooksEmailStatistics)
 
 	type data struct {
 		Emails []string `json:"emails"`
@@ -83,12 +141,12 @@ func (service *AddressService) GetEmailsStatisticsByCampaignsAndAddressBooks(ema
 	return respData, err
 }
 
-func (service *AddressService) ChangeVariables(addressBookID int, email string, variables []*models.Variable) error {
+func (service *AddressService) ChangeVariables(addressBookID int, email string, variables []*Variable) error {
 	path := fmt.Sprintf("/addressbooks/%d/emails/variable", addressBookID)
 
 	type data struct {
-		Email     string             `json:"email"`
-		Variables []*models.Variable `json:"variables"`
+		Email     string      `json:"email"`
+		Variables []*Variable `json:"variables"`
 	}
 
 	params := data{Email: email, Variables: variables}

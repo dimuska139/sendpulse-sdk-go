@@ -3,7 +3,6 @@ package sendpulse
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/dimuska139/sendpulse-sdk-go/sendpulse/models"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -137,7 +136,7 @@ func (service *SmsService) DeletePhones(addressBookID int, phones []string) erro
 type PhoneInfo struct {
 	Status    int                    `json:"status"`
 	Variables map[string]interface{} `json:"variables"`
-	Added     models.DateTimeType    `json:"added"`
+	Added     DateTimeType           `json:"added"`
 }
 
 func (service *SmsService) GetPhoneInfo(addressBookID int, phone string) (*PhoneInfo, error) {
@@ -190,12 +189,16 @@ func (service *SmsService) RemoveFromBlacklist(phones []string) error {
 
 type BlacklistPhone struct {
 	Phone       string
-	Description string              `json:"description"`
-	AddDate     models.DateTimeType `json:"add_date"`
+	Description string       `json:"description"`
+	AddDate     DateTimeType `json:"add_date"`
 }
 
-func (service *SmsService) BlacklistPhones(phones []string) ([]*BlacklistPhone, error) {
-	path := "/sms/black_list/by_numbers?phones=[" + strings.Join(phones, ",") + "]"
+func (service *SmsService) GetBlacklistedPhones(phones []string) ([]*BlacklistPhone, error) {
+	path := "/sms/black_list/by_numbers"
+	urlParams := url.Values{}
+	urlParams.Add("phones", "["+strings.Join(phones, ",")+"]")
+	path += "?" + urlParams.Encode()
+
 	type BlacklistPhoneInternal struct {
 		BlacklistPhone
 		Phone int `json:"phone"`
@@ -221,13 +224,13 @@ func (service *SmsService) BlacklistPhones(phones []string) ([]*BlacklistPhone, 
 }
 
 type CreateSmsCampaignByAddressBookParams struct {
-	Sender        string              `json:"sender"`
-	AddressBookID int                 `json:"addressBookId"`
-	Body          string              `json:"body"`
-	Transliterate int                 `json:"transliterate"`
-	Route         map[string]string   `json:"route,omitempty"`
-	Date          models.DateTimeType `json:"date"`
-	Emulate       int                 `json:"emulate"`
+	Sender        string            `json:"sender"`
+	AddressBookID int               `json:"addressBookId"`
+	Body          string            `json:"body"`
+	Transliterate int               `json:"transliterate"`
+	Route         map[string]string `json:"route,omitempty"`
+	Date          DateTimeType      `json:"date"`
+	Emulate       int               `json:"emulate"`
 }
 
 func (service *SmsService) CreateCampaignByAddressBook(params CreateSmsCampaignByAddressBookParams) (int, error) {
@@ -242,13 +245,13 @@ func (service *SmsService) CreateCampaignByAddressBook(params CreateSmsCampaignB
 }
 
 type CreateSmsCampaignByPhonesParams struct {
-	Sender        string              `json:"sender"`
-	Phones        []string            `json:"phones"`
-	Body          string              `json:"body"`
-	Transliterate int                 `json:"transliterate"`
-	Route         map[string]string   `json:"route,omitempty"`
-	Date          models.DateTimeType `json:"date"`
-	Emulate       int                 `json:"emulate"`
+	Sender        string            `json:"sender"`
+	Phones        []string          `json:"phones"`
+	Body          string            `json:"body"`
+	Transliterate int               `json:"transliterate"`
+	Route         map[string]string `json:"route,omitempty"`
+	Date          DateTimeType      `json:"date"`
+	Emulate       int               `json:"emulate"`
 }
 
 func (service *SmsService) CreateCampaignByPhones(params CreateSmsCampaignByPhonesParams) (int, error) {
@@ -263,17 +266,17 @@ func (service *SmsService) CreateCampaignByPhones(params CreateSmsCampaignByPhon
 }
 
 type SmsCampaign struct {
-	ID                int                 `json:"id"`
-	AddressBookID     int                 `json:"address_book_id"`
-	CompanyPrice      float32             `json:"company_price"`
-	CompanyCurrency   string              `json:"company_currency"`
-	SendDate          models.DateTimeType `json:"send_date"`
-	DateCreated       models.DateTimeType `json:"date_created"`
-	SenderMailAddress string              `json:"sender_mail_address"`
-	SenderMailName    string              `json:"sender_mail_name"`
+	ID                int          `json:"id"`
+	AddressBookID     int          `json:"address_book_id"`
+	CompanyPrice      float32      `json:"company_price"`
+	CompanyCurrency   string       `json:"company_currency"`
+	SendDate          DateTimeType `json:"send_date"`
+	DateCreated       DateTimeType `json:"date_created"`
+	SenderMailAddress string       `json:"sender_mail_address"`
+	SenderMailName    string       `json:"sender_mail_name"`
 }
 
-func (service *SmsService) CampaignsList(dateFrom, dateTo time.Time) ([]*SmsCampaign, error) {
+func (service *SmsService) GetCampaigns(dateFrom, dateTo time.Time) ([]*SmsCampaign, error) {
 	dtFormat := "2006-01-02 15:04:05"
 	path := "/sms/campaigns/list"
 	urlParams := url.Values{}
@@ -290,13 +293,13 @@ func (service *SmsService) CampaignsList(dateFrom, dateTo time.Time) ([]*SmsCamp
 }
 
 type SmsCampaignInfo struct {
-	ID            int                 `json:"id"`
-	AddressBookID int                 `json:"address_book_id"`
-	Currency      string              `json:"currency"`
-	CompanyPrice  float32             `json:"company_price"`
-	SendDate      models.DateTimeType `json:"send_date"`
-	DateCreated   models.DateTimeType `json:"date_created"`
-	SenderName    string              `json:"sender_name"`
+	ID            int          `json:"id"`
+	AddressBookID int          `json:"address_book_id"`
+	Currency      string       `json:"currency"`
+	CompanyPrice  float32      `json:"company_price"`
+	SendDate      DateTimeType `json:"send_date"`
+	DateCreated   DateTimeType `json:"date_created"`
+	SenderName    string       `json:"sender_name"`
 	PhonesInfo    []struct {
 		Phone         int     `json:"phone"`
 		Status        int     `json:"status"`
@@ -306,7 +309,7 @@ type SmsCampaignInfo struct {
 	} `json:"task_phones_info"`
 }
 
-func (service *SmsService) CampaignInfo(id int) (*SmsCampaignInfo, error) {
+func (service *SmsService) GetCampaignInfo(id int) (*SmsCampaignInfo, error) {
 	path := fmt.Sprintf("/sms/campaigns/info/%d", id)
 
 	var respData struct {
@@ -335,12 +338,12 @@ type SmsCampaignCostParams struct {
 	Route         map[string]string
 }
 
-type CampaignCost struct {
+type SmsCampaignCampaignCost struct {
 	Price    float32 `json:"price"`
 	Currency string  `json:"currency"`
 }
 
-func (service *SmsService) GetCampaignCost(params SmsCampaignCostParams) (*CampaignCost, error) {
+func (service *SmsService) GetCampaignCost(params SmsCampaignCostParams) (*SmsCampaignCampaignCost, error) {
 	path := "/sms/campaigns/cost"
 	urlParams := url.Values{}
 	if params.AddressBookID != 0 {
@@ -363,8 +366,8 @@ func (service *SmsService) GetCampaignCost(params SmsCampaignCostParams) (*Campa
 		path += "?" + urlParams.Encode()
 	}
 	var respData struct {
-		Result bool          `json:"result"`
-		Data   *CampaignCost `json:"data"`
+		Result bool                     `json:"result"`
+		Data   *SmsCampaignCampaignCost `json:"data"`
 	}
 	_, err := service.client.NewRequest(http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err

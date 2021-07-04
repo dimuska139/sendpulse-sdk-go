@@ -2,7 +2,6 @@ package sendpulse
 
 import (
 	"fmt"
-	"github.com/dimuska139/sendpulse-sdk-go/sendpulse/models"
 	"net/http"
 )
 
@@ -255,11 +254,11 @@ func (suite *SendpulseTestSuite) TestEmailsService_AddressService_ChangeVariable
 		}`)
 	})
 
-	variables := make([]*models.Variable, 0)
-	variables = append(variables, &models.Variable{
+	variables := make([]*Variable, 0)
+	variables = append(variables, &Variable{
 		Name:  "var1",
 		Value: "val1",
-	}, &models.Variable{
+	}, &Variable{
 		Name:  "var2",
 		Value: "val2",
 	})

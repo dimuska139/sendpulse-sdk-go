@@ -14,7 +14,7 @@ func (suite *SendpulseTestSuite) TestBalanceService_GetCommon() {
 		}`)
 	})
 
-	balance, err := suite.client.Balance.GetCommon("RUB")
+	balance, err := suite.client.Balance.GetBalance("RUB")
 	suite.NoError(err)
 	suite.Equal("RUR", balance.Currency)
 }
@@ -48,7 +48,7 @@ func (suite *SendpulseTestSuite) TestBalanceService_GetDetailed() {
 		}`)
 	})
 
-	balance, err := suite.client.Balance.GetDetailed()
+	balance, err := suite.client.Balance.GetDetailedBalance()
 	suite.NoError(err)
 	suite.Equal("RUR", balance.Balance.Currency)
 }

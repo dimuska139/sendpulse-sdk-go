@@ -8,7 +8,7 @@ type EmailsService struct {
 	Blacklist    *BlacklistService
 	Webhooks     *WebhooksService
 	Address      *AddressService
-	Mailings     *MailingsService
+	Campaigns    *MailingsService
 	Validator    *ValidatorService
 }
 
@@ -16,7 +16,7 @@ func newEmailsService(cl *Client) *EmailsService {
 	return &EmailsService{
 		client:       cl,
 		AddressBooks: newAddressBooksService(cl),
-		Mailings:     newMailingsService(cl),
+		Campaigns:    newMailingsService(cl),
 		Templates:    newTemplatesService(cl),
 		Senders:      newSendersService(cl),
 		Address:      newAddressService(cl),

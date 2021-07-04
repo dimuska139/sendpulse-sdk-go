@@ -11,7 +11,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_SendersService_Create() {
 		fmt.Fprintf(w, `{"result": true}`)
 	})
 
-	err := suite.client.Emails.Senders.Create("Ivan Petrov", "test@sendpulse.com")
+	err := suite.client.Emails.Senders.CreateSender("Ivan Petrov", "test@sendpulse.com")
 	suite.NoError(err)
 }
 
@@ -24,7 +24,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_SendersService_GetActivationC
 		}`)
 	})
 
-	err := suite.client.Emails.Senders.GetActivationCode("test@sendpulse.com")
+	err := suite.client.Emails.Senders.GetSenderActivationCode("test@sendpulse.com")
 	suite.NoError(err)
 }
 
@@ -37,7 +37,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_SendersService_Activate() {
 		}`)
 	})
 
-	err := suite.client.Emails.Senders.Activate("test@sendpulse.com", "code")
+	err := suite.client.Emails.Senders.ActivateSender("test@sendpulse.com", "code")
 	suite.NoError(err)
 }
 
@@ -57,7 +57,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_SendersService_List() {
 		}]`)
 	})
 
-	senders, err := suite.client.Emails.Senders.List()
+	senders, err := suite.client.Emails.Senders.GetSenders()
 	suite.NoError(err)
 	suite.Equal(2, len(senders))
 }
@@ -68,6 +68,6 @@ func (suite *SendpulseTestSuite) TestEmailsService_SendersService_Delete() {
 		fmt.Fprintf(w, `{"result": true}`)
 	})
 
-	err := suite.client.Emails.Senders.Delete("test@sendpulse.com")
+	err := suite.client.Emails.Senders.DeleteSender("test@sendpulse.com")
 	suite.NoError(err)
 }

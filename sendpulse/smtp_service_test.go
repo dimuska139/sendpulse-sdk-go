@@ -16,7 +16,7 @@ func (suite *SendpulseTestSuite) TestSmtpService_Send() {
 		}`)
 	})
 
-	id, err := suite.client.SMTP.Send(SendEmailParams{
+	id, err := suite.client.SMTP.SendMessage(SendEmailParams{
 		Html:          "<h1>Hello</h1>",
 		Text:          "",
 		Template:      nil,
@@ -84,7 +84,7 @@ func (suite *SendpulseTestSuite) TestSmtpService_List() {
 			}]`)
 	})
 
-	list, err := suite.client.SMTP.List(SmtpListParams{
+	list, err := suite.client.SMTP.GetMessages(SmtpListParams{
 		Limit:     100,
 		Offset:    0,
 		From:      time.Now().Add(-24 * 5 * time.Hour),
@@ -104,7 +104,7 @@ func (suite *SendpulseTestSuite) TestSmtpService_Total() {
 		}`)
 	})
 
-	total, err := suite.client.SMTP.Total()
+	total, err := suite.client.SMTP.CountMessages()
 	suite.NoError(err)
 	suite.Equal(25408, total)
 }
@@ -151,7 +151,7 @@ func (suite *SendpulseTestSuite) TestSmtpService_Get() {
 		}`)
 	})
 
-	message, err := suite.client.SMTP.Get(1)
+	message, err := suite.client.SMTP.GetMessage(1)
 	suite.NoError(err)
 	suite.Equal("pzkic9-0afezp-fc", message.ID)
 	suite.Equal(1, len(message.Tracking.Link))
@@ -187,7 +187,7 @@ func (suite *SendpulseTestSuite) TestSmtpService_DailyBounces() {
 		}`)
 	})
 
-	bounces, err := suite.client.SMTP.DailyBounces(10, 0, time.Now())
+	bounces, err := suite.client.SMTP.GetDailyBounces(10, 0, time.Now())
 	suite.NoError(err)
 	suite.Equal(1000, bounces.RequestLimit)
 	suite.Equal(2, len(bounces.Emails))
@@ -201,7 +201,7 @@ func (suite *SendpulseTestSuite) TestSmtpService_TotalBounces() {
 		}`)
 	})
 
-	total, err := suite.client.SMTP.TotalBounces()
+	total, err := suite.client.SMTP.CountBounces()
 	suite.NoError(err)
 	suite.Equal(3, total)
 }
@@ -220,7 +220,7 @@ func (suite *SendpulseTestSuite) TestSmtpService_Unsubscribe() {
 		Comment: faker.Word(),
 	})
 
-	err := suite.client.SMTP.Unsubscribe(emails)
+	err := suite.client.SMTP.UnsubscribeEmails(emails)
 	suite.NoError(err)
 }
 
@@ -232,7 +232,7 @@ func (suite *SendpulseTestSuite) TestSmtpService_DeleteUnsubscribed() {
 		}`)
 	})
 
-	err := suite.client.SMTP.DeleteUnsubscribed([]string{faker.Email(), faker.Email()})
+	err := suite.client.SMTP.DeleteUnsubscribedEmails([]string{faker.Email(), faker.Email()})
 	suite.NoError(err)
 }
 
@@ -257,7 +257,7 @@ func (suite *SendpulseTestSuite) TestSmtpService_UnsubscribedList() {
 		]`)
 	})
 
-	unsubscribed, err := suite.client.SMTP.UnsubscribedList(UnsubscribedListParams{
+	unsubscribed, err := suite.client.SMTP.GetUnsubscribedEmails(UnsubscribedListParams{
 		Limit:  10,
 		Offset: 0,
 		Date:   time.Now(),
@@ -275,7 +275,7 @@ func (suite *SendpulseTestSuite) TestSmtpService_SendersIPs() {
 		]`)
 	})
 
-	ips, err := suite.client.SMTP.SendersIPs()
+	ips, err := suite.client.SMTP.GetSendersIPs()
 	suite.NoError(err)
 	suite.Equal(2, len(ips))
 }
@@ -289,7 +289,7 @@ func (suite *SendpulseTestSuite) TestSmtpService_SendersEmails() {
 		]`)
 	})
 
-	emails, err := suite.client.SMTP.SendersEmails()
+	emails, err := suite.client.SMTP.GetSendersEmails()
 	suite.NoError(err)
 	suite.Equal(2, len(emails))
 }
@@ -303,7 +303,7 @@ func (suite *SendpulseTestSuite) TestSmtpService_AllowedDomains() {
 		]`)
 	})
 
-	domains, err := suite.client.SMTP.AllowedDomains()
+	domains, err := suite.client.SMTP.GetAllowedDomains()
 	suite.NoError(err)
 	suite.Equal(2, len(domains))
 }

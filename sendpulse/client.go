@@ -35,6 +35,7 @@ type Client struct {
 	Sms       *SmsService
 	Viber     *ViberService
 	VkOk      *VkOkService
+	Bots      *BotsService
 }
 
 func NewClient(client *http.Client, config *Config) *Client {
@@ -51,6 +52,7 @@ func NewClient(client *http.Client, config *Config) *Client {
 	cl.Sms = newSmsService(cl)
 	cl.Viber = newViberService(cl)
 	cl.VkOk = newVkOkService(cl)
+	cl.Bots = newBotsService(cl)
 	return cl
 }
 

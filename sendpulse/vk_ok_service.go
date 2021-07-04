@@ -3,7 +3,6 @@ package sendpulse
 import (
 	"bytes"
 	"fmt"
-	"github.com/dimuska139/sendpulse-sdk-go/sendpulse/models"
 	"io"
 	"mime/multipart"
 	"net/http"
@@ -104,7 +103,7 @@ type VkOkTemplate struct {
 	} `json:"status_detail"`
 }
 
-func (service *VkOkService) Templates() ([]*VkOkTemplate, error) {
+func (service *VkOkService) GetTemplates() ([]*VkOkTemplate, error) {
 	path := "/vk-ok/templates"
 
 	var respData struct {
@@ -115,7 +114,7 @@ func (service *VkOkService) Templates() ([]*VkOkTemplate, error) {
 	return respData.Data, err
 }
 
-func (service *VkOkService) Template(templateID int) (*VkOkTemplate, error) {
+func (service *VkOkService) GetTemplate(templateID int) (*VkOkTemplate, error) {
 	path := fmt.Sprintf("/vk-ok/templates/%d", templateID)
 
 	var respData struct {
@@ -132,12 +131,12 @@ type SendVkOkTemplateParams struct {
 		Phone     string                 `json:"phone"`
 		Variables map[string]interface{} `json:"variables"`
 	} `json:"recipients"`
-	LifeTime   int                 `json:"life_time"`
-	LifeType   string              `json:"life_type"`
-	Name       string              `json:"name"`
-	Routes     map[string]bool     `json:"routes"`
-	SendDate   models.DateTimeType `json:"send_date"`
-	TemplateID int                 `json:"template_id"`
+	LifeTime   int             `json:"life_time"`
+	LifeType   string          `json:"life_type"`
+	Name       string          `json:"name"`
+	Routes     map[string]bool `json:"routes"`
+	SendDate   DateTimeType    `json:"send_date"`
+	TemplateID int             `json:"template_id"`
 }
 
 func (service *VkOkService) Send(params SendVkOkTemplateParams) (int, error) {
@@ -187,7 +186,7 @@ type VkOkCampaignStatistics struct {
 	} `json:"group_stat"`
 }
 
-func (service *VkOkService) CampaignsStatistics() ([]*VkOkCampaignStatistics, error) {
+func (service *VkOkService) GetCampaignsStatistics() ([]*VkOkCampaignStatistics, error) {
 	path := "/vk-ok/campaigns"
 
 	var respData struct {
@@ -198,7 +197,7 @@ func (service *VkOkService) CampaignsStatistics() ([]*VkOkCampaignStatistics, er
 	return respData.Data, err
 }
 
-func (service *VkOkService) CampaignStatistics(campaignID int) (*VkOkCampaignStatistics, error) {
+func (service *VkOkService) GetCampaignStatistics(campaignID int) (*VkOkCampaignStatistics, error) {
 	path := fmt.Sprintf("/vk-ok/campaigns/%d", campaignID)
 
 	var respData *VkOkCampaignStatistics
@@ -225,7 +224,7 @@ type VkOkCampaignPhone struct {
 	} `json:"status_detail"`
 }
 
-func (service *VkOkService) CampaignPhones(campaignID int) ([]*VkOkCampaignPhone, error) {
+func (service *VkOkService) GetCampaignPhones(campaignID int) ([]*VkOkCampaignPhone, error) {
 	path := fmt.Sprintf("/vk-ok/campaigns/%d/phones", campaignID)
 
 	var respData struct {

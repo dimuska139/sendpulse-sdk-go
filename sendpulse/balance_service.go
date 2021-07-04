@@ -2,7 +2,6 @@ package sendpulse
 
 import (
 	"fmt"
-	"github.com/dimuska139/sendpulse-sdk-go/sendpulse/models"
 	"net/http"
 	"strings"
 )
@@ -15,21 +14,51 @@ func newBalanceService(cl *Client) *BalanceService {
 	return &BalanceService{client: cl}
 }
 
-func (service *BalanceService) GetCommon(currency string) (*models.Balance, error) {
+type Balance struct {
+	Currency        string  `json:"currency"`
+	BalanceCurrency float32 `json:"balance_currency"`
+}
+
+type BalanceDetailed struct {
+	Balance struct {
+		Main     float32 `json:"main,string"`
+		Bonus    float32 `json:"bonus,string"`
+		Currency string  `json:"currency"`
+	} `json:"balance"`
+	Email struct {
+		TariffName         string       `json:"tariff_name"`
+		FinishedTime       DateTimeType `json:"finished_time"`
+		EmailsLeft         int          `json:"emails_left"`
+		MaximumSubscribers int          `json:"maximum_subscribers"`
+		CurrentSubscribers int          `json:"current_subscribers"`
+	} `json:"email"`
+	Smtp struct {
+		TariffName string       `json:"tariff_name"`
+		EndDate    DateTimeType `json:"end_date"`
+		AutoRenew  int          `json:"auto_renew"`
+	} `json:"smtp"`
+	Push struct {
+		TariffName string       `json:"tariff_name"`
+		EndDate    DateTimeType `json:"end_date"`
+		AutoRenew  int          `json:"auto_renew"`
+	} `json:"push"`
+}
+
+func (service *BalanceService) GetBalance(currency string) (*Balance, error) {
 	path := "/balance"
 	if currency != "" {
 		path += "/" + strings.ToLower(currency)
 	}
 
-	var respData models.Balance
+	var respData Balance
 	_, err := service.client.NewRequest(http.MethodGet, fmt.Sprintf(path), nil, &respData, true)
 	return &respData, err
 }
 
-func (service *BalanceService) GetDetailed() (*models.BalanceDetailed, error) {
+func (service *BalanceService) GetDetailedBalance() (*BalanceDetailed, error) {
 	path := "/user/balance/detail"
 
-	var respData models.BalanceDetailed
+	var respData BalanceDetailed
 	_, err := service.client.NewRequest(http.MethodGet, fmt.Sprintf(path), nil, &respData, true)
 	return &respData, err
 }

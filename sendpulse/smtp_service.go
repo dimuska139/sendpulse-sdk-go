@@ -3,7 +3,6 @@ package sendpulse
 import (
 	b64 "encoding/base64"
 	"fmt"
-	"github.com/dimuska139/sendpulse-sdk-go/sendpulse/models"
 	"net/http"
 	"strings"
 	"time"
@@ -37,7 +36,7 @@ type SendEmailParams struct {
 	Attachments map[string]string `json:"attachments"`
 }
 
-func (service *SmtpService) Send(params SendEmailParams) (string, error) {
+func (service *SmtpService) SendMessage(params SendEmailParams) (string, error) {
 	path := "/smtp/emails"
 
 	type paramsFormat struct {
@@ -60,34 +59,34 @@ func (service *SmtpService) Send(params SendEmailParams) (string, error) {
 }
 
 type SmtpMessage struct {
-	ID                    string              `json:"id"`
-	Sender                string              `json:"sender"`
-	TotalSize             int                 `json:"total_size"`
-	SenderIP              string              `json:"sender_ip"`
-	SmtpAnswerCode        int                 `json:"smtp_answer_code"`
-	SmtpAnswerCodeExplain string              `json:"smtp_answer_code_explain"`
-	SmtpAnswerSubcode     string              `json:"smtp_answer_subcode"`
-	SmtpAnswerData        string              `json:"smtp_answer_data"`
-	UsedIP                string              `json:"used_ip"`
-	Recipient             string              `json:"recipient"`
-	Subject               string              `json:"subject"`
-	SendDate              models.DateTimeType `json:"subject"`
+	ID                    string       `json:"id"`
+	Sender                string       `json:"sender"`
+	TotalSize             int          `json:"total_size"`
+	SenderIP              string       `json:"sender_ip"`
+	SmtpAnswerCode        int          `json:"smtp_answer_code"`
+	SmtpAnswerCodeExplain string       `json:"smtp_answer_code_explain"`
+	SmtpAnswerSubcode     string       `json:"smtp_answer_subcode"`
+	SmtpAnswerData        string       `json:"smtp_answer_data"`
+	UsedIP                string       `json:"used_ip"`
+	Recipient             string       `json:"recipient"`
+	Subject               string       `json:"subject"`
+	SendDate              DateTimeType `json:"subject"`
 	Tracking              struct {
 		Click int `json:"click"`
 		Open  int `json:"open"`
 		Link  []*struct {
-			Url              string              `json:"url"`
-			Browser          string              `json:"browser"`
-			Os               string              `json:"os"`
-			ScreenResolution string              `json:"screen_resolution"`
-			IP               string              `json:"ip"`
-			ActionDate       models.DateTimeType `json:"action_date"`
+			Url              string       `json:"url"`
+			Browser          string       `json:"browser"`
+			Os               string       `json:"os"`
+			ScreenResolution string       `json:"screen_resolution"`
+			IP               string       `json:"ip"`
+			ActionDate       DateTimeType `json:"action_date"`
 		} `json:"link"`
 		ClientInfo []*struct {
-			Browser    string              `json:"browser"`
-			Os         string              `json:"os"`
-			IP         string              `json:"ip"`
-			ActionDate models.DateTimeType `json:"action_date"`
+			Browser    string       `json:"browser"`
+			Os         string       `json:"os"`
+			IP         string       `json:"ip"`
+			ActionDate DateTimeType `json:"action_date"`
 		} `json:"client_info"`
 	} `json:"tracking"`
 }
@@ -101,7 +100,7 @@ type SmtpListParams struct {
 	Recipient string
 }
 
-func (service *SmtpService) List(params SmtpListParams) ([]*SmtpMessage, error) {
+func (service *SmtpService) GetMessages(params SmtpListParams) ([]*SmtpMessage, error) {
 	path := "/smtp/emails"
 	var urlParts []string
 	urlParts = append(urlParts, fmt.Sprintf("offset=%d", params.Offset))
@@ -130,7 +129,7 @@ func (service *SmtpService) List(params SmtpListParams) ([]*SmtpMessage, error) 
 	return respData, err
 }
 
-func (service *SmtpService) Total() (int, error) {
+func (service *SmtpService) CountMessages() (int, error) {
 	path := "/smtp/emails/total"
 	var respData struct {
 		Total int `json:"total"`
@@ -139,7 +138,7 @@ func (service *SmtpService) Total() (int, error) {
 	return respData.Total, err
 }
 
-func (service *SmtpService) Get(id int) (*SmtpMessage, error) {
+func (service *SmtpService) GetMessage(id int) (*SmtpMessage, error) {
 	path := fmt.Sprintf("/smtp/emails/%d", id)
 	var respData *SmtpMessage
 	_, err := service.client.NewRequest(http.MethodGet, fmt.Sprintf(path), nil, &respData, true)
@@ -149,19 +148,19 @@ func (service *SmtpService) Get(id int) (*SmtpMessage, error) {
 type BouncesList struct {
 	Total  int `json:"total"`
 	Emails []struct {
-		EmailTo           string              `json:"email_to"`
-		Sender            string              `json:"sender"`
-		SendDate          models.DateTimeType `json:"send_date"`
-		Subject           string              `json:"subject"`
-		SmtpAnswerCode    int                 `json:"smtp_answer_code"`
-		SmtpAnswerSubcode string              `json:"smtp_answer_subcode"`
-		SmtpAnswerData    string              `json:"smtp_answer_data"`
+		EmailTo           string       `json:"email_to"`
+		Sender            string       `json:"sender"`
+		SendDate          DateTimeType `json:"send_date"`
+		Subject           string       `json:"subject"`
+		SmtpAnswerCode    int          `json:"smtp_answer_code"`
+		SmtpAnswerSubcode string       `json:"smtp_answer_subcode"`
+		SmtpAnswerData    string       `json:"smtp_answer_data"`
 	} `json:"emails"`
 	RequestLimit int `json:"request_limit"`
 	Found        int `json:"found"`
 }
 
-func (service *SmtpService) DailyBounces(limit, offset int, date time.Time) (*BouncesList, error) {
+func (service *SmtpService) GetDailyBounces(limit, offset int, date time.Time) (*BouncesList, error) {
 	path := fmt.Sprintf("/smtp/bounces/day?limit=%d&offset=%d", limit, offset)
 	if !date.IsZero() {
 		path += "&date=" + date.Format("2006-01-02")
@@ -172,7 +171,7 @@ func (service *SmtpService) DailyBounces(limit, offset int, date time.Time) (*Bo
 	return respData, err
 }
 
-func (service *SmtpService) TotalBounces() (int, error) {
+func (service *SmtpService) CountBounces() (int, error) {
 	path := "/smtp/bounces/day/total"
 
 	var respData struct {
@@ -187,7 +186,7 @@ type SmtpUnsubscribeEmail struct {
 	Comment string `json:"comment"`
 }
 
-func (service *SmtpService) Unsubscribe(emails []*SmtpUnsubscribeEmail) error {
+func (service *SmtpService) UnsubscribeEmails(emails []*SmtpUnsubscribeEmail) error {
 	path := "/smtp/unsubscribe"
 
 	type paramsFormat struct {
@@ -203,7 +202,7 @@ func (service *SmtpService) Unsubscribe(emails []*SmtpUnsubscribeEmail) error {
 	return err
 }
 
-func (service *SmtpService) DeleteUnsubscribed(emails []string) error {
+func (service *SmtpService) DeleteUnsubscribedEmails(emails []string) error {
 	path := "/smtp/unsubscribe"
 
 	type paramsFormat struct {
@@ -226,14 +225,14 @@ type UnsubscribedListParams struct {
 }
 
 type Unsubscribed struct {
-	Email             string              `json:"email"`
-	UnsubscribeByLink int                 `json:"unsubscribe_by_link"`
-	UnsubscribeByUser int                 `json:"unsubscribe_by_user"`
-	SpamComplaint     int                 `json:"spam_complaint"`
-	Date              models.DateTimeType `json:"date"`
+	Email             string       `json:"email"`
+	UnsubscribeByLink int          `json:"unsubscribe_by_link"`
+	UnsubscribeByUser int          `json:"unsubscribe_by_user"`
+	SpamComplaint     int          `json:"spam_complaint"`
+	Date              DateTimeType `json:"date"`
 }
 
-func (service *SmtpService) UnsubscribedList(params UnsubscribedListParams) ([]Unsubscribed, error) {
+func (service *SmtpService) GetUnsubscribedEmails(params UnsubscribedListParams) ([]Unsubscribed, error) {
 	path := fmt.Sprintf("/smtp/unsubscribe?offset=%d", params.Offset)
 	if params.Limit != 0 {
 		path += fmt.Sprintf("&limit=%d", params.Limit)
@@ -249,7 +248,7 @@ func (service *SmtpService) UnsubscribedList(params UnsubscribedListParams) ([]U
 	return respData, err
 }
 
-func (service *SmtpService) SendersIPs() ([]string, error) {
+func (service *SmtpService) GetSendersIPs() ([]string, error) {
 	path := "/smtp/ips"
 
 	var respData []string
@@ -257,7 +256,7 @@ func (service *SmtpService) SendersIPs() ([]string, error) {
 	return respData, err
 }
 
-func (service *SmtpService) SendersEmails() ([]string, error) {
+func (service *SmtpService) GetSendersEmails() ([]string, error) {
 	path := "/smtp/senders"
 
 	var respData []string
@@ -265,7 +264,7 @@ func (service *SmtpService) SendersEmails() ([]string, error) {
 	return respData, err
 }
 
-func (service *SmtpService) AllowedDomains() ([]string, error) {
+func (service *SmtpService) GetAllowedDomains() ([]string, error) {
 	path := "/smtp/domains"
 
 	var respData []string

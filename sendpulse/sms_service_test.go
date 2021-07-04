@@ -2,7 +2,6 @@ package sendpulse
 
 import (
 	"fmt"
-	"github.com/dimuska139/sendpulse-sdk-go/sendpulse/models"
 	"io"
 	"net/http"
 	"strings"
@@ -179,7 +178,7 @@ func (suite *SendpulseTestSuite) TestSmsService_BlacklistPhones() {
 			]
 		}`)
 	})
-	items, err := suite.client.Sms.BlacklistPhones([]string{"380632631234"})
+	items, err := suite.client.Sms.GetBlacklistedPhones([]string{"380632631234"})
 	suite.NoError(err)
 	suite.Equal("79217451232", items[0].Phone)
 }
@@ -198,7 +197,7 @@ func (suite *SendpulseTestSuite) TestSmsService_CreateCampaignByAddressBook() {
 		AddressBookID: 12345,
 		Body:          "Hello!",
 		Route:         nil,
-		Date:          models.DateTimeType(time.Now()),
+		Date:          DateTimeType(time.Now()),
 	})
 	suite.NoError(err)
 	suite.Equal(2623084, campaignID)
@@ -223,7 +222,7 @@ func (suite *SendpulseTestSuite) TestSmsService_CreateCampaignByPhones() {
 		Phones: []string{"79217451232"},
 		Body:   "Hello",
 		Route:  nil,
-		Date:   models.DateTimeType(time.Now()),
+		Date:   DateTimeType(time.Now()),
 	})
 	suite.NoError(err)
 	suite.Equal(2623085, campaignID)
@@ -264,7 +263,7 @@ func (suite *SendpulseTestSuite) TestSmsService_CampaignsList() {
 		 }`)
 	})
 
-	items, err := suite.client.Sms.CampaignsList(dateFrom, dateTo)
+	items, err := suite.client.Sms.GetCampaigns(dateFrom, dateTo)
 	suite.NoError(err)
 	suite.Equal(2, len(items))
 }
@@ -304,7 +303,7 @@ func (suite *SendpulseTestSuite) TestSmsService_CampaignInfo() {
 		}`)
 	})
 
-	info, err := suite.client.Sms.CampaignInfo(campaignID)
+	info, err := suite.client.Sms.GetCampaignInfo(campaignID)
 	suite.NoError(err)
 	suite.Equal(7520226, info.ID)
 }
