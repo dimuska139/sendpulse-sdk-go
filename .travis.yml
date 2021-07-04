@@ -6,6 +6,7 @@ before_install:
   - go get -t -v ./...
 
 script:
+  - cd ./sendpulse
   - go test -race -coverprofile=coverage.txt -covermode=atomic
 
 after_success:
