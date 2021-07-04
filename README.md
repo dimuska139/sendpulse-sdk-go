@@ -11,7 +11,7 @@ API Documentation [https://sendpulse.com/api](https://sendpulse.com/api)
 ### Installation
 
 ```shell
-go get -u github.com/dimuska139/sendpulse-sdk-go
+go get -u github.com/dimuska139/sendpulse-sdk-go/sendpulse
 ```
 
 ### Usage
@@ -19,29 +19,28 @@ go get -u github.com/dimuska139/sendpulse-sdk-go
 package main
 
 import (
-    "fmt"
-    "github.com/dimuska139/sendpulse-sdk-go"
-    "github.com/dimuska139/sendpulse-sdk-go/emails"
-    "net/http"
+	"fmt"
+	"github.com/dimuska139/sendpulse-sdk-go/sendpulse"
+	"net/http"
 )
-const ApiUserId = "12345"
-const ApiSecret = "12345"
 
 func main() {
-    config := sendpulse.Config{
-        UserID: ApiUserId, 
-        Secret: ApiSecret,
-    }
+	config := &sendpulse.Config{
+		UserID: "",
+		Secret: "",
+	}
+	client := sendpulse.NewClient(http.DefaultClient, config)
 	
-    client := emails.New(http.DefaultClient, &config)
+	emails := make([]*sendpulse.EmailToAdd, 0)
+	emails = append(emails, &sendpulse.EmailToAdd{
+		Email:     "test@test.com",
+		Variables: map[string]interface{}{"age": 21, "weight": 99},
+	})
 
-    // Get address book info by id 
-    bookInfo, e := client.GetAddressbook(12345)
-    if e != nil {
-        fmt.Println(e)
-    } else {
-        fmt.Println(*bookInfo)
-    }
+	if err := client.Emails.MailingLists.SingleOptIn(1266208, emails); err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(*emails[0])
 }
 ```
 
