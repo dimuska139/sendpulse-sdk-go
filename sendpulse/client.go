@@ -24,18 +24,19 @@ func (e *SendpulseError) Error() string {
 }
 
 type Client struct {
-	client    *http.Client
-	config    *Config
-	token     string
-	tokenLock *sync.RWMutex
-	Emails    *EmailsService
-	Balance   *BalanceService
-	SMTP      *SmtpService
-	Push      *PushService
-	Sms       *SmsService
-	Viber     *ViberService
-	VkOk      *VkOkService
-	Bots      *BotsService
+	client        *http.Client
+	config        *Config
+	token         string
+	tokenLock     *sync.RWMutex
+	Emails        *EmailsService
+	Balance       *BalanceService
+	SMTP          *SmtpService
+	Push          *PushService
+	SMS           *SmsService
+	Viber         *ViberService
+	VkOk          *VkOkService
+	Bots          *BotsService
+	Automation360 *Automation360Service
 }
 
 func NewClient(client *http.Client, config *Config) *Client {
@@ -49,10 +50,11 @@ func NewClient(client *http.Client, config *Config) *Client {
 	cl.Balance = newBalanceService(cl)
 	cl.SMTP = newSmtpService(cl)
 	cl.Push = newPushService(cl)
-	cl.Sms = newSmsService(cl)
+	cl.SMS = newSmsService(cl)
 	cl.Viber = newViberService(cl)
 	cl.VkOk = newVkOkService(cl)
 	cl.Bots = newBotsService(cl)
+	cl.Automation360 = newAutomation360Service(cl)
 	return cl
 }
 
