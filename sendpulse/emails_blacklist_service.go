@@ -7,14 +7,17 @@ import (
 	"strings"
 )
 
+// BlacklistService is a service to interact with blacklist
 type BlacklistService struct {
 	client *Client
 }
 
+// newBlacklistService creates BlacklistService
 func newBlacklistService(cl *Client) *BlacklistService {
 	return &BlacklistService{client: cl}
 }
 
+// AddToBlacklist appends an email addresses to a blacklist
 func (service *BlacklistService) AddToBlacklist(emails []string, comment string) error {
 	path := "/blacklist"
 
@@ -40,6 +43,7 @@ func (service *BlacklistService) AddToBlacklist(emails []string, comment string)
 	return err
 }
 
+// RemoveFromBlacklist removes an email addresses from a blacklist
 func (service *BlacklistService) RemoveFromBlacklist(emails []string) error {
 	path := "/blacklist"
 
@@ -60,6 +64,7 @@ func (service *BlacklistService) RemoveFromBlacklist(emails []string) error {
 	return err
 }
 
+// GetEmails returns a list of emails added to blacklist
 func (service *BlacklistService) GetEmails() ([]string, error) {
 	path := "/blacklist"
 

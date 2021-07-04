@@ -19,7 +19,7 @@ type CreateViberCampaignParams struct {
 	SenderID        int          `json:"sender_id"`
 	MessageLiveTime int          `json:"message_live_time"`
 	SentDate        DateTimeType `json:"sent_date"`
-	AddressBookID   int          `json:"address_book"`
+	MailingListID   int          `json:"address_book"`
 	Recipients      []int        `json:"recipients"`
 	Message         string       `json:"message"`
 	Additional      *struct {

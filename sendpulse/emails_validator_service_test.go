@@ -11,7 +11,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_ValidatorService_ValidateAddr
 		fmt.Fprintf(w, `{"result": true}`)
 	})
 
-	err := suite.client.Emails.Validator.ValidateAddressBook(1)
+	err := suite.client.Emails.Validator.ValidateMailingList(1)
 	suite.NoError(err)
 }
 
@@ -27,7 +27,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_ValidatorService_GetAddressBo
 		}`)
 	})
 
-	progress, err := suite.client.Emails.Validator.GetAddressBookValidationProgress(1)
+	progress, err := suite.client.Emails.Validator.GetMailingListValidationProgress(1)
 	suite.NoError(err)
 	suite.Equal(25, progress.Total)
 	suite.Equal(19, progress.Processed)
@@ -63,7 +63,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_ValidatorService_GetAddressBo
 		}`)
 	})
 
-	result, err := suite.client.Emails.Validator.GetAddressBookValidationResult(1)
+	result, err := suite.client.Emails.Validator.GetMailingListValidationResult(1)
 	suite.NoError(err)
 	suite.Equal(11, result.ID)
 	suite.Equal("test@sendpulse.com", result.EmailAddresses[0].EmailAddress)
@@ -95,7 +95,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_ValidatorService_GetValidated
 		}`)
 	})
 
-	list, err := suite.client.Emails.Validator.GetValidatedAddressBooksList(10, 0)
+	list, err := suite.client.Emails.Validator.GetValidatedMailingLists(10, 0)
 	suite.NoError(err)
 	suite.Equal("12345 book", list[0].Name)
 }
@@ -156,7 +156,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_ValidatorService_CreateAddres
 		}`)
 	})
 
-	err := suite.client.Emails.Validator.CreateAddressBookValidationReport(AddressBookReportParams{
+	err := suite.client.Emails.Validator.CreateMailingListValidationReport(MailingListReportParams{
 		ID:       25,
 		Statuses: []int{1, 2, 3},
 	})
@@ -188,7 +188,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_ValidatorService_GetAddressBo
 		}`)
 	})
 
-	report, err := suite.client.Emails.Validator.GetAddressBookValidationReport(1)
+	report, err := suite.client.Emails.Validator.GetMailingListValidationReport(1)
 	suite.NoError(err)
 	suite.Equal("12345 book", report.Name)
 	suite.Equal("test@sendpulse.com", report.EmailAddresses[0].EmailAddress)

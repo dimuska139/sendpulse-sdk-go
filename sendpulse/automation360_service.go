@@ -5,14 +5,17 @@ import (
 	"net/http"
 )
 
+// Automation360Service is a service to interact with conversions
 type Automation360Service struct {
 	client *Client
 }
 
+// newAutomation360Service creates Automation360Service
 func newAutomation360Service(cl *Client) *Automation360Service {
 	return &Automation360Service{client: cl}
 }
 
+// Autoresponder represents statistics about an automation flow
 type Autoresponder struct {
 	Autoresponder struct {
 		ID      int          `json:"id"`
@@ -36,6 +39,7 @@ type Autoresponder struct {
 	Conversions  int `json:"conversions"`
 }
 
+// GetAutoresponderStatistics returns statistics about an automation flow
 func (service *Automation360Service) GetAutoresponderStatistics(id int) (*Autoresponder, error) {
 	path := fmt.Sprintf("/a360/autoresponders/%d", id)
 
@@ -44,6 +48,7 @@ func (service *Automation360Service) GetAutoresponderStatistics(id int) (*Autore
 	return respData, err
 }
 
+// StartEvent sends event to SendPulse
 func (service *Automation360Service) StartEvent(eventName string, variables map[string]interface{}) error {
 	path := fmt.Sprintf("/events/name/%s", eventName)
 
@@ -54,12 +59,14 @@ func (service *Automation360Service) StartEvent(eventName string, variables map[
 	return err
 }
 
+// MainTriggerBlockStat represents statistics about the "Start" element
 type MainTriggerBlockStat struct {
 	FlowID   int `json:"flow_id"`
 	Executed int `json:"executed"`
 	Deleted  int `json:"deleted"`
 }
 
+// GetStartBlockStatistics returns statistics about the "Start" element
 func (service *Automation360Service) GetStartBlockStatistics(id int) (*MainTriggerBlockStat, error) {
 	path := fmt.Sprintf("/a360/stats/main-trigger/%d/group-stat", id)
 
@@ -70,11 +77,12 @@ func (service *Automation360Service) GetStartBlockStatistics(id int) (*MainTrigg
 	return respData.Data, err
 }
 
+// EmailBlockStat represents statistics about the "Email" element
 type EmailBlockStat struct {
 	FlowID int `json:"flow_id"`
 	Task   struct {
 		ID                int          `json:"id"`
-		AddressBookID     int          `json:"address_book_id"`
+		MailingListID     int          `json:"address_book_id"`
 		MessageTitle      string       `json:"message_title"`
 		SenderMailAddress string       `json:"sender_mail_address"`
 		SenderMailName    string       `json:"sender_mail_name"`
@@ -90,6 +98,7 @@ type EmailBlockStat struct {
 	LastSend     DateTimeType `json:"last_send"`
 }
 
+// GetEmailBlockStatistics returns statistics about the "Email" element
 func (service *Automation360Service) GetEmailBlockStatistics(id int) (*EmailBlockStat, error) {
 	path := fmt.Sprintf("/a360/stats/email/%d/group-stat", id)
 
@@ -100,6 +109,7 @@ func (service *Automation360Service) GetEmailBlockStatistics(id int) (*EmailBloc
 	return respData.Data, err
 }
 
+// PushBlockStat represents statistics about the "Push" element
 type PushBlockStat struct {
 	FlowID    int          `json:"flow_id"`
 	Sent      int          `json:"sent"`
@@ -109,6 +119,7 @@ type PushBlockStat struct {
 	LastSend  DateTimeType `json:"last_send"`
 }
 
+// GetPushBlockStatistics returns statistics about the "Push" element
 func (service *Automation360Service) GetPushBlockStatistics(id int) (*PushBlockStat, error) {
 	path := fmt.Sprintf("/a360/stats/push/%d/group-stat", id)
 
@@ -119,6 +130,7 @@ func (service *Automation360Service) GetPushBlockStatistics(id int) (*PushBlockS
 	return respData.Data, err
 }
 
+// SmsBlockStat represents statistics about the "SMS" element
 type SmsBlockStat struct {
 	FlowID    int          `json:"flow_id"`
 	Executed  int          `json:"executed"`
@@ -130,6 +142,7 @@ type SmsBlockStat struct {
 	LastSend  DateTimeType `json:"last_send"`
 }
 
+// GetSmsBlockStatistics returns statistics about the "SMS" element
 func (service *Automation360Service) GetSmsBlockStatistics(id int) (*SmsBlockStat, error) {
 	path := fmt.Sprintf("/a360/stats/sms/%d/group-stat", id)
 
@@ -140,6 +153,7 @@ func (service *Automation360Service) GetSmsBlockStatistics(id int) (*SmsBlockSta
 	return respData.Data, err
 }
 
+// MessengerBlockStat represents statistics about the "Messenger" element
 type MessengerBlockStat struct {
 	FlowID   int          `json:"flow_id"`
 	Executed int          `json:"executed"`
@@ -147,6 +161,7 @@ type MessengerBlockStat struct {
 	LastSend DateTimeType `json:"last_send"`
 }
 
+// GetMessengerBlockStatistics returns statistics about the "Messenger" element
 func (service *Automation360Service) GetMessengerBlockStatistics(id int) (*MessengerBlockStat, error) {
 	path := fmt.Sprintf("/a360/stats/messenger/%d/group-stat", id)
 
@@ -157,12 +172,14 @@ func (service *Automation360Service) GetMessengerBlockStatistics(id int) (*Messe
 	return respData.Data, err
 }
 
+// FilterBlockStat represents statistics about the "Filter" element
 type FilterBlockStat struct {
 	FlowID   int          `json:"flow_id"`
 	Executed int          `json:"executed"`
 	LastSend DateTimeType `json:"last_send"`
 }
 
+// GetFilterBlockStatistics returns statistics about the "Filter" element
 func (service *Automation360Service) GetFilterBlockStatistics(id int) (*FilterBlockStat, error) {
 	path := fmt.Sprintf("/a360/stats/filter/%d/group-stat", id)
 
@@ -173,12 +190,14 @@ func (service *Automation360Service) GetFilterBlockStatistics(id int) (*FilterBl
 	return respData.Data, err
 }
 
+// TriggerBlockStat represents statistics about the "Condition" element
 type TriggerBlockStat struct {
 	FlowID   int          `json:"flow_id"`
 	Executed int          `json:"executed"`
 	LastSend DateTimeType `json:"last_send"`
 }
 
+// GetTriggerBlockStatistics returns statistics about the "Condition" element
 func (service *Automation360Service) GetTriggerBlockStatistics(id int) (*TriggerBlockStat, error) {
 	path := fmt.Sprintf("/a360/stats/trigger/%d/group-stat", id)
 
@@ -189,6 +208,7 @@ func (service *Automation360Service) GetTriggerBlockStatistics(id int) (*Trigger
 	return respData.Data, err
 }
 
+// GoalBlockStat represents statistics about the "Goal" element
 type GoalBlockStat struct {
 	FlowID    int          `json:"flow_id"`
 	Executed  int          `json:"executed"`
@@ -200,6 +220,7 @@ type GoalBlockStat struct {
 	LastSend  DateTimeType `json:"last_send"`
 }
 
+// GetGoalBlockStatistics returns statistics about the "Goal" element
 func (service *Automation360Service) GetGoalBlockStatistics(id int) (*GoalBlockStat, error) {
 	path := fmt.Sprintf("/a360/stats/goal/%d/group-stat", id)
 
@@ -210,12 +231,14 @@ func (service *Automation360Service) GetGoalBlockStatistics(id int) (*GoalBlockS
 	return respData.Data, err
 }
 
+// ActionBlockStat represents statistics about the "Action" element
 type ActionBlockStat struct {
 	FlowID   int          `json:"flow_id"`
 	Executed int          `json:"executed"`
 	LastSend DateTimeType `json:"last_send"`
 }
 
+// GetActionBlockStatistics returns statistics about the "Action" element
 func (service *Automation360Service) GetActionBlockStatistics(id int) (*ActionBlockStat, error) {
 	path := fmt.Sprintf("/a360/stats/action/%d/group-stat", id)
 
@@ -226,6 +249,7 @@ func (service *Automation360Service) GetActionBlockStatistics(id int) (*ActionBl
 	return respData.Data, err
 }
 
+// AutoresponderConversion represents the flow conversion
 type AutoresponderConversion struct {
 	TotalConversions       int `json:"total_conversions"`
 	MaintriggerConversions int `json:"maintrigger_conversions"`
@@ -248,6 +272,7 @@ type AutoresponderConversion struct {
 	} `json:"goals"`
 }
 
+// GetAutoresponderConversions returns the flow conversions list
 func (service *Automation360Service) GetAutoresponderConversions(id int) (*AutoresponderConversion, error) {
 	path := fmt.Sprintf("/a360/autoresponders/%d/conversions", id)
 
@@ -258,6 +283,7 @@ func (service *Automation360Service) GetAutoresponderConversions(id int) (*Autor
 	return respData.Data, err
 }
 
+// AutoresponderContact represents the contact that converted
 type AutoresponderContact struct {
 	ID             int          `json:"id"`
 	ConversionType string       `json:"conversion_type"`
@@ -268,6 +294,7 @@ type AutoresponderContact struct {
 	StartDate      DateTimeType `json:"start_date"`
 }
 
+// GetAutoresponderContacts returns a list of the contacts that converted
 func (service *Automation360Service) GetAutoresponderContacts(id int) ([]*AutoresponderContact, error) {
 	path := fmt.Sprintf("/a360/autoresponders/%d/conversions/list/all", id)
 

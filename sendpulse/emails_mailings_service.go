@@ -7,21 +7,24 @@ import (
 	"strconv"
 )
 
-type MailingsService struct {
+// CampaignsService is a service to interact with campaigns
+type CampaignsService struct {
 	client *Client
 }
 
-func newMailingsService(cl *Client) *MailingsService {
-	return &MailingsService{client: cl}
+// newCampaignsService creates CampaignsService
+func newCampaignsService(cl *Client) *CampaignsService {
+	return &CampaignsService{client: cl}
 }
 
+// Campaign describes campaign params
 type CampaignParams struct {
 	SenderName    string            `json:"sender_name"`
 	SenderEmail   string            `json:"sender_email"`
 	Subject       string            `json:"subject"`
 	Body          string            `json:"body,omitempty"`
 	TemplateID    string            `json:"template_id,omitempty"`
-	AddressBookID int               `json:"list_id,omitempty"`
+	MailingListID int               `json:"list_id,omitempty"`
 	SegmentID     int               `json:"segment_id,omitempty"`
 	IsTest        bool              `json:"is_test,omitempty"`
 	SendDate      DateTimeType      `json:"send_date,omitempty"`
@@ -31,6 +34,7 @@ type CampaignParams struct {
 	BodyAMP       string            `json:"body_amp,omitempty"`
 }
 
+// Campaign describes a campaign
 type Campaign struct {
 	ID      int    `json:"id"`
 	Name    string `json:"name"`
@@ -40,7 +44,7 @@ type Campaign struct {
 		Subject       string `json:"subject"`
 		Body          string `json:"body"`
 		Attachments   string `json:"attachments"`
-		AddressBookID int    `json:"list_id"`
+		MailingListID int    `json:"list_id"`
 	}
 	Status            int          `json:"status"`
 	AllEmailQty       int          `json:"all_email_qty"`
@@ -51,7 +55,8 @@ type Campaign struct {
 	SendDate          DateTimeType `json:"send_date"`
 }
 
-func (service *MailingsService) CreateCampaign(data CampaignParams) (*Campaign, error) {
+// CreateCampaign creates a campaign. Please note that you can send a maximum of 4 campaigns per hour
+func (service *CampaignsService) CreateCampaign(data CampaignParams) (*Campaign, error) {
 	path := "/campaigns"
 	var innerMailing struct {
 		Campaign
@@ -78,7 +83,8 @@ func (service *MailingsService) CreateCampaign(data CampaignParams) (*Campaign, 
 	return &innerMailing.Campaign, err
 }
 
-func (service *MailingsService) UpdateCampaign(id int, data CampaignParams) error {
+// UpdateCampaign updates a scheduled campaign
+func (service *CampaignsService) UpdateCampaign(id int, data CampaignParams) error {
 	path := fmt.Sprintf("/campaigns/%d", id)
 	var respData struct {
 		Result bool `json:"result"`
@@ -97,53 +103,61 @@ func (service *MailingsService) UpdateCampaign(id int, data CampaignParams) erro
 	return err
 }
 
-func (service *MailingsService) GetCampaign(id int) (*Campaign, error) {
+// GetCampaign returns an information about specific campaign
+func (service *CampaignsService) GetCampaign(id int) (*Campaign, error) {
 	path := fmt.Sprintf("/campaigns/%d", id)
 	var respData Campaign
 	_, err := service.client.newRequest(http.MethodGet, fmt.Sprintf(path), nil, &respData, true)
 	return &respData, err
 }
 
-func (service *MailingsService) GetCampaigns(limit int, offset int) ([]*Campaign, error) {
+// GetCampaigns returns a list of campaigns
+func (service *CampaignsService) GetCampaigns(limit int, offset int) ([]*Campaign, error) {
 	path := fmt.Sprintf("/campaigns?limit=%d&offset=%d", limit, offset)
 	var items []*Campaign
 	_, err := service.client.newRequest(http.MethodGet, path, nil, &items, true)
 	return items, err
 }
 
+// Task represents a campaign
 type Task struct {
 	ID     int    `json:"task_id"`
 	Name   string `json:"task_name"`
 	Status int    `json:"task_status"`
 }
 
-func (service *MailingsService) GetCampaignsByAddressBook(addressBookID, limit, offset int) ([]*Task, error) {
-	path := fmt.Sprintf("/addressbooks/%d/campaigns?limit=%d&offset=%d", addressBookID, limit, offset)
+// GetCampaignsByMailingList returns a list of campaigns by specific mailing list
+func (service *CampaignsService) GetCampaignsByMailingList(mailingListID, limit, offset int) ([]*Task, error) {
+	path := fmt.Sprintf("/addressbooks/%d/campaigns?limit=%d&offset=%d", mailingListID, limit, offset)
 	var tasks []*Task
 	_, err := service.client.newRequest(http.MethodGet, path, nil, &tasks, true)
 	return tasks, err
 }
 
-func (service *MailingsService) GetCampaignCountriesStatistics(id int) (map[string]int, error) {
+// GetCampaignCountriesStatistics represents campaign statistics of countries
+func (service *CampaignsService) GetCampaignCountriesStatistics(id int) (map[string]int, error) {
 	path := fmt.Sprintf("/campaigns/%d/countries", id)
 	response := make(map[string]int)
 	_, err := service.client.newRequest(http.MethodGet, path, nil, &response, true)
 	return response, err
 }
 
+// MailingRefStat represents campaign statistics of referrals
 type MailingRefStat struct {
 	Link  string `json:"link"`
 	Count int    `json:"count"`
 }
 
-func (service *MailingsService) GetCampaignReferralsStatistics(id int) ([]*MailingRefStat, error) {
+// GetCampaignReferralsStatistics returns campaign statistics of referrals
+func (service *CampaignsService) GetCampaignReferralsStatistics(id int) ([]*MailingRefStat, error) {
 	path := fmt.Sprintf("/campaigns/%d/referrals", id)
 	var response []*MailingRefStat
 	_, err := service.client.newRequest(http.MethodGet, path, nil, &response, true)
 	return response, err
 }
 
-func (service *MailingsService) CancelCampaign(id int) error {
+// CancelCampaign cancels a scheduled campaign
+func (service *CampaignsService) CancelCampaign(id int) error {
 	path := fmt.Sprintf("/campaigns/%d", id)
 	var response struct {
 		Result bool `json:"result"`

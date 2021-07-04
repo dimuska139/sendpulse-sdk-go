@@ -5,14 +5,17 @@ import (
 	"net/http"
 )
 
+// WebhooksService is a service to interact with webhooks
 type WebhooksService struct {
 	client *Client
 }
 
+// newWebhooksService creates WebhooksService
 func newWebhooksService(cl *Client) *WebhooksService {
 	return &WebhooksService{client: cl}
 }
 
+// Webhook describes webhook information
 type Webhook struct {
 	ID     int    `json:"id"`
 	UserID int    `json:"user_id"`
@@ -20,6 +23,7 @@ type Webhook struct {
 	Action string `json:"action"`
 }
 
+// GetWebhooks returns a list of webhooks
 func (service *WebhooksService) GetWebhooks() ([]*Webhook, error) {
 	path := "/v2/email-service/webhook"
 
@@ -32,6 +36,7 @@ func (service *WebhooksService) GetWebhooks() ([]*Webhook, error) {
 	return respData.Data, err
 }
 
+// GetWebhook returns specific webhook
 func (service *WebhooksService) GetWebhook(id int) (*Webhook, error) {
 	path := fmt.Sprintf("/v2/email-service/webhook/%d", id)
 
@@ -44,6 +49,7 @@ func (service *WebhooksService) GetWebhook(id int) (*Webhook, error) {
 	return respData.Data, err
 }
 
+// CreateWebhook creates webhook
 func (service *WebhooksService) CreateWebhook(actions []string, url string) ([]*Webhook, error) {
 	path := "/v2/email-service/webhook/"
 
@@ -61,6 +67,7 @@ func (service *WebhooksService) CreateWebhook(actions []string, url string) ([]*
 	return respData.Data, err
 }
 
+// UpdateWebhook updates a specific webhook
 func (service *WebhooksService) UpdateWebhook(id int, url string) error {
 	path := fmt.Sprintf("/v2/email-service/webhook/%d", id)
 
@@ -77,6 +84,7 @@ func (service *WebhooksService) UpdateWebhook(id int, url string) error {
 	return err
 }
 
+// DeleteWebhook deletes a specific webhook
 func (service *WebhooksService) DeleteWebhook(id int) error {
 	path := fmt.Sprintf("/v2/email-service/webhook/%d", id)
 

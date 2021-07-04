@@ -7,14 +7,17 @@ import (
 	"time"
 )
 
+// PushService is a service to interact with push notifications
 type PushService struct {
 	client *Client
 }
 
+// newPushService creates PushService
 func newPushService(cl *Client) *PushService {
 	return &PushService{client: cl}
 }
 
+// PushListParams describes params for GetMessages
 type PushListParams struct {
 	Limit     int
 	Offset    int
@@ -23,6 +26,7 @@ type PushListParams struct {
 	WebsiteID int
 }
 
+// Push represents information of push notification
 type Push struct {
 	ID        int          `json:"id"`
 	Title     string       `json:"title"`
@@ -33,6 +37,7 @@ type Push struct {
 	Status    int          `json:"status"`
 }
 
+// GetMessages retrieves a list of sent web push campaigns
 func (service *PushService) GetMessages(params PushListParams) ([]Push, error) {
 	path := "/push/tasks/"
 	var urlParts []string
@@ -59,6 +64,7 @@ func (service *PushService) GetMessages(params PushListParams) ([]Push, error) {
 	return respData, err
 }
 
+// CountWebsites retrieves the total number of websites
 func (service *PushService) CountWebsites() (int, error) {
 	path := "/push/websites/total"
 	var respData struct {
@@ -75,6 +81,7 @@ type PushWebsite struct {
 	Status  int          `json:"status"`
 }
 
+// GetWebsites retrieves a list of websites
 func (service *PushService) GetWebsites(limit, offset int) ([]*PushWebsite, error) {
 	path := fmt.Sprintf("/push/websites/?limit=%d&offset=%d", limit, offset)
 	var respData []*PushWebsite
@@ -82,12 +89,14 @@ func (service *PushService) GetWebsites(limit, offset int) ([]*PushWebsite, erro
 	return respData, err
 }
 
+// PushWebsiteVariable describes variable of push notification
 type PushWebsiteVariable struct {
 	ID   int    `json:"id"`
 	Name string `json:"name"`
 	Type string `json:"type"`
 }
 
+// GetWebsiteVariables returns a list of variables for specific website
 func (service *PushService) GetWebsiteVariables(websiteID int) ([]*PushWebsiteVariable, error) {
 	path := fmt.Sprintf("/push/websites/%d/variables", websiteID)
 	var respData []*PushWebsiteVariable
@@ -95,6 +104,7 @@ func (service *PushService) GetWebsiteVariables(websiteID int) ([]*PushWebsiteVa
 	return respData, err
 }
 
+// WebsiteSubscriptionsParams describes params for GetWebsiteSubscriptions
 type WebsiteSubscriptionsParams struct {
 	Limit  int
 	Offset int
@@ -102,6 +112,7 @@ type WebsiteSubscriptionsParams struct {
 	To     time.Time
 }
 
+// WebsiteSubscription represents subscriber
 type WebsiteSubscription struct {
 	ID               int                   `json:"id"`
 	Browser          string                `json:"browser"`
@@ -114,6 +125,7 @@ type WebsiteSubscription struct {
 	Status           int                   `json:"status"`
 }
 
+// GetWebsiteSubscriptions returns a list subscribers for a certain website
 func (service *PushService) GetWebsiteSubscriptions(websiteID int, params WebsiteSubscriptionsParams) ([]*WebsiteSubscription, error) {
 	path := fmt.Sprintf("/push/websites/%d/subscriptions", websiteID)
 
@@ -138,6 +150,7 @@ func (service *PushService) GetWebsiteSubscriptions(websiteID int, params Websit
 	return respData, err
 }
 
+// CountWebsiteSubscriptions returns the total number of website subscribers
 func (service *PushService) CountWebsiteSubscriptions(websiteID int) (int, error) {
 	path := fmt.Sprintf("/push/websites/%d/subscriptions/total", websiteID)
 	var respData struct {
@@ -147,6 +160,7 @@ func (service *PushService) CountWebsiteSubscriptions(websiteID int) (int, error
 	return respData.Total, err
 }
 
+// WebsiteInfo describes information about website
 type WebsiteInfo struct {
 	ID                int          `json:"id"`
 	Url               string       `json:"url"`
@@ -159,6 +173,7 @@ type WebsiteInfo struct {
 	ActiveSubscribers int          `json:"active_subscribers"`
 }
 
+// GetWebsiteInfo returns information about specific website
 func (service *PushService) GetWebsiteInfo(websiteID int) (*WebsiteInfo, error) {
 	path := fmt.Sprintf("/push/websites/info/%d", websiteID)
 	var respData *WebsiteInfo
@@ -166,6 +181,7 @@ func (service *PushService) GetWebsiteInfo(websiteID int) (*WebsiteInfo, error) 
 	return respData, err
 }
 
+// ActivateSubscription activates a subscriber
 func (service *PushService) ActivateSubscription(subscriptionID int) error {
 	path := "/push/subscriptions/state"
 	type paramsFormat struct {
@@ -182,6 +198,7 @@ func (service *PushService) ActivateSubscription(subscriptionID int) error {
 	return err
 }
 
+// DeactivateSubscription deactivates a subscriber
 func (service *PushService) DeactivateSubscription(subscriptionID int) error {
 	path := "/push/subscriptions/state"
 	type paramsFormat struct {
@@ -198,6 +215,7 @@ func (service *PushService) DeactivateSubscription(subscriptionID int) error {
 	return err
 }
 
+// PushMessageParams describes parameters to CreatePushCampaign
 type PushMessageParams struct {
 	Title                string    `json:"title"`
 	WebsiteID            int       `json:"website_id"`
@@ -234,7 +252,8 @@ type PushMessageParams struct {
 	} `json:"icon,omitempty"`
 }
 
-func (service *PushService) CreatePushMessage(params PushMessageParams) (int, error) {
+// CreatePushCampaign creates new push campaign
+func (service *PushService) CreatePushCampaign(params PushMessageParams) (int, error) {
 	path := "/push/tasks"
 
 	var respData struct {
@@ -245,6 +264,7 @@ func (service *PushService) CreatePushMessage(params PushMessageParams) (int, er
 	return respData.ID, err
 }
 
+// PushMessagesStatistics describes statistics on sent campaign
 type PushMessagesStatistics struct {
 	ID      int `json:"id"`
 	Message struct {
@@ -260,6 +280,7 @@ type PushMessagesStatistics struct {
 	Redirect  int    `json:"redirect"`
 }
 
+// GetPushMessagesStatistics returns statistics on sent campaigns
 func (service *PushService) GetPushMessagesStatistics(taskID int) (*PushMessagesStatistics, error) {
 	path := fmt.Sprintf("/push/tasks/%d", taskID)
 

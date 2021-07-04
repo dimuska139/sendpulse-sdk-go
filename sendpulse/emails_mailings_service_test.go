@@ -24,7 +24,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_MailingsService_CreateCampaig
 		SenderEmail:   "test@sendpulse.com",
 		Subject:       "Test message",
 		Body:          "<h1>Hello!</h1>",
-		AddressBookID: 12345,
+		MailingListID: 12345,
 		SendDate:      DateTimeType(time.Now()),
 	})
 	suite.NoError(err)
@@ -49,7 +49,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_MailingsService_UpdateCampaig
 		SenderEmail:   "test@sendpulse.com",
 		Subject:       "Test message",
 		Body:          "<h1>Hello!</h1>",
-		AddressBookID: 12345,
+		MailingListID: 12345,
 		SendDate:      DateTimeType(time.Now()),
 	})
 	suite.NoError(err)
@@ -131,7 +131,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_MailingsService_GetCampaigns(
 	suite.Equal(7723666, mailing[1].ID)
 }
 
-func (suite *SendpulseTestSuite) TestEmailsService_MailingsService_GetCampaignsByAddressBook() {
+func (suite *SendpulseTestSuite) TestEmailsService_MailingsService_GetCampaignsByMailingList() {
 	suite.mux.HandleFunc("/addressbooks/1/campaigns", func(w http.ResponseWriter, r *http.Request) {
 		suite.Equal(http.MethodGet, r.Method)
 		fmt.Fprintf(w, `[
@@ -148,7 +148,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_MailingsService_GetCampaignsB
 		]`)
 	})
 
-	tasks, err := suite.client.Emails.Campaigns.GetCampaignsByAddressBook(1, 10, 0)
+	tasks, err := suite.client.Emails.Campaigns.GetCampaignsByMailingList(1, 10, 0)
 	suite.NoError(err)
 	suite.Equal(2, len(tasks))
 }

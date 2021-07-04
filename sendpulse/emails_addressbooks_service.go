@@ -5,33 +5,34 @@ import (
 	"net/http"
 )
 
-type AddressBooksService struct {
+// MailingListsService is a service to interact with mailing lists
+type MailingListsService struct {
 	client *Client
 }
 
-func newAddressBooksService(cl *Client) *AddressBooksService {
-	return &AddressBooksService{client: cl}
+// newMailingListsService creates MailingListsService
+func newMailingListsService(cl *Client) *MailingListsService {
+	return &MailingListsService{client: cl}
 }
 
-// Update method makes request to create new address book.
-// It returns the pointer to an ID of the new address boook and any error
-func (service *AddressBooksService) CreateAddressBook(name string) (int, error) {
+// CreateMailingList creates new mailing list
+func (service *MailingListsService) CreateMailingList(name string) (int, error) {
 	path := "/addressbooks"
 
 	type data struct {
-		BookName string `json:"bookName"`
+		Name string `json:"bookName"`
 	}
 
 	var response struct {
 		ID int `json:"id"`
 	}
-	params := data{BookName: name}
+	params := data{Name: name}
 	_, err := service.client.newRequest(http.MethodPost, fmt.Sprintf(path), params, &response, true)
 	return response.ID, err
 }
 
-// Update method makes request to update the name of address book.
-func (service *AddressBooksService) UpdateAddressBook(id int, name string) error {
+// ChangeName changes a name of specific mailing list
+func (service *MailingListsService) ChangeName(id int, name string) error {
 	path := fmt.Sprintf("/addressbooks/%d", id)
 
 	type data struct {
@@ -46,7 +47,8 @@ func (service *AddressBooksService) UpdateAddressBook(id int, name string) error
 	return err
 }
 
-type Book struct {
+// MailingList represents detailed information of specific mailing list
+type MailingList struct {
 	ID               int          `json:"id"`
 	Name             string       `json:"name"`
 	AllEmailQty      int          `json:"all_email_qty"`
@@ -57,39 +59,41 @@ type Book struct {
 	StatusExplain    string       `json:"status_explain"`
 }
 
-// List method returns address books collection
-func (service *AddressBooksService) GetAddressbooks(limit int, offset int) ([]*Book, error) {
+// GetMailingLists returns a list of mailing lists
+func (service *MailingListsService) GetMailingLists(limit int, offset int) ([]*MailingList, error) {
 	path := fmt.Sprintf("/addressbooks?limit=%d&offset=%d", limit, offset)
-	var books []*Book
+	var books []*MailingList
 	_, err := service.client.newRequest(http.MethodGet, path, nil, &books, true)
 	return books, err
 }
 
-// Get method returns address book information by its ID
-func (service *AddressBooksService) GetAddressbook(addressBookID int) (*Book, error) {
-	path := fmt.Sprintf("/addressbooks/%d", addressBookID)
-	var books []*Book
+// GetMailingList returns detailed information regarding a specific mailing list
+func (service *MailingListsService) GetMailingList(mailingListID int) (*MailingList, error) {
+	path := fmt.Sprintf("/addressbooks/%d", mailingListID)
+	var books []*MailingList
 	_, err := service.client.newRequest(http.MethodGet, path, nil, &books, true)
-	var book *Book
+	var book *MailingList
 	if len(books) != 0 {
 		book = books[0]
 	}
 	return book, err
 }
 
+// VariableMeta method represents a variable of mailing list
 type VariableMeta struct {
 	Name string `json:"name"`
 	Type string `json:"type"`
 }
 
-// Variables method returns variables of the address book
-func (service *AddressBooksService) GetAddressbookVariables(addressBookID int) ([]*VariableMeta, error) {
-	path := fmt.Sprintf("/addressbooks/%d/variables", addressBookID)
+// GetMailingListVariables method returns variables of specific mailing list
+func (service *MailingListsService) GetMailingListVariables(mailingListID int) ([]*VariableMeta, error) {
+	path := fmt.Sprintf("/addressbooks/%d/variables", mailingListID)
 	var variables []*VariableMeta
 	_, err := service.client.newRequest(http.MethodGet, path, nil, &variables, true)
 	return variables, err
 }
 
+// Email describes email address
 type Email struct {
 	Email         string                 `json:"email"`
 	Phone         int                    `json:"phone"`
@@ -98,15 +102,17 @@ type Email struct {
 	Variables     map[string]interface{} `json:"variables"`
 }
 
-func (service *AddressBooksService) GetAddressBookEmails(id, limit, offset int) ([]*Email, error) {
+// GetMailingListEmails returns a list of emails from a mailing list
+func (service *MailingListsService) GetMailingListEmails(id, limit, offset int) ([]*Email, error) {
 	path := fmt.Sprintf("/addressbooks/%d/emails?limit=%d&offset=%d", id, limit, offset)
 	var emails []*Email
 	_, err := service.client.newRequest(http.MethodGet, path, nil, &emails, true)
 	return emails, err
 }
 
-func (service *AddressBooksService) CountAddressBookEmails(addressBookID int) (int, error) {
-	path := fmt.Sprintf("/addressbooks/%d/emails/total", addressBookID)
+// CountMailingListEmails returns a the total number of contacts in a mailing list
+func (service *MailingListsService) CountMailingListEmails(mailingListID int) (int, error) {
+	path := fmt.Sprintf("/addressbooks/%d/emails/total", mailingListID)
 	var response struct {
 		Total int
 	}
@@ -114,20 +120,23 @@ func (service *AddressBooksService) CountAddressBookEmails(addressBookID int) (i
 	return response.Total, err
 }
 
-type EmailToAdd struct {
-	Email     string                 `json:"email"`
-	Variables map[string]interface{} `json:"variables"`
-}
-
-func (service *AddressBooksService) GetAddressBookEmailsByVariable(addressBookID int, variable string, value interface{}) ([]*Email, error) {
-	path := fmt.Sprintf("/addressbooks/%d/variables/%s/%v", addressBookID, variable, value)
+// GetMailingListEmailsByVariable returns all contacts in mailing list by value of variable
+func (service *MailingListsService) GetMailingListEmailsByVariable(mailingListID int, variable string, value interface{}) ([]*Email, error) {
+	path := fmt.Sprintf("/addressbooks/%d/variables/%s/%v", mailingListID, variable, value)
 	var emails []*Email
 	_, err := service.client.newRequest(http.MethodGet, path, nil, &emails, true)
 	return emails, err
 }
 
-func (service *AddressBooksService) SingleOptIn(addressBookID int, emails []*EmailToAdd) error {
-	path := fmt.Sprintf("/addressbooks/%d/emails", addressBookID)
+// EmailToAdd represents structure for add email to mailing list
+type EmailToAdd struct {
+	Email     string                 `json:"email"`
+	Variables map[string]interface{} `json:"variables"`
+}
+
+// SingleOptIn adds emails to mailing list using single-opt-in method
+func (service *MailingListsService) SingleOptIn(mailingListID int, emails []*EmailToAdd) error {
+	path := fmt.Sprintf("/addressbooks/%d/emails", mailingListID)
 	var response struct {
 		Result bool `json:"result"`
 	}
@@ -140,8 +149,9 @@ func (service *AddressBooksService) SingleOptIn(addressBookID int, emails []*Ema
 	return err
 }
 
-func (service *AddressBooksService) DoubleOptIn(addressBookID int, emails []*EmailToAdd, senderEmail string, messageLang string, templateID string) error {
-	path := fmt.Sprintf("/addressbooks/%d/emails", addressBookID)
+// DoubleOptIn adds emails to mailing list using double-opt-in method
+func (service *MailingListsService) DoubleOptIn(mailingListID int, emails []*EmailToAdd, senderEmail string, messageLang string, templateID string) error {
+	path := fmt.Sprintf("/addressbooks/%d/emails", mailingListID)
 	var response struct {
 		Result bool `json:"result"`
 	}
@@ -167,8 +177,9 @@ func (service *AddressBooksService) DoubleOptIn(addressBookID int, emails []*Ema
 	return err
 }
 
-func (service *AddressBooksService) DeleteAddressBookEmails(addressBookID int, emails []string) error {
-	path := fmt.Sprintf("/addressbooks/%d/emails", addressBookID)
+// DeleteMailingListEmails removes emails from specific mailing list
+func (service *MailingListsService) DeleteMailingListEmails(mailingListID int, emails []string) error {
+	path := fmt.Sprintf("/addressbooks/%d/emails", mailingListID)
 	var response struct {
 		Result bool `json:"result"`
 	}
@@ -181,8 +192,9 @@ func (service *AddressBooksService) DeleteAddressBookEmails(addressBookID int, e
 	return err
 }
 
-func (service *AddressBooksService) DeleteAddressBook(addressBookID int) error {
-	path := fmt.Sprintf("/addressbooks/%d", addressBookID)
+// DeleteMailingList removes specific mailing list
+func (service *MailingListsService) DeleteMailingList(mailingListID int) error {
+	path := fmt.Sprintf("/addressbooks/%d", mailingListID)
 	var response struct {
 		Result bool `json:"result"`
 	}
@@ -190,6 +202,7 @@ func (service *AddressBooksService) DeleteAddressBook(addressBookID int) error {
 	return err
 }
 
+// CampaignCost represents the cost of a campaign sent to a mailing list
 type CampaignCost struct {
 	Cur                       string `json:"email"`
 	SentEmailsQty             int    `json:"sent_emails_qty"`
@@ -200,16 +213,18 @@ type CampaignCost struct {
 	Result                    bool   `json:"result"`
 }
 
-func (service *AddressBooksService) CountCampaignCost(addressBookID int) (*CampaignCost, error) {
-	path := fmt.Sprintf("/addressbooks/%d/cost", addressBookID)
+// CountCampaignCost calculates the cost of a campaign sent to a mailing list
+func (service *MailingListsService) CountCampaignCost(mailingListID int) (*CampaignCost, error) {
+	path := fmt.Sprintf("/addressbooks/%d/cost", mailingListID)
 	var cost CampaignCost
 
 	_, err := service.client.newRequest(http.MethodGet, path, nil, &cost, true)
 	return &cost, err
 }
 
-func (service *AddressBooksService) UnsubscribeEmails(addressBookID int, emails []string) error {
-	path := fmt.Sprintf("/addressbooks/%d/emails/unsubscribe", addressBookID)
+// UnsubscribeEmails unsubscribes emails from a specific mailing list
+func (service *MailingListsService) UnsubscribeEmails(mailingListID int, emails []string) error {
+	path := fmt.Sprintf("/addressbooks/%d/emails/unsubscribe", mailingListID)
 	var response struct {
 		Result bool `json:"result"`
 	}
@@ -222,8 +237,9 @@ func (service *AddressBooksService) UnsubscribeEmails(addressBookID int, emails 
 	return err
 }
 
-func (service *AddressBooksService) UpdateEmailVariables(addressBookID int, email string, variables []*Variable) error {
-	path := fmt.Sprintf("/addressbooks/%d/emails/variable", addressBookID)
+// UpdateEmailVariables changes a variables for an email contact
+func (service *MailingListsService) UpdateEmailVariables(mailingListID int, email string, variables []*Variable) error {
+	path := fmt.Sprintf("/addressbooks/%d/emails/variable", mailingListID)
 	var response struct {
 		Result bool `json:"result"`
 	}

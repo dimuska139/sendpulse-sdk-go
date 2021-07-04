@@ -201,7 +201,7 @@ func (suite *SendpulseTestSuite) TestPushService_CreatePushTask() {
 		}`)
 	})
 
-	taskID, err := suite.client.Push.CreatePushMessage(PushMessageParams{
+	taskID, err := suite.client.Push.CreatePushCampaign(PushMessageParams{
 		Title:                "Title",
 		WebsiteID:            10,
 		Body:                 "Hello",

@@ -5,26 +5,31 @@ import (
 	"net/http"
 )
 
+// AddressService is a service to work with emails addresses
 type AddressService struct {
 	client *Client
 }
 
+// newAddressService creates AddressService
 func newAddressService(cl *Client) *AddressService {
 	return &AddressService{client: cl}
 }
 
+// Variable represents a variable of email address
 type Variable struct {
 	Name  string      `json:"name"`
 	Type  string      `json:"type,omitempty"`
 	Value interface{} `json:"value"`
 }
 
+// EmailInfo represents a general information of email address
 type EmailInfo struct {
 	BookID    int         `json:"book_id"`
 	Status    int         `json:"status"`
 	Variables []*Variable `json:"variables"`
 }
 
+// GetEmailInfo returns general information about specific email address
 func (service *AddressService) GetEmailInfo(email string) ([]*EmailInfo, error) {
 	path := fmt.Sprintf("/emails/%s", email)
 	var response []*EmailInfo
@@ -32,6 +37,7 @@ func (service *AddressService) GetEmailInfo(email string) ([]*EmailInfo, error) 
 	return response, err
 }
 
+// GetEmailsInfo retrieves general informaion for a List of Email Addresses
 func (service *AddressService) GetEmailsInfo(emails []string) (map[string][]*EmailInfo, error) {
 	path := "/emails"
 	type data struct {
@@ -44,6 +50,7 @@ func (service *AddressService) GetEmailsInfo(emails []string) (map[string][]*Ema
 	return respData, err
 }
 
+// EmailInfoList represents a detailed information of email address
 type EmailInfoList struct {
 	ListName string       `json:"list_name"`
 	ListID   int          `json:"list_id"`
@@ -51,6 +58,7 @@ type EmailInfoList struct {
 	Source   string       `json:"source"`
 }
 
+// GetDetails retrieves detailed information about specific email address
 func (service *AddressService) GetDetails(email string) ([]*EmailInfoList, error) {
 	path := fmt.Sprintf("/emails/%s/details", email)
 	var response []*EmailInfoList
@@ -58,6 +66,7 @@ func (service *AddressService) GetDetails(email string) ([]*EmailInfoList, error
 	return response, err
 }
 
+// GetStatisticsByCampaign returns information for a specific email address from a specific campaign
 func (service *AddressService) GetStatisticsByCampaign(campaignID int, email string) (*CampaignEmailStatistics, error) {
 	path := fmt.Sprintf("/campaigns/%d/email/%s", campaignID, email)
 	var respData *CampaignEmailStatistics
@@ -65,6 +74,7 @@ func (service *AddressService) GetStatisticsByCampaign(campaignID int, email str
 	return respData, err
 }
 
+// AddressBookEmailStatistics represents statistics by specific address book
 type AddressBookEmailStatistics struct {
 	Email         string      `json:"email"`
 	AddressBookID int         `json:"abook_id,string"`
@@ -73,6 +83,7 @@ type AddressBookEmailStatistics struct {
 	Variables     []*Variable `json:"variables"`
 }
 
+// CampaignEmailStatistics represents statistics of specific campaign
 type CampaignEmailStatistics struct {
 	SentDate            DateTimeType `json:"sent_date"`
 	GlobalStatus        int          `json:"global_status"`
@@ -81,6 +92,7 @@ type CampaignEmailStatistics struct {
 	DetailStatusExplain string       `json:"detail_status_explain"`
 }
 
+// GetStatisticsByAddressBook returns information for a specific email address from a specific address book
 func (service *AddressService) GetStatisticsByAddressBook(addressBookID int, email string) (*AddressBookEmailStatistics, error) {
 	path := fmt.Sprintf("/addressbooks/%d/emails/%s", addressBookID, email)
 	var respData AddressBookEmailStatistics
@@ -88,6 +100,7 @@ func (service *AddressService) GetStatisticsByAddressBook(addressBookID int, ema
 	return &respData, err
 }
 
+// DeleteFromAllAddressBooks removes specific email address from all address books
 func (service *AddressService) DeleteFromAllAddressBooks(email string) error {
 	path := fmt.Sprintf("/emails/%s", email)
 	var respData struct {
@@ -97,6 +110,7 @@ func (service *AddressService) DeleteFromAllAddressBooks(email string) error {
 	return err
 }
 
+// CampaignsEmailStatistics represents statistics for an email address and campaigns it is in
 type CampaignsEmailStatistics struct {
 	Statistic *struct {
 		Sent int `json:"sent"`
@@ -110,6 +124,7 @@ type CampaignsEmailStatistics struct {
 	Blacklist bool
 }
 
+// GetEmailStatisticsByCampaignsAndAddressBooks returns statistics for an email address and campaigns it is in
 func (service *AddressService) GetEmailStatisticsByCampaignsAndAddressBooks(email string) (*CampaignsEmailStatistics, error) {
 	path := fmt.Sprintf("/emails/%s/campaigns", email)
 	var respData *CampaignsEmailStatistics
@@ -117,6 +132,7 @@ func (service *AddressService) GetEmailStatisticsByCampaignsAndAddressBooks(emai
 	return respData, err
 }
 
+// CampaignsAndAddressBooksEmailStatistics represents statistics for multiple email addresses and campaigns they are in
 type CampaignsAndAddressBooksEmailStatistics struct {
 	Sent         int `json:"sent"`
 	Open         int `json:"open"`
@@ -128,6 +144,7 @@ type CampaignsAndAddressBooksEmailStatistics struct {
 	Blacklist bool
 }
 
+// GetEmailsStatisticsByCampaignsAndAddressBooks returns statistics for multiple email addresses and campaigns they are in
 func (service *AddressService) GetEmailsStatisticsByCampaignsAndAddressBooks(emails []string) (map[string]*CampaignsAndAddressBooksEmailStatistics, error) {
 	path := "/emails/campaigns"
 	respData := make(map[string]*CampaignsAndAddressBooksEmailStatistics)
@@ -141,6 +158,7 @@ func (service *AddressService) GetEmailsStatisticsByCampaignsAndAddressBooks(ema
 	return respData, err
 }
 
+// ChangeVariables is a method for change a variable for an email contact
 func (service *AddressService) ChangeVariables(addressBookID int, email string, variables []*Variable) error {
 	path := fmt.Sprintf("/addressbooks/%d/emails/variable", addressBookID)
 

@@ -192,9 +192,9 @@ func (suite *SendpulseTestSuite) TestSmsService_CreateCampaignByAddressBook() {
 			"campaign_id": 2623084
 		}`)
 	})
-	campaignID, err := suite.client.SMS.CreateCampaignByAddressBook(CreateSmsCampaignByAddressBookParams{
+	campaignID, err := suite.client.SMS.CreateCampaignByMailingList(CreateSmsCampaignByAddressBookParams{
 		Sender:        "Alex",
-		AddressBookID: 12345,
+		MailingListID: 12345,
 		Body:          "Hello!",
 		Route:         nil,
 		Date:          DateTimeType(time.Now()),

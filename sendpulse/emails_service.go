@@ -2,21 +2,21 @@ package sendpulse
 
 type EmailsService struct {
 	client       *Client
-	AddressBooks *AddressBooksService
+	MailingLists *MailingListsService
 	Templates    *TemplatesService
 	Senders      *SendersService
 	Blacklist    *BlacklistService
 	Webhooks     *WebhooksService
 	Address      *AddressService
-	Campaigns    *MailingsService
+	Campaigns    *CampaignsService
 	Validator    *ValidatorService
 }
 
 func newEmailsService(cl *Client) *EmailsService {
 	return &EmailsService{
 		client:       cl,
-		AddressBooks: newAddressBooksService(cl),
-		Campaigns:    newMailingsService(cl),
+		MailingLists: newMailingListsService(cl),
+		Campaigns:    newCampaignsService(cl),
 		Templates:    newTemplatesService(cl),
 		Senders:      newSendersService(cl),
 		Address:      newAddressService(cl),

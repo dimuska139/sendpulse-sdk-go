@@ -6,19 +6,23 @@ import (
 	"strings"
 )
 
+// Automation360Service is a service to interact with user balance
 type BalanceService struct {
 	client *Client
 }
 
+// newBalanceService creates Automation360Service
 func newBalanceService(cl *Client) *BalanceService {
 	return &BalanceService{client: cl}
 }
 
+// Balance represents main information about user's balance
 type Balance struct {
 	Currency        string  `json:"currency"`
 	BalanceCurrency float32 `json:"balance_currency"`
 }
 
+// Balance represents detailed information about user's balance
 type BalanceDetailed struct {
 	Balance struct {
 		Main     float32 `json:"main,string"`
@@ -44,6 +48,7 @@ type BalanceDetailed struct {
 	} `json:"push"`
 }
 
+// GetBalance returns main information about users's balance
 func (service *BalanceService) GetBalance(currency string) (*Balance, error) {
 	path := "/balance"
 	if currency != "" {
@@ -55,6 +60,7 @@ func (service *BalanceService) GetBalance(currency string) (*Balance, error) {
 	return &respData, err
 }
 
+// GetDetailedBalance returns detailed information about users's balance
 func (service *BalanceService) GetDetailedBalance() (*BalanceDetailed, error) {
 	path := "/user/balance/detail"
 

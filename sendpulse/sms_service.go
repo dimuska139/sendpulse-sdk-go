@@ -30,14 +30,14 @@ type AddPhonesCounters struct {
 	Exists     int `json:"exists"`
 }
 
-func (service *SmsService) AddPhones(addressBookID int, phones []string) (*AddPhonesCounters, error) {
+func (service *SmsService) AddPhones(mailingListID int, phones []string) (*AddPhonesCounters, error) {
 	path := "/sms/numbers"
 	type paramsFormat struct {
 		AddressBookID int      `json:"addressBookId"`
 		Phones        []string `json:"phones"`
 	}
 
-	data := paramsFormat{AddressBookID: addressBookID, Phones: phones}
+	data := paramsFormat{AddressBookID: mailingListID, Phones: phones}
 
 	var respData struct {
 		Result   bool               `json:"result"`
@@ -52,7 +52,7 @@ type PhoneWithVariable struct {
 	Variables []SmsVariable
 }
 
-func (service *SmsService) AddPhonesWithVariables(addressBookID int, phones []*PhoneWithVariable) (*AddPhonesCounters, error) {
+func (service *SmsService) AddPhonesWithVariables(mailingListID int, phones []*PhoneWithVariable) (*AddPhonesCounters, error) {
 	path := "/sms/numbers/variables"
 	type paramsFormat struct {
 		AddressBookID int                        `json:"addressBookId"`
@@ -65,7 +65,7 @@ func (service *SmsService) AddPhonesWithVariables(addressBookID int, phones []*P
 	}
 
 	data := paramsFormat{
-		AddressBookID: addressBookID,
+		AddressBookID: mailingListID,
 		Phones:        ph,
 	}
 
@@ -225,7 +225,7 @@ func (service *SmsService) GetBlacklistedPhones(phones []string) ([]*BlacklistPh
 
 type CreateSmsCampaignByAddressBookParams struct {
 	Sender        string            `json:"sender"`
-	AddressBookID int               `json:"addressBookId"`
+	MailingListID int               `json:"addressBookId"`
 	Body          string            `json:"body"`
 	Transliterate int               `json:"transliterate"`
 	Route         map[string]string `json:"route,omitempty"`
@@ -233,7 +233,7 @@ type CreateSmsCampaignByAddressBookParams struct {
 	Emulate       int               `json:"emulate"`
 }
 
-func (service *SmsService) CreateCampaignByAddressBook(params CreateSmsCampaignByAddressBookParams) (int, error) {
+func (service *SmsService) CreateCampaignByMailingList(params CreateSmsCampaignByAddressBookParams) (int, error) {
 	path := "/sms/campaigns"
 
 	var respData struct {

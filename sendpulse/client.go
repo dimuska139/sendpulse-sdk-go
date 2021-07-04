@@ -12,6 +12,7 @@ import (
 
 const apiBaseUrl = "https://api.sendpulse.com"
 
+// SendpulseError represents http error from SendPulse
 type SendpulseError struct {
 	HttpCode int
 	Url      string
@@ -19,10 +20,12 @@ type SendpulseError struct {
 	Message  string
 }
 
+// Error returns string representation of the SendpulseError
 func (e *SendpulseError) Error() string {
 	return fmt.Sprintf("Http code: %d, url: %s, body: %s, message: %s", e.HttpCode, e.Url, e.Body, e.Message)
 }
 
+// Client to interact with SendpulseAPI
 type Client struct {
 	client        *http.Client
 	config        *Config
@@ -39,6 +42,7 @@ type Client struct {
 	Automation360 *Automation360Service
 }
 
+// NewClient creates new Client to interract with SendpulseAPI
 func NewClient(client *http.Client, config *Config) *Client {
 	cl := &Client{
 		client:    client,
@@ -58,6 +62,7 @@ func NewClient(client *http.Client, config *Config) *Client {
 	return cl
 }
 
+// getToken returns new token to interact with Sendpulse or returns it from stored value if it already exists
 func (c *Client) getToken() (string, error) {
 	c.tokenLock.RLock()
 	token := c.token
@@ -90,12 +95,14 @@ func (c *Client) getToken() (string, error) {
 	return token, nil
 }
 
+// clearToken removes stored token
 func (c *Client) clearToken() {
 	c.tokenLock.Lock()
 	c.token = ""
 	c.tokenLock.Unlock()
 }
 
+// newRequest makes new http request to SendPulse
 func (c *Client) newRequest(method string, path string, body interface{}, result interface{}, useToken bool) (*http.Response, error) {
 	fullPath := apiBaseUrl + path
 	var buf io.ReadWriter
@@ -155,6 +162,7 @@ func (c *Client) newRequest(method string, path string, body interface{}, result
 	return resp, nil
 }
 
+// newFormDataRequest makes new http request to SendPulse with form-data
 func (c *Client) newFormDataRequest(path string, buffer *bytes.Buffer, contentType string, result interface{}, useToken bool) (*http.Response, error) {
 	fullPath := apiBaseUrl + path
 	req, e := http.NewRequest(http.MethodPost, fullPath, buffer)
