@@ -85,7 +85,7 @@ type AddressBookEmailStatistics struct {
 
 // CampaignEmailStatistics represents statistics of specific campaign
 type CampaignEmailStatistics struct {
-	SentDate            DateTimeType `json:"sent_date"`
+	SendDate            DateTimeType `json:"send_date"`
 	GlobalStatus        int          `json:"global_status"`
 	GlobalStatusExplain string       `json:"global_status_explain"`
 	DetailStatus        int          `json:"detail_status"`

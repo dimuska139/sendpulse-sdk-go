@@ -18,7 +18,7 @@ type CreateViberCampaignParams struct {
 	MessageType     int          `json:"message_type,omitempty"`
 	SenderID        int          `json:"sender_id"`
 	MessageLiveTime int          `json:"message_live_time"`
-	SentDate        DateTimeType `json:"sent_date"`
+	SendDate        DateTimeType `json:"send_date"`
 	MailingListID   int          `json:"address_book"`
 	Recipients      []int        `json:"recipients"`
 	Message         string       `json:"message"`
@@ -62,7 +62,7 @@ type UpdateViberCampaignParams struct {
 	AddressBookID   int          `json:"address_book,omitempty"`
 	SenderID        int          `json:"sender_id"`
 	MessageLiveTime int          `json:"message_live_time"`
-	SentDate        DateTimeType `json:"sent_date"`
+	SendDate        DateTimeType `json:"send_date"`
 }
 
 func (service *ViberService) UpdateCampaign(params UpdateViberCampaignParams) error {
@@ -162,7 +162,7 @@ type ViberRecipient struct {
 	Phone         int          `json:"phone"`
 	AddressBookID int          `json:"address_book_id"`
 	Status        string       `json:"status"`
-	SentDate      DateTimeType `json:"sent_date"`
+	SendDate      DateTimeType `json:"send_date"`
 	Price         float32      `json:"price"`
 	Currency      string       `json:"currency"`
 	LastUpdate    DateTimeType `json:"last_update"`

@@ -113,7 +113,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_AddressService_GetStatisticsB
 	suite.mux.HandleFunc("/campaigns/1/email/test@sendpulse.com", func(w http.ResponseWriter, r *http.Request) {
 		suite.Equal(http.MethodGet, r.Method)
 		fmt.Fprintf(w, `{
-			"sent_date": "2021-03-29 07:46:58",
+			"send_date": "2021-03-29 07:46:58",
 			"global_status": 1,
 			"global_status_explain": "Sent",
 			"detail_status": 3,
