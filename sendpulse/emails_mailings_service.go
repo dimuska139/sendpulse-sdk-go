@@ -71,7 +71,7 @@ func (service *CampaignsService) CreateCampaign(data CampaignParams) (*Campaign,
 		data.BodyAMP = b64.StdEncoding.EncodeToString([]byte(data.BodyAMP))
 	}
 
-	_, err := service.client.newRequest(http.MethodPost, fmt.Sprintf(path), data, &innerMailing, true)
+	_, err := service.client.newRequest(http.MethodPost, path, data, &innerMailing, true)
 	if err != nil {
 		return nil, err
 	}
@@ -99,7 +99,7 @@ func (service *CampaignsService) UpdateCampaign(id int, data CampaignParams) err
 		data.BodyAMP = b64.StdEncoding.EncodeToString([]byte(data.BodyAMP))
 	}
 
-	_, err := service.client.newRequest(http.MethodPatch, fmt.Sprintf(path), data, &respData, true)
+	_, err := service.client.newRequest(http.MethodPatch, path, data, &respData, true)
 	return err
 }
 
@@ -107,7 +107,7 @@ func (service *CampaignsService) UpdateCampaign(id int, data CampaignParams) err
 func (service *CampaignsService) GetCampaign(id int) (*Campaign, error) {
 	path := fmt.Sprintf("/campaigns/%d", id)
 	var respData Campaign
-	_, err := service.client.newRequest(http.MethodGet, fmt.Sprintf(path), nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return &respData, err
 }
 

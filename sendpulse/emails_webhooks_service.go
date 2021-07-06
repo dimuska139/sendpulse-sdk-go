@@ -32,7 +32,7 @@ func (service *WebhooksService) GetWebhooks() ([]*Webhook, error) {
 		Data    []*Webhook `json:"data"`
 	}
 
-	_, err := service.client.newRequest(http.MethodGet, fmt.Sprintf(path), nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -45,7 +45,7 @@ func (service *WebhooksService) GetWebhook(id int) (*Webhook, error) {
 		Data    *Webhook `json:"data"`
 	}
 
-	_, err := service.client.newRequest(http.MethodGet, fmt.Sprintf(path), nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 

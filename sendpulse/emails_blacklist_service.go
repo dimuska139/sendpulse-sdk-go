@@ -2,7 +2,6 @@ package sendpulse
 
 import (
 	b64 "encoding/base64"
-	"fmt"
 	"net/http"
 	"strings"
 )
@@ -39,7 +38,7 @@ func (service *BlacklistService) AddToBlacklist(emails []string, comment string)
 	}
 
 	var respData response
-	_, err := service.client.newRequest(http.MethodPost, fmt.Sprintf(path), params, &respData, true)
+	_, err := service.client.newRequest(http.MethodPost, path, params, &respData, true)
 	return err
 }
 
@@ -60,7 +59,7 @@ func (service *BlacklistService) RemoveFromBlacklist(emails []string) error {
 	}
 
 	var respData response
-	_, err := service.client.newRequest(http.MethodDelete, fmt.Sprintf(path), params, &respData, true)
+	_, err := service.client.newRequest(http.MethodDelete, path, params, &respData, true)
 	return err
 }
 
@@ -69,6 +68,6 @@ func (service *BlacklistService) GetEmails() ([]string, error) {
 	path := "/blacklist"
 
 	var respData []string
-	_, err := service.client.newRequest(http.MethodGet, fmt.Sprintf(path), nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData, err
 }

@@ -29,7 +29,7 @@ type Autoresponder struct {
 		MainID   int                    `json:"main_id"`
 		AfType   string                 `json:"af_type"`
 		Created  DateTimeType           `json:"created"`
-		LastSend DateTimeType           `json:"created"`
+		LastSend DateTimeType           `json:"last_send"`
 		Task     map[string]interface{} `json:"task"`
 	} `json:"flows"`
 	Starts       int `json:"starts"`
@@ -44,7 +44,7 @@ func (service *Automation360Service) GetAutoresponderStatistics(id int) (*Autore
 	path := fmt.Sprintf("/a360/autoresponders/%d", id)
 
 	var respData *Autoresponder
-	_, err := service.client.newRequest(http.MethodGet, fmt.Sprintf(path), nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData, err
 }
 
@@ -55,7 +55,7 @@ func (service *Automation360Service) StartEvent(eventName string, variables map[
 	var respData struct {
 		Result bool `json:"result"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, fmt.Sprintf(path), variables, &respData, true)
+	_, err := service.client.newRequest(http.MethodPost, path, variables, &respData, true)
 	return err
 }
 
@@ -73,7 +73,7 @@ func (service *Automation360Service) GetStartBlockStatistics(id int) (*MainTrigg
 	var respData struct {
 		Data *MainTriggerBlockStat `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, fmt.Sprintf(path), nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -105,7 +105,7 @@ func (service *Automation360Service) GetEmailBlockStatistics(id int) (*EmailBloc
 	var respData struct {
 		Data *EmailBlockStat `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, fmt.Sprintf(path), nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -126,7 +126,7 @@ func (service *Automation360Service) GetPushBlockStatistics(id int) (*PushBlockS
 	var respData struct {
 		Data *PushBlockStat `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, fmt.Sprintf(path), nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -149,7 +149,7 @@ func (service *Automation360Service) GetSmsBlockStatistics(id int) (*SmsBlockSta
 	var respData struct {
 		Data *SmsBlockStat `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, fmt.Sprintf(path), nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -168,7 +168,7 @@ func (service *Automation360Service) GetMessengerBlockStatistics(id int) (*Messe
 	var respData struct {
 		Data *MessengerBlockStat `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, fmt.Sprintf(path), nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -186,7 +186,7 @@ func (service *Automation360Service) GetFilterBlockStatistics(id int) (*FilterBl
 	var respData struct {
 		Data *FilterBlockStat `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, fmt.Sprintf(path), nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -204,7 +204,7 @@ func (service *Automation360Service) GetTriggerBlockStatistics(id int) (*Trigger
 	var respData struct {
 		Data *TriggerBlockStat `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, fmt.Sprintf(path), nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -227,7 +227,7 @@ func (service *Automation360Service) GetGoalBlockStatistics(id int) (*GoalBlockS
 	var respData struct {
 		Data *GoalBlockStat `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, fmt.Sprintf(path), nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -245,7 +245,7 @@ func (service *Automation360Service) GetActionBlockStatistics(id int) (*ActionBl
 	var respData struct {
 		Data *ActionBlockStat `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, fmt.Sprintf(path), nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -279,7 +279,7 @@ func (service *Automation360Service) GetAutoresponderConversions(id int) (*Autor
 	var respData struct {
 		Data *AutoresponderConversion `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, fmt.Sprintf(path), nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -301,6 +301,6 @@ func (service *Automation360Service) GetAutoresponderContacts(id int) ([]*Autore
 	var respData struct {
 		Items []*AutoresponderContact `json:"items"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, fmt.Sprintf(path), nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData.Items, err
 }

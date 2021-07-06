@@ -27,7 +27,7 @@ func (service *MailingListsService) CreateMailingList(name string) (int, error) 
 		ID int `json:"id"`
 	}
 	params := data{Name: name}
-	_, err := service.client.newRequest(http.MethodPost, fmt.Sprintf(path), params, &response, true)
+	_, err := service.client.newRequest(http.MethodPost, path, params, &response, true)
 	return response.ID, err
 }
 

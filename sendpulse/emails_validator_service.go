@@ -27,7 +27,7 @@ func (service *ValidatorService) ValidateMailingList(mailingListID int) error {
 		ID int `json:"id"`
 	}
 	body := bodyFormat{ID: mailingListID}
-	_, err := service.client.newRequest(http.MethodPost, fmt.Sprintf(path), body, &response, true)
+	_, err := service.client.newRequest(http.MethodPost, path, body, &response, true)
 	return err
 }
 
@@ -44,7 +44,7 @@ func (service *ValidatorService) GetMailingListValidationProgress(mailingListID 
 		Result bool                `json:"result"`
 		Data   *ValidationProgress `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, fmt.Sprintf(path), nil, &response, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &response, true)
 	return response.Data, err
 }
 
@@ -83,7 +83,7 @@ type MailingListValidationResultDetailed struct {
 func (service *ValidatorService) GetMailingListValidationResult(mailingListID int) (*MailingListValidationResultDetailed, error) {
 	path := fmt.Sprintf("/verifier-service/check/?id=%d", mailingListID)
 	var response *MailingListValidationResultDetailed
-	_, err := service.client.newRequest(http.MethodGet, fmt.Sprintf(path), nil, &response, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &response, true)
 	return response, err
 }
 
@@ -94,7 +94,7 @@ func (service *ValidatorService) GetValidatedMailingLists(limit, offset int) ([]
 		Total int                            `json:"total"`
 		List  []*MailingListValidationResult `json:"list"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, fmt.Sprintf(path), nil, &response, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &response, true)
 	return response.List, err
 }
 
@@ -108,7 +108,7 @@ func (service *ValidatorService) ValidateEmail(email string) error {
 		Email string `json:"email"`
 	}
 	body := bodyFormat{Email: email}
-	_, err := service.client.newRequest(http.MethodPost, fmt.Sprintf(path), body, &response, true)
+	_, err := service.client.newRequest(http.MethodPost, path, body, &response, true)
 	return err
 }
 
@@ -132,7 +132,7 @@ func (service *ValidatorService) GetEmailValidationResult(email string) (*EmailV
 		Result bool                   `json:"result"`
 		Data   *EmailValidationResult `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, fmt.Sprintf(path), nil, &response, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &response, true)
 	return response.Data, err
 }
 
@@ -146,7 +146,7 @@ func (service *ValidatorService) DeleteEmailValidationResult(email string) error
 		Email string `json:"email"`
 	}
 	body := bodyFormat{Email: email}
-	_, err := service.client.newRequest(http.MethodGet, fmt.Sprintf(path), body, &response, true)
+	_, err := service.client.newRequest(http.MethodGet, path, body, &response, true)
 	return err
 }
 
@@ -186,7 +186,7 @@ func (service *ValidatorService) CreateMailingListValidationReport(params Mailin
 		body.Statuses = "[" + strings.Join(strStatuses, ",") + "]"
 	}
 
-	_, err := service.client.newRequest(http.MethodPost, fmt.Sprintf(path), params, &response, true)
+	_, err := service.client.newRequest(http.MethodPost, path, params, &response, true)
 	return err
 }
 
@@ -194,6 +194,6 @@ func (service *ValidatorService) CreateMailingListValidationReport(params Mailin
 func (service *ValidatorService) GetMailingListValidationReport(mailingListID int) (*MailingListValidationResultDetailed, error) {
 	path := fmt.Sprintf("/verifier-service/check-report?id=%d", mailingListID)
 	var response *MailingListValidationResultDetailed
-	_, err := service.client.newRequest(http.MethodGet, fmt.Sprintf(path), nil, &response, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &response, true)
 	return response, err
 }

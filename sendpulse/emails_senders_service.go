@@ -30,7 +30,7 @@ func (service *SendersService) CreateSender(name string, email string) error {
 		Result bool `json:"result"`
 	}
 
-	_, err := service.client.newRequest(http.MethodPost, fmt.Sprintf(path), params, &response, true)
+	_, err := service.client.newRequest(http.MethodPost, path, params, &response, true)
 	return err
 }
 
@@ -40,7 +40,7 @@ func (service *SendersService) GetSenderActivationCode(email string) error {
 	var response struct {
 		Result bool `json:"result"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, fmt.Sprintf(path), nil, &response, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &response, true)
 	return err
 }
 
@@ -58,7 +58,7 @@ func (service *SendersService) ActivateSender(email, code string) error {
 	var response struct {
 		Result bool `json:"result"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, fmt.Sprintf(path), params, &response, true)
+	_, err := service.client.newRequest(http.MethodPost, path, params, &response, true)
 	return err
 }
 
@@ -72,7 +72,7 @@ func (service *SendersService) GetSenders() ([]*Sender, error) {
 	path := "/senders"
 
 	var respData []*Sender
-	_, err := service.client.newRequest(http.MethodGet, fmt.Sprintf(path), nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData, err
 }
 
@@ -90,6 +90,6 @@ func (service *SendersService) DeleteSender(email string) error {
 	var response struct {
 		Result bool `json:"result"`
 	}
-	_, err := service.client.newRequest(http.MethodDelete, fmt.Sprintf(path), params, &response, true)
+	_, err := service.client.newRequest(http.MethodDelete, path, params, &response, true)
 	return err
 }

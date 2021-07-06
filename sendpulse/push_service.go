@@ -70,7 +70,7 @@ func (service *PushService) CountWebsites() (int, error) {
 	var respData struct {
 		Total int `json:"total"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, fmt.Sprintf(path), nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData.Total, err
 }
 
@@ -85,7 +85,7 @@ type PushWebsite struct {
 func (service *PushService) GetWebsites(limit, offset int) ([]*PushWebsite, error) {
 	path := fmt.Sprintf("/push/websites/?limit=%d&offset=%d", limit, offset)
 	var respData []*PushWebsite
-	_, err := service.client.newRequest(http.MethodGet, fmt.Sprintf(path), nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData, err
 }
 
@@ -100,7 +100,7 @@ type PushWebsiteVariable struct {
 func (service *PushService) GetWebsiteVariables(websiteID int) ([]*PushWebsiteVariable, error) {
 	path := fmt.Sprintf("/push/websites/%d/variables", websiteID)
 	var respData []*PushWebsiteVariable
-	_, err := service.client.newRequest(http.MethodGet, fmt.Sprintf(path), nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData, err
 }
 
@@ -146,7 +146,7 @@ func (service *PushService) GetWebsiteSubscriptions(websiteID int, params Websit
 	}
 
 	var respData []*WebsiteSubscription
-	_, err := service.client.newRequest(http.MethodGet, fmt.Sprintf(path), nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData, err
 }
 
@@ -156,7 +156,7 @@ func (service *PushService) CountWebsiteSubscriptions(websiteID int) (int, error
 	var respData struct {
 		Total int `json:"total"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, fmt.Sprintf(path), nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData.Total, err
 }
 
@@ -177,7 +177,7 @@ type WebsiteInfo struct {
 func (service *PushService) GetWebsiteInfo(websiteID int) (*WebsiteInfo, error) {
 	path := fmt.Sprintf("/push/websites/info/%d", websiteID)
 	var respData *WebsiteInfo
-	_, err := service.client.newRequest(http.MethodGet, fmt.Sprintf(path), nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData, err
 }
 
@@ -194,7 +194,7 @@ func (service *PushService) ActivateSubscription(subscriptionID int) error {
 	var respData struct {
 		Result bool `json:"true"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, fmt.Sprintf(path), data, &respData, true)
+	_, err := service.client.newRequest(http.MethodPost, path, data, &respData, true)
 	return err
 }
 
@@ -211,7 +211,7 @@ func (service *PushService) DeactivateSubscription(subscriptionID int) error {
 	var respData struct {
 		Result bool `json:"true"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, fmt.Sprintf(path), data, &respData, true)
+	_, err := service.client.newRequest(http.MethodPost, path, data, &respData, true)
 	return err
 }
 
@@ -260,7 +260,7 @@ func (service *PushService) CreatePushCampaign(params PushMessageParams) (int, e
 		ID     int  `json:"id"`
 		Result bool `json:"true"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, fmt.Sprintf(path), params, &respData, true)
+	_, err := service.client.newRequest(http.MethodPost, path, params, &respData, true)
 	return respData.ID, err
 }
 
@@ -285,6 +285,6 @@ func (service *PushService) GetPushMessagesStatistics(taskID int) (*PushMessages
 	path := fmt.Sprintf("/push/tasks/%d", taskID)
 
 	var respData *PushMessagesStatistics
-	_, err := service.client.newRequest(http.MethodGet, fmt.Sprintf(path), nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData, err
 }

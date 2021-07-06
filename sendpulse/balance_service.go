@@ -1,7 +1,6 @@
 package sendpulse
 
 import (
-	"fmt"
 	"net/http"
 	"strings"
 )
@@ -56,7 +55,7 @@ func (service *BalanceService) GetBalance(currency string) (*Balance, error) {
 	}
 
 	var respData Balance
-	_, err := service.client.newRequest(http.MethodGet, fmt.Sprintf(path), nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return &respData, err
 }
 
@@ -65,6 +64,6 @@ func (service *BalanceService) GetDetailedBalance() (*BalanceDetailed, error) {
 	path := "/user/balance/detail"
 
 	var respData BalanceDetailed
-	_, err := service.client.newRequest(http.MethodGet, fmt.Sprintf(path), nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return &respData, err
 }

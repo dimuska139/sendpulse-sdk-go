@@ -38,7 +38,7 @@ func (service *TemplatesService) CreateTemplate(name string, body string, lang s
 		Result bool `json:"result"`
 		RealID int  `json:"real_id"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, fmt.Sprintf(path), params, &response, true)
+	_, err := service.client.newRequest(http.MethodPost, path, params, &response, true)
 	return response.RealID, err
 }
 
@@ -58,7 +58,7 @@ func (service *TemplatesService) UpdateTemplate(templateID int, body string, lan
 	var response struct {
 		Result bool `json:"result"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, fmt.Sprintf(path), params, &response, true)
+	_, err := service.client.newRequest(http.MethodPost, path, params, &response, true)
 	return err
 }
 
@@ -105,7 +105,7 @@ func (t *Template) UnmarshalJSON(data []byte) error {
 func (service *TemplatesService) GetTemplate(templateID int) (*Template, error) {
 	path := fmt.Sprintf("/template/%d", templateID)
 	var respData Template
-	_, err := service.client.newRequest(http.MethodGet, fmt.Sprintf(path), nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return &respData, err
 }
 
@@ -116,6 +116,6 @@ func (service *TemplatesService) GetTemplates(limit, offset int, owner string) (
 	}
 
 	var respData []*Template
-	_, err := service.client.newRequest(http.MethodGet, fmt.Sprintf(path), nil, &respData, true)
+	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
 	return respData, err
 }
