@@ -189,7 +189,7 @@ func (suite *SendpulseTestSuite) TestBotsTelegramService_GetContactsByVariable()
 	suite.Equal("1234", contacts[0].ID)
 }
 
-func (suite *SendpulseTestSuite) TestBotsTelegramService_SendTextToContact() {
+func (suite *SendpulseTestSuite) TestBotsTelegramService_SendTextByContact() {
 	suite.mux.HandleFunc("/telegram/contacts/sendText", func(w http.ResponseWriter, r *http.Request) {
 		suite.Equal(http.MethodPost, r.Method)
 
@@ -198,7 +198,7 @@ func (suite *SendpulseTestSuite) TestBotsTelegramService_SendTextToContact() {
 		}`)
 	})
 
-	err := suite.client.Bots.Telegram.SendTextToContact("qwe12345", "hello")
+	err := suite.client.Bots.Telegram.SendTextByContact("qwe12345", "hello")
 	suite.NoError(err)
 }
 

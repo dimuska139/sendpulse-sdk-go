@@ -177,7 +177,7 @@ func (suite *SendpulseTestSuite) TestBotsVkService_GetContactsByVariable() {
 	suite.Equal("1234", contacts[0].ID)
 }
 
-func (suite *SendpulseTestSuite) TestBotsVkService_SendTextToContact() {
+func (suite *SendpulseTestSuite) TestBotsVkService_SendTextByContact() {
 	suite.mux.HandleFunc("/vk/contacts/sendText", func(w http.ResponseWriter, r *http.Request) {
 		suite.Equal(http.MethodPost, r.Method)
 
@@ -186,7 +186,7 @@ func (suite *SendpulseTestSuite) TestBotsVkService_SendTextToContact() {
 		}`)
 	})
 
-	err := suite.client.Bots.Vk.SendTextToContact("qwe12345", "hello")
+	err := suite.client.Bots.Vk.SendTextByContact("qwe12345", "hello")
 	suite.NoError(err)
 }
 

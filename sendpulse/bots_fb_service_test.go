@@ -186,7 +186,7 @@ func (suite *SendpulseTestSuite) TestBotsFbService_GetContactsByVariable() {
 	suite.Equal("1234", contacts[0].ID)
 }
 
-func (suite *SendpulseTestSuite) TestBotsFbService_SendTextToContact() {
+func (suite *SendpulseTestSuite) TestBotsFbService_SendTextByContact() {
 	suite.mux.HandleFunc("/messenger/contacts/sendText", func(w http.ResponseWriter, r *http.Request) {
 		suite.Equal(http.MethodPost, r.Method)
 
@@ -195,7 +195,7 @@ func (suite *SendpulseTestSuite) TestBotsFbService_SendTextToContact() {
 		}`)
 	})
 
-	err := suite.client.Bots.Fb.SendTextToContact(FbBotSendTextParams{
+	err := suite.client.Bots.Fb.SendTextByContact(FbBotSendTextParams{
 		ContactID:   "qwe12345",
 		MessageType: "RESPONSE",
 		MessageTag:  "ACCOUNT_UPDATE",

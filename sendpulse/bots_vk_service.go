@@ -136,7 +136,7 @@ func (service *BotsVkService) GetContactsByVariable(params BotContactsByVariable
 	return respData.Data, err
 }
 
-func (service *BotsVkService) SendTextToContact(contactID string, text string) error {
+func (service *BotsVkService) SendTextByContact(contactID string, text string) error {
 	path := "/vk/contacts/sendText"
 
 	type bodyFormat struct {

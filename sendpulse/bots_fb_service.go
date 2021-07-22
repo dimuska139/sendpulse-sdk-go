@@ -155,7 +155,7 @@ type FbBotSendTextParams struct {
 	Text        string `json:"text"`
 }
 
-func (service *BotsFbService) SendTextToContact(params FbBotSendTextParams) error {
+func (service *BotsFbService) SendTextByContact(params FbBotSendTextParams) error {
 	path := "/messenger/contacts/sendText"
 
 	var respData struct {

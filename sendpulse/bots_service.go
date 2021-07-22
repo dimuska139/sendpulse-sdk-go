@@ -5,6 +5,7 @@ type BotsService struct {
 	Fb       *BotsFbService
 	Vk       *BotsVkService
 	Telegram *BotsTelegramService
+	WhatsApp *BotsWhatsAppService
 }
 
 func newBotsService(cl *Client) *BotsService {
@@ -13,5 +14,6 @@ func newBotsService(cl *Client) *BotsService {
 		Fb:       newBotsFbService(cl),
 		Vk:       newBotsVkService(cl),
 		Telegram: newBotsTelegramService(cl),
+		WhatsApp: newBotsWhatsAppService(cl),
 	}
 }

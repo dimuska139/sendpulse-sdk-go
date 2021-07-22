@@ -145,7 +145,7 @@ func (service *BotsTelegramService) GetContactsByVariable(params BotContactsByVa
 	return respData.Data, err
 }
 
-func (service *BotsTelegramService) SendTextToContact(contactID string, text string) error {
+func (service *BotsTelegramService) SendTextByContact(contactID string, text string) error {
 	path := "/telegram/contacts/sendText"
 
 	type bodyFormat struct {
