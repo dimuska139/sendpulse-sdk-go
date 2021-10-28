@@ -2,8 +2,10 @@ package sendpulse
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
+	"golang.org/x/time/rate"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -31,6 +33,7 @@ type Client struct {
 	config        *Config
 	token         string
 	tokenLock     *sync.RWMutex
+	rateLimiter   *rate.Limiter
 	Emails        *EmailsService
 	Balance       *BalanceService
 	SMTP          *SmtpService
@@ -44,6 +47,10 @@ type Client struct {
 
 // NewClient creates new Client to interract with SendpulseAPI
 func NewClient(client *http.Client, config *Config) *Client {
+	if config.Rps == 0 {
+		config.Rps = 10
+	}
+
 	cl := &Client{
 		client:    client,
 		config:    config,
@@ -59,6 +66,7 @@ func NewClient(client *http.Client, config *Config) *Client {
 	cl.VkOk = newVkOkService(cl)
 	cl.Bots = newBotsService(cl)
 	cl.Automation360 = newAutomation360Service(cl)
+	cl.rateLimiter = rate.NewLimiter(rate.Limit(config.Rps), config.Rps)
 	return cl
 }
 
@@ -104,6 +112,11 @@ func (c *Client) clearToken() {
 
 // newRequest makes new http request to SendPulse
 func (c *Client) newRequest(method string, path string, body interface{}, result interface{}, useToken bool) (*http.Response, error) {
+	ctx := context.Background()
+	if err := c.rateLimiter.Wait(ctx); err != nil {
+		return nil, err
+	}
+
 	fullPath := apiBaseUrl + path
 	var buf io.ReadWriter
 	if body != nil {
