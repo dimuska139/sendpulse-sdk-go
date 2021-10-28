@@ -20,7 +20,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/dimuska139/sendpulse-sdk-go/sendpulse"
+	sendpulse "github.com/dimuska139/sendpulse-sdk-go/v6"
 	"net/http"
 )
 
