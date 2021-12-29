@@ -1,6 +1,7 @@
 package sendpulse_sdk_go
 
 import (
+	"context"
 	"net/http"
 	"strings"
 )
@@ -48,22 +49,22 @@ type BalanceDetailed struct {
 }
 
 // GetBalance returns main information about users's balance
-func (service *BalanceService) GetBalance(currency string) (*Balance, error) {
+func (service *BalanceService) GetBalance(ctx context.Context, currency string) (*Balance, error) {
 	path := "/balance"
 	if currency != "" {
 		path += "/" + strings.ToLower(currency)
 	}
 
 	var respData Balance
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return &respData, err
 }
 
 // GetDetailedBalance returns detailed information about users's balance
-func (service *BalanceService) GetDetailedBalance() (*BalanceDetailed, error) {
+func (service *BalanceService) GetDetailedBalance(ctx context.Context) (*BalanceDetailed, error) {
 	path := "/user/balance/detail"
 
 	var respData BalanceDetailed
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return &respData, err
 }

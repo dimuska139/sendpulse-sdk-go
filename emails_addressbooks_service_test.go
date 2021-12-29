@@ -1,6 +1,7 @@
 package sendpulse_sdk_go
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 )
@@ -11,7 +12,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_AddressBooksService_Create() 
 		fmt.Fprintf(w, `{"id": 12345}`)
 	})
 
-	id, err := suite.client.Emails.MailingLists.CreateMailingList("name")
+	id, err := suite.client.Emails.MailingLists.CreateMailingList(context.Background(), "name")
 	suite.NoError(err)
 	suite.Equal(12345, id)
 }
@@ -22,7 +23,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_AddressBooksService_ChangeNam
 		fmt.Fprintf(w, `{"result": true}`)
 	})
 
-	err := suite.client.Emails.MailingLists.ChangeName(1, "name")
+	err := suite.client.Emails.MailingLists.ChangeName(context.Background(), 1, "name")
 	suite.NoError(err)
 }
 
@@ -53,7 +54,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_AddressBooksService_List() {
 		]`)
 	})
 
-	books, err := suite.client.Emails.MailingLists.GetMailingLists(10, 0)
+	books, err := suite.client.Emails.MailingLists.GetMailingLists(context.Background(), 10, 0)
 	suite.NoError(err)
 	suite.Equal(2, len(books))
 }
@@ -75,7 +76,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_AddressBooksService_Get() {
 		]`)
 	})
 
-	book, err := suite.client.Emails.MailingLists.GetMailingList(1)
+	book, err := suite.client.Emails.MailingLists.GetMailingList(context.Background(), 1)
 	suite.NoError(err)
 	suite.NotNil(book)
 }
@@ -95,7 +96,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_AddressBooksService_Variables
 		]`)
 	})
 
-	variables, err := suite.client.Emails.MailingLists.GetMailingListVariables(1)
+	variables, err := suite.client.Emails.MailingLists.GetMailingListVariables(context.Background(), 1)
 	suite.NoError(err)
 	suite.Equal(2, len(variables))
 }
@@ -116,7 +117,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_AddressBooksService_Emails() 
 		]`)
 	})
 
-	emails, err := suite.client.Emails.MailingLists.GetMailingListEmails(1, 100, 0)
+	emails, err := suite.client.Emails.MailingLists.GetMailingListEmails(context.Background(), 1, 100, 0)
 	suite.NoError(err)
 	suite.Equal("test@test.com", emails[0].Email)
 }
@@ -129,7 +130,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_AddressBooksService_EmailsTot
 		}`)
 	})
 
-	total, err := suite.client.Emails.MailingLists.CountMailingListEmails(1)
+	total, err := suite.client.Emails.MailingLists.CountMailingListEmails(context.Background(), 1)
 	suite.NoError(err)
 	suite.Equal(12, total)
 }
@@ -146,7 +147,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_AddressBooksService_EmailsByV
 		]`)
 	})
 
-	emails, err := suite.client.Emails.MailingLists.GetMailingListEmailsByVariable(1, "age", 12)
+	emails, err := suite.client.Emails.MailingLists.GetMailingListEmailsByVariable(context.Background(), 1, "age", 12)
 	suite.NoError(err)
 	suite.Equal("test@test.com", (*emails[0]).Email)
 }
@@ -165,7 +166,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_AddressBooksService_SingleOpt
 		Variables: map[string]interface{}{"age": 21, "weight": 99},
 	})
 
-	suite.NoError(suite.client.Emails.MailingLists.SingleOptIn(1, emails))
+	suite.NoError(suite.client.Emails.MailingLists.SingleOptIn(context.Background(), 1, emails))
 }
 
 func (suite *SendpulseTestSuite) TestEmailsService_AddressBooksService_DoubleOptIn() {
@@ -181,7 +182,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_AddressBooksService_DoubleOpt
 		Email:     "test@test.com",
 		Variables: map[string]interface{}{"age": 21, "weight": 99},
 	})
-	suite.NoError(suite.client.Emails.MailingLists.DoubleOptIn(1, emails, "admin@admin.com", "ru", "tpl123"))
+	suite.NoError(suite.client.Emails.MailingLists.DoubleOptIn(context.Background(), 1, emails, "admin@admin.com", "ru", "tpl123"))
 }
 
 func (suite *SendpulseTestSuite) TestEmailsService_AddressBooksService_EmailsDelete() {
@@ -193,7 +194,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_AddressBooksService_EmailsDel
 	})
 
 	emails := []string{"test@test.com"}
-	suite.NoError(suite.client.Emails.MailingLists.DeleteMailingListEmails(1, emails))
+	suite.NoError(suite.client.Emails.MailingLists.DeleteMailingListEmails(context.Background(), 1, emails))
 }
 
 func (suite *SendpulseTestSuite) TestEmailsService_AddressBooksService_Delete() {
@@ -204,7 +205,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_AddressBooksService_Delete() 
 		}`)
 	})
 
-	suite.NoError(suite.client.Emails.MailingLists.DeleteMailingList(1))
+	suite.NoError(suite.client.Emails.MailingLists.DeleteMailingList(context.Background(), 1))
 }
 
 func (suite *SendpulseTestSuite) TestEmailsService_AddressBooksService_CampaignCost() {
@@ -220,7 +221,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_AddressBooksService_CampaignC
 			"result": true
 		}`)
 	})
-	cost, err := suite.client.Emails.MailingLists.CountCampaignCost(1)
+	cost, err := suite.client.Emails.MailingLists.CountCampaignCost(context.Background(), 1)
 	suite.NoError(err)
 	suite.NotNil(cost)
 }
@@ -234,7 +235,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_AddressBooksService_EmailsUns
 	})
 
 	emails := []string{"test@test.com"}
-	suite.NoError(suite.client.Emails.MailingLists.UnsubscribeEmails(1, emails))
+	suite.NoError(suite.client.Emails.MailingLists.UnsubscribeEmails(context.Background(), 1, emails))
 }
 
 func (suite *SendpulseTestSuite) TestEmailsService_AddressBooksService_UpdateEmailVariables() {
@@ -251,5 +252,5 @@ func (suite *SendpulseTestSuite) TestEmailsService_AddressBooksService_UpdateEma
 			Value: 12,
 		},
 	}
-	suite.NoError(suite.client.Emails.MailingLists.UpdateEmailVariables(1, "test@test.com", variables))
+	suite.NoError(suite.client.Emails.MailingLists.UpdateEmailVariables(context.Background(), 1, "test@test.com", variables))
 }

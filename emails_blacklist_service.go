@@ -1,6 +1,7 @@
 package sendpulse_sdk_go
 
 import (
+	"context"
 	b64 "encoding/base64"
 	"net/http"
 	"strings"
@@ -17,7 +18,7 @@ func newBlacklistService(cl *Client) *BlacklistService {
 }
 
 // AddToBlacklist appends an email addresses to a blacklist
-func (service *BlacklistService) AddToBlacklist(emails []string, comment string) error {
+func (service *BlacklistService) AddToBlacklist(ctx context.Context, emails []string, comment string) error {
 	path := "/blacklist"
 
 	type paramsFormat struct {
@@ -38,12 +39,12 @@ func (service *BlacklistService) AddToBlacklist(emails []string, comment string)
 	}
 
 	var respData response
-	_, err := service.client.newRequest(http.MethodPost, path, params, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, params, &respData, true)
 	return err
 }
 
 // RemoveFromBlacklist removes an email addresses from a blacklist
-func (service *BlacklistService) RemoveFromBlacklist(emails []string) error {
+func (service *BlacklistService) RemoveFromBlacklist(ctx context.Context, emails []string) error {
 	path := "/blacklist"
 
 	type paramsFormat struct {
@@ -59,15 +60,15 @@ func (service *BlacklistService) RemoveFromBlacklist(emails []string) error {
 	}
 
 	var respData response
-	_, err := service.client.newRequest(http.MethodDelete, path, params, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodDelete, path, params, &respData, true)
 	return err
 }
 
 // GetEmails returns a list of emails added to blacklist
-func (service *BlacklistService) GetEmails() ([]string, error) {
+func (service *BlacklistService) GetEmails(ctx context.Context) ([]string, error) {
 	path := "/blacklist"
 
 	var respData []string
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData, err
 }

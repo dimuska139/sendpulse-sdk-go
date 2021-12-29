@@ -1,6 +1,7 @@
 package sendpulse_sdk_go
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 )
@@ -24,7 +25,7 @@ type Webhook struct {
 }
 
 // GetWebhooks returns a list of webhooks
-func (service *WebhooksService) GetWebhooks() ([]*Webhook, error) {
+func (service *WebhooksService) GetWebhooks(ctx context.Context) ([]*Webhook, error) {
 	path := "/v2/email-service/webhook"
 
 	var respData struct {
@@ -32,12 +33,12 @@ func (service *WebhooksService) GetWebhooks() ([]*Webhook, error) {
 		Data    []*Webhook `json:"data"`
 	}
 
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
 // GetWebhook returns specific webhook
-func (service *WebhooksService) GetWebhook(id int) (*Webhook, error) {
+func (service *WebhooksService) GetWebhook(ctx context.Context, id int) (*Webhook, error) {
 	path := fmt.Sprintf("/v2/email-service/webhook/%d", id)
 
 	var respData struct {
@@ -45,12 +46,12 @@ func (service *WebhooksService) GetWebhook(id int) (*Webhook, error) {
 		Data    *Webhook `json:"data"`
 	}
 
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
 // CreateWebhook creates webhook
-func (service *WebhooksService) CreateWebhook(actions []string, url string) ([]*Webhook, error) {
+func (service *WebhooksService) CreateWebhook(ctx context.Context, actions []string, url string) ([]*Webhook, error) {
 	path := "/v2/email-service/webhook/"
 
 	type data struct {
@@ -63,12 +64,12 @@ func (service *WebhooksService) CreateWebhook(actions []string, url string) ([]*
 		Data    []*Webhook `json:"data"`
 	}
 	params := data{Actions: actions, Url: url}
-	_, err := service.client.newRequest(http.MethodPost, path, params, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, params, &respData, true)
 	return respData.Data, err
 }
 
 // UpdateWebhook updates a specific webhook
-func (service *WebhooksService) UpdateWebhook(id int, url string) error {
+func (service *WebhooksService) UpdateWebhook(ctx context.Context, id int, url string) error {
 	path := fmt.Sprintf("/v2/email-service/webhook/%d", id)
 
 	type data struct {
@@ -80,18 +81,18 @@ func (service *WebhooksService) UpdateWebhook(id int, url string) error {
 		Data    []bool `json:"data"`
 	}
 	params := data{Url: url}
-	_, err := service.client.newRequest(http.MethodPut, path, params, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPut, path, params, &respData, true)
 	return err
 }
 
 // DeleteWebhook deletes a specific webhook
-func (service *WebhooksService) DeleteWebhook(id int) error {
+func (service *WebhooksService) DeleteWebhook(ctx context.Context, id int) error {
 	path := fmt.Sprintf("/v2/email-service/webhook/%d", id)
 
 	var respData struct {
 		Success bool   `json:"success"`
 		Data    []bool `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodDelete, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodDelete, path, nil, &respData, true)
 	return err
 }

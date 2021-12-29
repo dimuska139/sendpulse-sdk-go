@@ -1,6 +1,7 @@
 package sendpulse_sdk_go
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"time"
@@ -31,7 +32,7 @@ func (suite *SendpulseTestSuite) TestViberService_CreateCampaign() {
 		}`)
 	})
 
-	taskID, err := suite.client.Viber.CreateCampaign(CreateViberCampaignParams{
+	taskID, err := suite.client.Viber.CreateCampaign(context.Background(), CreateViberCampaignParams{
 		TaskName:        "Viber task",
 		MessageType:     2,
 		SenderID:        2222,
@@ -68,7 +69,7 @@ func (suite *SendpulseTestSuite) TestViberService_UpdateCampaign() {
 		}`)
 	})
 
-	err := suite.client.Viber.UpdateCampaign(UpdateViberCampaignParams{
+	err := suite.client.Viber.UpdateCampaign(context.Background(), UpdateViberCampaignParams{
 		TaskID:          12345,
 		TaskName:        "Task name",
 		Message:         "New viber message",
@@ -122,7 +123,7 @@ func (suite *SendpulseTestSuite) TestViberService_Campaigns() {
 		]`)
 	})
 
-	campaigns, err := suite.client.Viber.GetCampaigns(10, 0)
+	campaigns, err := suite.client.Viber.GetCampaigns(context.Background(), 10, 0)
 	suite.NoError(err)
 	suite.Equal(2, len(campaigns))
 }
@@ -155,7 +156,7 @@ func (suite *SendpulseTestSuite) TestViberService_GetStatistics() {
 		}`)
 	})
 
-	statistics, err := suite.client.Viber.GetStatistics(campaignID)
+	statistics, err := suite.client.Viber.GetStatistics(context.Background(), campaignID)
 	suite.NoError(err)
 	suite.Equal(38, statistics.ID)
 }
@@ -182,7 +183,7 @@ func (suite *SendpulseTestSuite) TestViberService_GetSenders() {
 		]`)
 	})
 
-	senders, err := suite.client.Viber.GetSenders()
+	senders, err := suite.client.Viber.GetSenders(context.Background())
 	suite.NoError(err)
 	suite.Equal(2222, senders[0].ID)
 }
@@ -205,7 +206,7 @@ func (suite *SendpulseTestSuite) TestViberService_GetSender() {
 		}`)
 	})
 
-	sender, err := suite.client.Viber.GetSender(senderID)
+	sender, err := suite.client.Viber.GetSender(context.Background(), senderID)
 	suite.NoError(err)
 	suite.Equal("infoservice", sender.Name)
 }
@@ -231,7 +232,7 @@ func (suite *SendpulseTestSuite) TestViberService_GetRecipients() {
 		}`)
 	})
 
-	recipients, err := suite.client.Viber.GetRecipients(taskID)
+	recipients, err := suite.client.Viber.GetRecipients(context.Background(), taskID)
 	suite.NoError(err)
 	suite.Equal("RUR", recipients[0].Currency)
 }

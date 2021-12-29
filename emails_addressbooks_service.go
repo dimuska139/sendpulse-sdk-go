@@ -1,6 +1,7 @@
 package sendpulse_sdk_go
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 )
@@ -16,7 +17,7 @@ func newMailingListsService(cl *Client) *MailingListsService {
 }
 
 // CreateMailingList creates new mailing list
-func (service *MailingListsService) CreateMailingList(name string) (int, error) {
+func (service *MailingListsService) CreateMailingList(ctx context.Context, name string) (int, error) {
 	path := "/addressbooks"
 
 	type data struct {
@@ -27,12 +28,12 @@ func (service *MailingListsService) CreateMailingList(name string) (int, error) 
 		ID int `json:"id"`
 	}
 	params := data{Name: name}
-	_, err := service.client.newRequest(http.MethodPost, path, params, &response, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, params, &response, true)
 	return response.ID, err
 }
 
 // ChangeName changes a name of specific mailing list
-func (service *MailingListsService) ChangeName(id int, name string) error {
+func (service *MailingListsService) ChangeName(ctx context.Context, id int, name string) error {
 	path := fmt.Sprintf("/addressbooks/%d", id)
 
 	type data struct {
@@ -43,7 +44,7 @@ func (service *MailingListsService) ChangeName(id int, name string) error {
 		Result bool
 	}
 	params := data{Name: name}
-	_, err := service.client.newRequest(http.MethodPut, path, params, &response, true)
+	_, err := service.client.newRequest(ctx, http.MethodPut, path, params, &response, true)
 	return err
 }
 
@@ -60,18 +61,18 @@ type MailingList struct {
 }
 
 // GetMailingLists returns a list of mailing lists
-func (service *MailingListsService) GetMailingLists(limit int, offset int) ([]*MailingList, error) {
+func (service *MailingListsService) GetMailingLists(ctx context.Context, limit int, offset int) ([]*MailingList, error) {
 	path := fmt.Sprintf("/addressbooks?limit=%d&offset=%d", limit, offset)
 	var books []*MailingList
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &books, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &books, true)
 	return books, err
 }
 
 // GetMailingList returns detailed information regarding a specific mailing list
-func (service *MailingListsService) GetMailingList(mailingListID int) (*MailingList, error) {
+func (service *MailingListsService) GetMailingList(ctx context.Context, mailingListID int) (*MailingList, error) {
 	path := fmt.Sprintf("/addressbooks/%d", mailingListID)
 	var books []*MailingList
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &books, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &books, true)
 	var book *MailingList
 	if len(books) != 0 {
 		book = books[0]
@@ -86,10 +87,10 @@ type VariableMeta struct {
 }
 
 // GetMailingListVariables method returns variables of specific mailing list
-func (service *MailingListsService) GetMailingListVariables(mailingListID int) ([]*VariableMeta, error) {
+func (service *MailingListsService) GetMailingListVariables(ctx context.Context, mailingListID int) ([]*VariableMeta, error) {
 	path := fmt.Sprintf("/addressbooks/%d/variables", mailingListID)
 	var variables []*VariableMeta
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &variables, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &variables, true)
 	return variables, err
 }
 
@@ -103,28 +104,28 @@ type Email struct {
 }
 
 // GetMailingListEmails returns a list of emails from a mailing list
-func (service *MailingListsService) GetMailingListEmails(id, limit, offset int) ([]*Email, error) {
+func (service *MailingListsService) GetMailingListEmails(ctx context.Context, id, limit, offset int) ([]*Email, error) {
 	path := fmt.Sprintf("/addressbooks/%d/emails?limit=%d&offset=%d", id, limit, offset)
 	var emails []*Email
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &emails, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &emails, true)
 	return emails, err
 }
 
 // CountMailingListEmails returns a the total number of contacts in a mailing list
-func (service *MailingListsService) CountMailingListEmails(mailingListID int) (int, error) {
+func (service *MailingListsService) CountMailingListEmails(ctx context.Context, mailingListID int) (int, error) {
 	path := fmt.Sprintf("/addressbooks/%d/emails/total", mailingListID)
 	var response struct {
 		Total int
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &response, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &response, true)
 	return response.Total, err
 }
 
 // GetMailingListEmailsByVariable returns all contacts in mailing list by value of variable
-func (service *MailingListsService) GetMailingListEmailsByVariable(mailingListID int, variable string, value interface{}) ([]*Email, error) {
+func (service *MailingListsService) GetMailingListEmailsByVariable(ctx context.Context, mailingListID int, variable string, value interface{}) ([]*Email, error) {
 	path := fmt.Sprintf("/addressbooks/%d/variables/%s/%v", mailingListID, variable, value)
 	var emails []*Email
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &emails, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &emails, true)
 	return emails, err
 }
 
@@ -135,7 +136,7 @@ type EmailToAdd struct {
 }
 
 // SingleOptIn adds emails to mailing list using single-opt-in method
-func (service *MailingListsService) SingleOptIn(mailingListID int, emails []*EmailToAdd) error {
+func (service *MailingListsService) SingleOptIn(ctx context.Context, mailingListID int, emails []*EmailToAdd) error {
 	path := fmt.Sprintf("/addressbooks/%d/emails", mailingListID)
 	var response struct {
 		Result bool `json:"result"`
@@ -145,12 +146,12 @@ func (service *MailingListsService) SingleOptIn(mailingListID int, emails []*Ema
 	}
 
 	body := bodyFormat{Emails: emails}
-	_, err := service.client.newRequest(http.MethodPost, path, body, &response, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, body, &response, true)
 	return err
 }
 
 // DoubleOptIn adds emails to mailing list using double-opt-in method
-func (service *MailingListsService) DoubleOptIn(mailingListID int, emails []*EmailToAdd, senderEmail string, messageLang string, templateID string) error {
+func (service *MailingListsService) DoubleOptIn(ctx context.Context, mailingListID int, emails []*EmailToAdd, senderEmail string, messageLang string, templateID string) error {
 	path := fmt.Sprintf("/addressbooks/%d/emails", mailingListID)
 	var response struct {
 		Result bool `json:"result"`
@@ -173,12 +174,12 @@ func (service *MailingListsService) DoubleOptIn(mailingListID int, emails []*Ema
 	if templateID != "" {
 		body.TemplateID = templateID
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, body, &response, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, body, &response, true)
 	return err
 }
 
 // DeleteMailingListEmails removes emails from specific mailing list
-func (service *MailingListsService) DeleteMailingListEmails(mailingListID int, emails []string) error {
+func (service *MailingListsService) DeleteMailingListEmails(ctx context.Context, mailingListID int, emails []string) error {
 	path := fmt.Sprintf("/addressbooks/%d/emails", mailingListID)
 	var response struct {
 		Result bool `json:"result"`
@@ -188,17 +189,17 @@ func (service *MailingListsService) DeleteMailingListEmails(mailingListID int, e
 	}
 	body := bodyFormat{Emails: emails}
 
-	_, err := service.client.newRequest(http.MethodDelete, path, body, &response, true)
+	_, err := service.client.newRequest(ctx, http.MethodDelete, path, body, &response, true)
 	return err
 }
 
 // DeleteMailingList removes specific mailing list
-func (service *MailingListsService) DeleteMailingList(mailingListID int) error {
+func (service *MailingListsService) DeleteMailingList(ctx context.Context, mailingListID int) error {
 	path := fmt.Sprintf("/addressbooks/%d", mailingListID)
 	var response struct {
 		Result bool `json:"result"`
 	}
-	_, err := service.client.newRequest(http.MethodDelete, path, nil, &response, true)
+	_, err := service.client.newRequest(ctx, http.MethodDelete, path, nil, &response, true)
 	return err
 }
 
@@ -214,16 +215,16 @@ type CampaignCost struct {
 }
 
 // CountCampaignCost calculates the cost of a campaign sent to a mailing list
-func (service *MailingListsService) CountCampaignCost(mailingListID int) (*CampaignCost, error) {
+func (service *MailingListsService) CountCampaignCost(ctx context.Context, mailingListID int) (*CampaignCost, error) {
 	path := fmt.Sprintf("/addressbooks/%d/cost", mailingListID)
 	var cost CampaignCost
 
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &cost, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &cost, true)
 	return &cost, err
 }
 
 // UnsubscribeEmails unsubscribes emails from a specific mailing list
-func (service *MailingListsService) UnsubscribeEmails(mailingListID int, emails []string) error {
+func (service *MailingListsService) UnsubscribeEmails(ctx context.Context, mailingListID int, emails []string) error {
 	path := fmt.Sprintf("/addressbooks/%d/emails/unsubscribe", mailingListID)
 	var response struct {
 		Result bool `json:"result"`
@@ -233,12 +234,12 @@ func (service *MailingListsService) UnsubscribeEmails(mailingListID int, emails 
 	}
 	body := bodyFormat{Emails: emails}
 
-	_, err := service.client.newRequest(http.MethodPost, path, body, &response, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, body, &response, true)
 	return err
 }
 
 // UpdateEmailVariables changes a variables for an email contact
-func (service *MailingListsService) UpdateEmailVariables(mailingListID int, email string, variables []*Variable) error {
+func (service *MailingListsService) UpdateEmailVariables(ctx context.Context, mailingListID int, email string, variables []*Variable) error {
 	path := fmt.Sprintf("/addressbooks/%d/emails/variable", mailingListID)
 	var response struct {
 		Result bool `json:"result"`
@@ -249,6 +250,6 @@ func (service *MailingListsService) UpdateEmailVariables(mailingListID int, emai
 	}
 
 	body := bodyFormat{Email: email, Variables: variables}
-	_, err := service.client.newRequest(http.MethodPost, path, body, &response, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, body, &response, true)
 	return err
 }

@@ -1,6 +1,7 @@
 package sendpulse_sdk_go
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 )
@@ -30,7 +31,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_AddressService_GetEmailInfo()
 		]`)
 	})
 
-	items, err := suite.client.Emails.Address.GetEmailInfo("test@sendpulse.com")
+	items, err := suite.client.Emails.Address.GetEmailInfo(context.Background(), "test@sendpulse.com")
 	suite.NoError(err)
 	suite.Equal(1, items[0].BookID)
 }
@@ -54,7 +55,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_AddressService_GetDetails() {
 		]`)
 	})
 
-	items, err := suite.client.Emails.Address.GetDetails("test@sendpulse.com")
+	items, err := suite.client.Emails.Address.GetDetails(context.Background(), "test@sendpulse.com")
 	suite.NoError(err)
 	suite.Equal(2, len(items))
 }
@@ -100,7 +101,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_AddressService_GetEmailsInfo(
 		}`)
 	})
 
-	info, err := suite.client.Emails.Address.GetEmailsInfo([]string{"test@sendpulse.com"})
+	info, err := suite.client.Emails.Address.GetEmailsInfo(context.Background(), []string{"test@sendpulse.com"})
 	suite.NoError(err)
 
 	emailInfo, ok := info["test@sendpulse.com"]
@@ -121,7 +122,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_AddressService_GetStatisticsB
 		}`)
 	})
 
-	info, err := suite.client.Emails.Address.GetStatisticsByCampaign(1, "test@sendpulse.com")
+	info, err := suite.client.Emails.Address.GetStatisticsByCampaign(context.Background(), 1, "test@sendpulse.com")
 	suite.NoError(err)
 	suite.Equal(1, info.GlobalStatus)
 	suite.Equal(3, info.DetailStatus)
@@ -151,7 +152,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_AddressService_GetStatisticsB
 		}`)
 	})
 
-	info, err := suite.client.Emails.Address.GetStatisticsByAddressBook(12345, "test@sendpulse.com")
+	info, err := suite.client.Emails.Address.GetStatisticsByAddressBook(context.Background(), 12345, "test@sendpulse.com")
 	suite.NoError(err)
 	suite.Equal(12345, info.AddressBookID)
 }
@@ -164,7 +165,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_AddressService_DeleteFromAllA
 		}`)
 	})
 
-	err := suite.client.Emails.Address.DeleteFromAllAddressBooks("test@sendpulse.com")
+	err := suite.client.Emails.Address.DeleteFromAllAddressBooks(context.Background(), "test@sendpulse.com")
 	suite.NoError(err)
 }
 
@@ -191,7 +192,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_AddressService_GetEmailStatis
 		}`)
 	})
 
-	stat, err := suite.client.Emails.Address.GetEmailStatisticsByCampaignsAndAddressBooks("test@sendpulse.com")
+	stat, err := suite.client.Emails.Address.GetEmailStatisticsByCampaignsAndAddressBooks(context.Background(), "test@sendpulse.com")
 	suite.NoError(err)
 	suite.Equal(2, len(stat.Addressbooks))
 }
@@ -235,7 +236,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_AddressService_GetEmailsStati
 		}`)
 	})
 
-	stat, err := suite.client.Emails.Address.GetEmailsStatisticsByCampaignsAndAddressBooks([]string{"example@yourdomain.com", "example2@yourdomain.com"})
+	stat, err := suite.client.Emails.Address.GetEmailsStatisticsByCampaignsAndAddressBooks(context.Background(), []string{"example@yourdomain.com", "example2@yourdomain.com"})
 	suite.NoError(err)
 	email1data, email1ok := stat["example@yourdomain.com"]
 	suite.True(email1ok)
@@ -262,6 +263,6 @@ func (suite *SendpulseTestSuite) TestEmailsService_AddressService_ChangeVariable
 		Name:  "var2",
 		Value: "val2",
 	})
-	err := suite.client.Emails.Address.ChangeVariables(1, "test@sendpulse.com", variables)
+	err := suite.client.Emails.Address.ChangeVariables(context.Background(), 1, "test@sendpulse.com", variables)
 	suite.NoError(err)
 }

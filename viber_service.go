@@ -1,6 +1,7 @@
 package sendpulse_sdk_go
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 )
@@ -38,7 +39,7 @@ type CreateViberCampaignParams struct {
 	} `json:"additional,omitempty"`
 }
 
-func (service *ViberService) CreateCampaign(params CreateViberCampaignParams) (int, error) {
+func (service *ViberService) CreateCampaign(ctx context.Context, params CreateViberCampaignParams) (int, error) {
 	path := "/viber"
 
 	var respData struct {
@@ -47,7 +48,7 @@ func (service *ViberService) CreateCampaign(params CreateViberCampaignParams) (i
 			TaskID int `json:"task_id"`
 		} `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, params, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, params, &respData, true)
 	return respData.Data.TaskID, err
 }
 
@@ -65,13 +66,13 @@ type UpdateViberCampaignParams struct {
 	SendDate        DateTimeType `json:"send_date"`
 }
 
-func (service *ViberService) UpdateCampaign(params UpdateViberCampaignParams) error {
+func (service *ViberService) UpdateCampaign(ctx context.Context, params UpdateViberCampaignParams) error {
 	path := "/viber/update"
 
 	var respData struct {
 		Result bool `json:"result"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, params, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, params, &respData, true)
 	return err
 }
 
@@ -91,11 +92,11 @@ type ViberCampaign struct {
 	Created         DateTimeType `json:"created"`
 }
 
-func (service *ViberService) GetCampaigns(limit, offset int) ([]*ViberCampaign, error) {
+func (service *ViberService) GetCampaigns(ctx context.Context, limit, offset int) ([]*ViberCampaign, error) {
 	path := fmt.Sprintf("/viber/task?limit=%d&offset=%d", limit, offset)
 
 	var respData []*ViberCampaign
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData, err
 }
 
@@ -121,11 +122,11 @@ type ViberCampaignStatistics struct {
 	Created DateTimeType `json:"created"`
 }
 
-func (service *ViberService) GetStatistics(campaignID int) (*ViberCampaignStatistics, error) {
+func (service *ViberService) GetStatistics(ctx context.Context, campaignID int) (*ViberCampaignStatistics, error) {
 	path := fmt.Sprintf("/viber/task/%d", campaignID)
 
 	var respData *ViberCampaignStatistics
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData, err
 }
 
@@ -142,19 +143,19 @@ type ViberSender struct {
 	Owner        string   `json:"owner"`
 }
 
-func (service *ViberService) GetSenders() ([]*ViberSender, error) {
+func (service *ViberService) GetSenders(ctx context.Context) ([]*ViberSender, error) {
 	path := "/viber/senders"
 
 	var respData []*ViberSender
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData, err
 }
 
-func (service *ViberService) GetSender(senderID int) (*ViberSender, error) {
+func (service *ViberService) GetSender(ctx context.Context, senderID int) (*ViberSender, error) {
 	path := fmt.Sprintf("/viber/senders/%d", senderID)
 
 	var respData *ViberSender
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData, err
 }
 
@@ -168,13 +169,13 @@ type ViberRecipient struct {
 	LastUpdate    DateTimeType `json:"last_update"`
 }
 
-func (service *ViberService) GetRecipients(taskID int) ([]*ViberRecipient, error) {
+func (service *ViberService) GetRecipients(ctx context.Context, taskID int) ([]*ViberRecipient, error) {
 	path := fmt.Sprintf("/viber/task/%d/recipients", taskID)
 
 	var respData struct {
 		TaskID     int               `json:"task_id"`
 		Recipients []*ViberRecipient `json:"recipients"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Recipients, err
 }

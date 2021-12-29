@@ -1,6 +1,7 @@
 package sendpulse_sdk_go
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -37,14 +38,14 @@ type FbAccount struct {
 	} `json:"statistics"`
 }
 
-func (service *BotsFbService) GetAccount() (*FbAccount, error) {
+func (service *BotsFbService) GetAccount(ctx context.Context) (*FbAccount, error) {
 	path := "/messenger/account"
 
 	var respData struct {
 		Success bool       `json:"success"`
 		Data    *FbAccount `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -64,14 +65,14 @@ type FbBot struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
-func (service *BotsFbService) GetBots() ([]*FbBot, error) {
+func (service *BotsFbService) GetBots(ctx context.Context) ([]*FbBot, error) {
 	path := "/messenger/bots"
 
 	var respData struct {
 		Success bool     `json:"success"`
 		Data    []*FbBot `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -97,25 +98,25 @@ type FbBotContact struct {
 	CreatedAt             time.Time              `json:"created_at"`
 }
 
-func (service *BotsFbService) GetContact(contactID string) (*FbBotContact, error) {
+func (service *BotsFbService) GetContact(ctx context.Context, contactID string) (*FbBotContact, error) {
 	path := fmt.Sprintf("/messenger/contacts/get?id=%s", contactID)
 
 	var respData struct {
 		Success bool          `json:"success"`
 		Data    *FbBotContact `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
-func (service *BotsFbService) GetContactsByTag(tag, botID string) ([]*FbBotContact, error) {
+func (service *BotsFbService) GetContactsByTag(ctx context.Context, tag, botID string) ([]*FbBotContact, error) {
 	path := fmt.Sprintf("/messenger/contacts/getByTag?tag=%s&bot_id=%s", tag, botID)
 
 	var respData struct {
 		Success bool            `json:"success"`
 		Data    []*FbBotContact `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -126,7 +127,7 @@ type BotContactsByVariableParams struct {
 	VariableValue string
 }
 
-func (service *BotsFbService) GetContactsByVariable(params BotContactsByVariableParams) ([]*FbBotContact, error) {
+func (service *BotsFbService) GetContactsByVariable(ctx context.Context, params BotContactsByVariableParams) ([]*FbBotContact, error) {
 	urlParams := url.Values{}
 	urlParams.Add("variable_value", params.VariableValue)
 	if params.VariableID != "" {
@@ -144,7 +145,7 @@ func (service *BotsFbService) GetContactsByVariable(params BotContactsByVariable
 		Success bool            `json:"success"`
 		Data    []*FbBotContact `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -155,17 +156,17 @@ type FbBotSendTextParams struct {
 	Text        string `json:"text"`
 }
 
-func (service *BotsFbService) SendTextByContact(params FbBotSendTextParams) error {
+func (service *BotsFbService) SendTextByContact(ctx context.Context, params FbBotSendTextParams) error {
 	path := "/messenger/contacts/sendText"
 
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, params, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, params, &respData, true)
 	return err
 }
 
-func (service *BotsFbService) SetVariableToContact(contactID string, variableID string, variableName string, variableValue interface{}) error {
+func (service *BotsFbService) SetVariableToContact(ctx context.Context, contactID string, variableID string, variableName string, variableValue interface{}) error {
 	path := "/messenger/contacts/setVariable"
 
 	type bodyFormat struct {
@@ -184,11 +185,11 @@ func (service *BotsFbService) SetVariableToContact(contactID string, variableID 
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, body, &respData, true)
 	return err
 }
 
-func (service *BotsFbService) SetTagsToContact(contactID string, tags []string) error {
+func (service *BotsFbService) SetTagsToContact(ctx context.Context, contactID string, tags []string) error {
 	path := "/messenger/contacts/setTag"
 
 	type bodyFormat struct {
@@ -203,11 +204,11 @@ func (service *BotsFbService) SetTagsToContact(contactID string, tags []string) 
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, body, &respData, true)
 	return err
 }
 
-func (service *BotsFbService) DeleteTagFromContact(contactID string, tag string) error {
+func (service *BotsFbService) DeleteTagFromContact(ctx context.Context, contactID string, tag string) error {
 	path := "/messenger/contacts/deleteTag"
 
 	type bodyFormat struct {
@@ -222,11 +223,11 @@ func (service *BotsFbService) DeleteTagFromContact(contactID string, tag string)
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, body, &respData, true)
 	return err
 }
 
-func (service *BotsFbService) DisableContact(contactID string) error {
+func (service *BotsFbService) DisableContact(ctx context.Context, contactID string) error {
 	path := "/messenger/contacts/disable"
 
 	type bodyFormat struct {
@@ -239,11 +240,11 @@ func (service *BotsFbService) DisableContact(contactID string) error {
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, body, &respData, true)
 	return err
 }
 
-func (service *BotsFbService) EnableContact(contactID string) error {
+func (service *BotsFbService) EnableContact(ctx context.Context, contactID string) error {
 	path := "/messenger/contacts/enable"
 
 	type bodyFormat struct {
@@ -256,11 +257,11 @@ func (service *BotsFbService) EnableContact(contactID string) error {
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, body, &respData, true)
 	return err
 }
 
-func (service *BotsFbService) DeleteContact(contactID string) error {
+func (service *BotsFbService) DeleteContact(ctx context.Context, contactID string) error {
 	path := "/messenger/contacts/delete"
 
 	type bodyFormat struct {
@@ -273,11 +274,11 @@ func (service *BotsFbService) DeleteContact(contactID string) error {
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, body, &respData, true)
 	return err
 }
 
-func (service *BotsFbService) GetPauseAutomation(contactID string) (int, error) {
+func (service *BotsFbService) GetPauseAutomation(ctx context.Context, contactID string) (int, error) {
 	path := fmt.Sprintf("/messenger/contacts/getPauseAutomation?contact_id=%s", contactID)
 
 	var respData struct {
@@ -286,11 +287,11 @@ func (service *BotsFbService) GetPauseAutomation(contactID string) (int, error) 
 			Minutes int `json:"minutes"`
 		} `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data.Minutes, err
 }
 
-func (service *BotsFbService) SetPauseAutomation(contactID string, minutes int) error {
+func (service *BotsFbService) SetPauseAutomation(ctx context.Context, contactID string, minutes int) error {
 	path := "/messenger/contacts/setPauseAutomation"
 	type bodyFormat struct {
 		ContactID string `json:"contact_id"`
@@ -304,11 +305,11 @@ func (service *BotsFbService) SetPauseAutomation(contactID string, minutes int) 
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, body, &respData, true)
 	return err
 }
 
-func (service *BotsFbService) DeletePauseAutomation(contactID string) error {
+func (service *BotsFbService) DeletePauseAutomation(ctx context.Context, contactID string) error {
 	path := "/messenger/contacts/deletePauseAutomation"
 	type bodyFormat struct {
 		ContactID string `json:"contact_id"`
@@ -320,7 +321,7 @@ func (service *BotsFbService) DeletePauseAutomation(contactID string) error {
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, body, &respData, true)
 	return err
 }
 
@@ -335,14 +336,14 @@ type BotVariable struct {
 	CreatedAt   time.Time `json:"created_at"`
 }
 
-func (service *BotsFbService) GetBotVariables(botID string) ([]*BotVariable, error) {
+func (service *BotsFbService) GetBotVariables(ctx context.Context, botID string) ([]*BotVariable, error) {
 	path := fmt.Sprintf("/messenger/variables?bot_id=%s", botID)
 
 	var respData struct {
 		Success bool           `json:"success"`
 		Data    []*BotVariable `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -358,18 +359,18 @@ type BotFlow struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
-func (service *BotsFbService) GetFlows(botID string) ([]*BotFlow, error) {
+func (service *BotsFbService) GetFlows(ctx context.Context, botID string) ([]*BotFlow, error) {
 	path := fmt.Sprintf("/messenger/flows?bot_id=%s", botID)
 
 	var respData struct {
 		Success bool       `json:"success"`
 		Data    []*BotFlow `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
-func (service *BotsFbService) RunFlow(contactID, flowID string, externalData map[string]interface{}) error {
+func (service *BotsFbService) RunFlow(ctx context.Context, contactID, flowID string, externalData map[string]interface{}) error {
 	path := "/messenger/flows/run"
 
 	type bodyFormat struct {
@@ -386,11 +387,11 @@ func (service *BotsFbService) RunFlow(contactID, flowID string, externalData map
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, body, &respData, true)
 	return err
 }
 
-func (service *BotsFbService) RunFlowByTrigger(contactID, triggerKeyword string, externalData map[string]interface{}) error {
+func (service *BotsFbService) RunFlowByTrigger(ctx context.Context, contactID, triggerKeyword string, externalData map[string]interface{}) error {
 	path := "/messenger/flows/runByTrigger"
 
 	type bodyFormat struct {
@@ -407,7 +408,7 @@ func (service *BotsFbService) RunFlowByTrigger(contactID, triggerKeyword string,
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, body, &respData, true)
 	return err
 }
 
@@ -426,14 +427,14 @@ type BotTrigger struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
-func (service *BotsFbService) GetBotTriggers(botID string) ([]*BotTrigger, error) {
+func (service *BotsFbService) GetBotTriggers(ctx context.Context, botID string) ([]*BotTrigger, error) {
 	path := fmt.Sprintf("/messenger/triggers?bot_id=%s", botID)
 
 	var respData struct {
 		Success bool          `json:"success"`
 		Data    []*BotTrigger `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -457,25 +458,25 @@ type FbBotChat struct {
 	InboxUnread      int           `json:"inbox_unread"`
 }
 
-func (service *BotsFbService) GetBotChats(botID string) ([]*FbBotChat, error) {
+func (service *BotsFbService) GetBotChats(ctx context.Context, botID string) ([]*FbBotChat, error) {
 	path := fmt.Sprintf("/messenger/chats?bot_id=%s", botID)
 
 	var respData struct {
 		Success bool         `json:"success"`
 		Data    []*FbBotChat `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
-func (service *BotsFbService) GetContactMessages(contactID string) ([]*FbBotMessage, error) {
+func (service *BotsFbService) GetContactMessages(ctx context.Context, contactID string) ([]*FbBotMessage, error) {
 	path := fmt.Sprintf("/messenger/chats/messages?contact_id=%s", contactID)
 
 	var respData struct {
 		Success bool            `json:"success"`
 		Data    []*FbBotMessage `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -495,12 +496,12 @@ type FbBotCampaignMessage struct {
 	} `json:"data"`
 }
 
-func (service *BotsFbService) SendCampaign(params FbBotSendCampaignParams) error {
+func (service *BotsFbService) SendCampaign(ctx context.Context, params FbBotSendCampaignParams) error {
 	path := "/messenger/campaigns/send"
 
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, params, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, params, &respData, true)
 	return err
 }

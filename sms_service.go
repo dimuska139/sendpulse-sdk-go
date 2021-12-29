@@ -1,6 +1,7 @@
 package sendpulse_sdk_go
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -30,7 +31,7 @@ type AddPhonesCounters struct {
 	Exists     int `json:"exists"`
 }
 
-func (service *SmsService) AddPhones(mailingListID int, phones []string) (*AddPhonesCounters, error) {
+func (service *SmsService) AddPhones(ctx context.Context, mailingListID int, phones []string) (*AddPhonesCounters, error) {
 	path := "/sms/numbers"
 	type paramsFormat struct {
 		AddressBookID int      `json:"addressBookId"`
@@ -43,7 +44,7 @@ func (service *SmsService) AddPhones(mailingListID int, phones []string) (*AddPh
 		Result   bool               `json:"result"`
 		Counters *AddPhonesCounters `json:"counters"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, data, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, data, &respData, true)
 	return respData.Counters, err
 }
 
@@ -52,7 +53,7 @@ type PhoneWithVariable struct {
 	Variables []SmsVariable
 }
 
-func (service *SmsService) AddPhonesWithVariables(mailingListID int, phones []*PhoneWithVariable) (*AddPhonesCounters, error) {
+func (service *SmsService) AddPhonesWithVariables(ctx context.Context, mailingListID int, phones []*PhoneWithVariable) (*AddPhonesCounters, error) {
 	path := "/sms/numbers/variables"
 	type paramsFormat struct {
 		AddressBookID int                        `json:"addressBookId"`
@@ -73,11 +74,11 @@ func (service *SmsService) AddPhonesWithVariables(mailingListID int, phones []*P
 		Result   bool               `json:"result"`
 		Counters *AddPhonesCounters `json:"counters"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, data, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, data, &respData, true)
 	return respData.Counters, err
 }
 
-func (service *SmsService) UpdateVariablesSingle(addressBookID int, phone string, variables []SmsVariable) error {
+func (service *SmsService) UpdateVariablesSingle(ctx context.Context, addressBookID int, phone string, variables []SmsVariable) error {
 	path := fmt.Sprintf("/addressbooks/%d/phones/variable", addressBookID)
 	type paramsFormat struct {
 		Phone     string        `json:"phone"`
@@ -89,11 +90,11 @@ func (service *SmsService) UpdateVariablesSingle(addressBookID int, phone string
 	var respData struct {
 		Result bool `json:"result"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, data, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, data, &respData, true)
 	return err
 }
 
-func (service *SmsService) UpdateVariablesMultiple(addressBookID int, phones []string, variables []SmsVariable) error {
+func (service *SmsService) UpdateVariablesMultiple(ctx context.Context, addressBookID int, phones []string, variables []SmsVariable) error {
 	path := "/sms/numbers"
 	type paramsFormat struct {
 		AddressBookID int           `json:"addressBookId"`
@@ -110,11 +111,11 @@ func (service *SmsService) UpdateVariablesMultiple(addressBookID int, phones []s
 	var respData struct {
 		Result bool `json:"result"`
 	}
-	_, err := service.client.newRequest(http.MethodPut, path, data, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPut, path, data, &respData, true)
 	return err
 }
 
-func (service *SmsService) DeletePhones(addressBookID int, phones []string) error {
+func (service *SmsService) DeletePhones(ctx context.Context, addressBookID int, phones []string) error {
 	path := "/sms/numbers"
 	type paramsFormat struct {
 		AddressBookID int      `json:"addressBookId"`
@@ -129,7 +130,7 @@ func (service *SmsService) DeletePhones(addressBookID int, phones []string) erro
 	var respData struct {
 		Result bool `json:"result"`
 	}
-	_, err := service.client.newRequest(http.MethodDelete, path, data, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodDelete, path, data, &respData, true)
 	return err
 }
 
@@ -139,17 +140,17 @@ type PhoneInfo struct {
 	Added     DateTimeType           `json:"added"`
 }
 
-func (service *SmsService) GetPhoneInfo(addressBookID int, phone string) (*PhoneInfo, error) {
+func (service *SmsService) GetPhoneInfo(ctx context.Context, addressBookID int, phone string) (*PhoneInfo, error) {
 	path := fmt.Sprintf("/sms/numbers/info/%d/%s", addressBookID, phone)
 	var respData struct {
 		Result bool       `json:"result"`
 		Data   *PhoneInfo `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
-func (service *SmsService) AddToBlacklist(phones []string, description string) error {
+func (service *SmsService) AddToBlacklist(ctx context.Context, phones []string, description string) error {
 	path := "/sms/black_list"
 
 	type paramsFormat struct {
@@ -165,11 +166,11 @@ func (service *SmsService) AddToBlacklist(phones []string, description string) e
 	var respData struct {
 		Result bool `json:"result"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, data, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, data, &respData, true)
 	return err
 }
 
-func (service *SmsService) RemoveFromBlacklist(phones []string) error {
+func (service *SmsService) RemoveFromBlacklist(ctx context.Context, phones []string) error {
 	path := "/sms/black_list"
 
 	type paramsFormat struct {
@@ -183,7 +184,7 @@ func (service *SmsService) RemoveFromBlacklist(phones []string) error {
 	var respData struct {
 		Result bool `json:"result"`
 	}
-	_, err := service.client.newRequest(http.MethodDelete, path, data, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodDelete, path, data, &respData, true)
 	return err
 }
 
@@ -193,7 +194,7 @@ type BlacklistPhone struct {
 	AddDate     DateTimeType `json:"add_date"`
 }
 
-func (service *SmsService) GetBlacklistedPhones(phones []string) ([]*BlacklistPhone, error) {
+func (service *SmsService) GetBlacklistedPhones(ctx context.Context, phones []string) ([]*BlacklistPhone, error) {
 	path := "/sms/black_list/by_numbers"
 	urlParams := url.Values{}
 	urlParams.Add("phones", "["+strings.Join(phones, ",")+"]")
@@ -209,7 +210,7 @@ func (service *SmsService) GetBlacklistedPhones(phones []string) ([]*BlacklistPh
 		Data   []*BlacklistPhoneInternal `json:"data"`
 	}
 
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	if err != nil {
 		return nil, err
 	}
@@ -233,14 +234,14 @@ type CreateSmsCampaignByAddressBookParams struct {
 	Emulate       int               `json:"emulate"`
 }
 
-func (service *SmsService) CreateCampaignByMailingList(params CreateSmsCampaignByAddressBookParams) (int, error) {
+func (service *SmsService) CreateCampaignByMailingList(ctx context.Context, params CreateSmsCampaignByAddressBookParams) (int, error) {
 	path := "/sms/campaigns"
 
 	var respData struct {
 		Result     bool `json:"result"`
 		CampaignID int  `json:"campaign_id"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, params, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, params, &respData, true)
 	return respData.CampaignID, err
 }
 
@@ -254,14 +255,14 @@ type CreateSmsCampaignByPhonesParams struct {
 	Emulate       int               `json:"emulate"`
 }
 
-func (service *SmsService) CreateCampaignByPhones(params CreateSmsCampaignByPhonesParams) (int, error) {
+func (service *SmsService) CreateCampaignByPhones(ctx context.Context, params CreateSmsCampaignByPhonesParams) (int, error) {
 	path := "/sms/send"
 
 	var respData struct {
 		Result     bool `json:"result"`
 		CampaignID int  `json:"campaign_id"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, params, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, params, &respData, true)
 	return respData.CampaignID, err
 }
 
@@ -276,7 +277,7 @@ type SmsCampaign struct {
 	SenderMailName    string       `json:"sender_mail_name"`
 }
 
-func (service *SmsService) GetCampaigns(dateFrom, dateTo time.Time) ([]*SmsCampaign, error) {
+func (service *SmsService) GetCampaigns(ctx context.Context, dateFrom, dateTo time.Time) ([]*SmsCampaign, error) {
 	dtFormat := "2006-01-02 15:04:05"
 	path := "/sms/campaigns/list"
 	urlParams := url.Values{}
@@ -288,7 +289,7 @@ func (service *SmsService) GetCampaigns(dateFrom, dateTo time.Time) ([]*SmsCampa
 		Result bool           `json:"result"`
 		Data   []*SmsCampaign `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -309,24 +310,24 @@ type SmsCampaignInfo struct {
 	} `json:"task_phones_info"`
 }
 
-func (service *SmsService) GetCampaignInfo(id int) (*SmsCampaignInfo, error) {
+func (service *SmsService) GetCampaignInfo(ctx context.Context, id int) (*SmsCampaignInfo, error) {
 	path := fmt.Sprintf("/sms/campaigns/info/%d", id)
 
 	var respData struct {
 		Result bool             `json:"result"`
 		Data   *SmsCampaignInfo `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
-func (service *SmsService) CancelCampaign(id int) error {
+func (service *SmsService) CancelCampaign(ctx context.Context, id int) error {
 	path := fmt.Sprintf("/sms/campaigns/cancel/%d", id)
 
 	var respData struct {
 		Result bool `json:"result"`
 	}
-	_, err := service.client.newRequest(http.MethodPut, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPut, path, nil, &respData, true)
 	return err
 }
 
@@ -343,7 +344,7 @@ type SmsCampaignCampaignCost struct {
 	Currency string  `json:"currency"`
 }
 
-func (service *SmsService) GetCampaignCost(params SmsCampaignCostParams) (*SmsCampaignCampaignCost, error) {
+func (service *SmsService) GetCampaignCost(ctx context.Context, params SmsCampaignCostParams) (*SmsCampaignCampaignCost, error) {
 	path := "/sms/campaigns/cost"
 	urlParams := url.Values{}
 	if params.AddressBookID != 0 {
@@ -369,7 +370,7 @@ func (service *SmsService) GetCampaignCost(params SmsCampaignCostParams) (*SmsCa
 		Result bool                     `json:"result"`
 		Data   *SmsCampaignCampaignCost `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -382,15 +383,15 @@ type SmsSender struct {
 	StatusExplain string `json:"status_explain"`
 }
 
-func (service *SmsService) GetSenders() ([]*SmsSender, error) {
+func (service *SmsService) GetSenders(ctx context.Context) ([]*SmsSender, error) {
 	path := "/sms/senders"
 
 	var respData []*SmsSender
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData, err
 }
 
-func (service *SmsService) DeleteCampaign(id int) error {
+func (service *SmsService) DeleteCampaign(ctx context.Context, id int) error {
 	path := "/sms/campaigns"
 
 	type paramsFormat struct {
@@ -404,6 +405,6 @@ func (service *SmsService) DeleteCampaign(id int) error {
 	var respData struct {
 		Result bool `json:"result"`
 	}
-	_, err := service.client.newRequest(http.MethodDelete, path, data, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodDelete, path, data, &respData, true)
 	return err
 }

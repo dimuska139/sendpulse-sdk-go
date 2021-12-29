@@ -1,6 +1,7 @@
 package sendpulse_sdk_go
 
 import (
+	"context"
 	b64 "encoding/base64"
 	"fmt"
 	"net/http"
@@ -56,7 +57,7 @@ type Campaign struct {
 }
 
 // CreateCampaign creates a campaign. Please note that you can send a maximum of 4 campaigns per hour
-func (service *CampaignsService) CreateCampaign(data CampaignParams) (*Campaign, error) {
+func (service *CampaignsService) CreateCampaign(ctx context.Context, data CampaignParams) (*Campaign, error) {
 	path := "/campaigns"
 	var innerMailing struct {
 		Campaign
@@ -71,7 +72,7 @@ func (service *CampaignsService) CreateCampaign(data CampaignParams) (*Campaign,
 		data.BodyAMP = b64.StdEncoding.EncodeToString([]byte(data.BodyAMP))
 	}
 
-	_, err := service.client.newRequest(http.MethodPost, path, data, &innerMailing, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, data, &innerMailing, true)
 	if err != nil {
 		return nil, err
 	}
@@ -84,7 +85,7 @@ func (service *CampaignsService) CreateCampaign(data CampaignParams) (*Campaign,
 }
 
 // UpdateCampaign updates a scheduled campaign
-func (service *CampaignsService) UpdateCampaign(id int, data CampaignParams) error {
+func (service *CampaignsService) UpdateCampaign(ctx context.Context, id int, data CampaignParams) error {
 	path := fmt.Sprintf("/campaigns/%d", id)
 	var respData struct {
 		Result bool `json:"result"`
@@ -99,23 +100,23 @@ func (service *CampaignsService) UpdateCampaign(id int, data CampaignParams) err
 		data.BodyAMP = b64.StdEncoding.EncodeToString([]byte(data.BodyAMP))
 	}
 
-	_, err := service.client.newRequest(http.MethodPatch, path, data, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPatch, path, data, &respData, true)
 	return err
 }
 
 // GetCampaign returns an information about specific campaign
-func (service *CampaignsService) GetCampaign(id int) (*Campaign, error) {
+func (service *CampaignsService) GetCampaign(ctx context.Context, id int) (*Campaign, error) {
 	path := fmt.Sprintf("/campaigns/%d", id)
 	var respData Campaign
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return &respData, err
 }
 
 // GetCampaigns returns a list of campaigns
-func (service *CampaignsService) GetCampaigns(limit int, offset int) ([]*Campaign, error) {
+func (service *CampaignsService) GetCampaigns(ctx context.Context, limit int, offset int) ([]*Campaign, error) {
 	path := fmt.Sprintf("/campaigns?limit=%d&offset=%d", limit, offset)
 	var items []*Campaign
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &items, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &items, true)
 	return items, err
 }
 
@@ -127,18 +128,18 @@ type Task struct {
 }
 
 // GetCampaignsByMailingList returns a list of campaigns by specific mailing list
-func (service *CampaignsService) GetCampaignsByMailingList(mailingListID, limit, offset int) ([]*Task, error) {
+func (service *CampaignsService) GetCampaignsByMailingList(ctx context.Context, mailingListID, limit, offset int) ([]*Task, error) {
 	path := fmt.Sprintf("/addressbooks/%d/campaigns?limit=%d&offset=%d", mailingListID, limit, offset)
 	var tasks []*Task
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &tasks, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &tasks, true)
 	return tasks, err
 }
 
 // GetCampaignCountriesStatistics represents campaign statistics of countries
-func (service *CampaignsService) GetCampaignCountriesStatistics(id int) (map[string]int, error) {
+func (service *CampaignsService) GetCampaignCountriesStatistics(ctx context.Context, id int) (map[string]int, error) {
 	path := fmt.Sprintf("/campaigns/%d/countries", id)
 	response := make(map[string]int)
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &response, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &response, true)
 	return response, err
 }
 
@@ -149,19 +150,19 @@ type MailingRefStat struct {
 }
 
 // GetCampaignReferralsStatistics returns campaign statistics of referrals
-func (service *CampaignsService) GetCampaignReferralsStatistics(id int) ([]*MailingRefStat, error) {
+func (service *CampaignsService) GetCampaignReferralsStatistics(ctx context.Context, id int) ([]*MailingRefStat, error) {
 	path := fmt.Sprintf("/campaigns/%d/referrals", id)
 	var response []*MailingRefStat
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &response, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &response, true)
 	return response, err
 }
 
 // CancelCampaign cancels a scheduled campaign
-func (service *CampaignsService) CancelCampaign(id int) error {
+func (service *CampaignsService) CancelCampaign(ctx context.Context, id int) error {
 	path := fmt.Sprintf("/campaigns/%d", id)
 	var response struct {
 		Result bool `json:"result"`
 	}
-	_, err := service.client.newRequest(http.MethodDelete, path, nil, &response, true)
+	_, err := service.client.newRequest(ctx, http.MethodDelete, path, nil, &response, true)
 	return err
 }

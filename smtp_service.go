@@ -1,6 +1,7 @@
 package sendpulse_sdk_go
 
 import (
+	"context"
 	b64 "encoding/base64"
 	"fmt"
 	"net/http"
@@ -36,7 +37,7 @@ type SendEmailParams struct {
 	Attachments map[string]string `json:"attachments"`
 }
 
-func (service *SmtpService) SendMessage(params SendEmailParams) (string, error) {
+func (service *SmtpService) SendMessage(ctx context.Context, params SendEmailParams) (string, error) {
 	path := "/smtp/emails"
 
 	type paramsFormat struct {
@@ -54,7 +55,7 @@ func (service *SmtpService) SendMessage(params SendEmailParams) (string, error) 
 		Result bool   `json:"result"`
 		ID     string `json:"id"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, data, &response, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, data, &response, true)
 	return response.ID, err
 }
 
@@ -100,7 +101,7 @@ type SmtpListParams struct {
 	Recipient string
 }
 
-func (service *SmtpService) GetMessages(params SmtpListParams) ([]*SmtpMessage, error) {
+func (service *SmtpService) GetMessages(ctx context.Context, params SmtpListParams) ([]*SmtpMessage, error) {
 	path := "/smtp/emails"
 	var urlParts []string
 	urlParts = append(urlParts, fmt.Sprintf("offset=%d", params.Offset))
@@ -125,23 +126,23 @@ func (service *SmtpService) GetMessages(params SmtpListParams) ([]*SmtpMessage, 
 	}
 
 	var respData []*SmtpMessage
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData, err
 }
 
-func (service *SmtpService) CountMessages() (int, error) {
+func (service *SmtpService) CountMessages(ctx context.Context) (int, error) {
 	path := "/smtp/emails/total"
 	var respData struct {
 		Total int `json:"total"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Total, err
 }
 
-func (service *SmtpService) GetMessage(id int) (*SmtpMessage, error) {
+func (service *SmtpService) GetMessage(ctx context.Context, id int) (*SmtpMessage, error) {
 	path := fmt.Sprintf("/smtp/emails/%d", id)
 	var respData *SmtpMessage
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData, err
 }
 
@@ -160,24 +161,24 @@ type BouncesList struct {
 	Found        int `json:"found"`
 }
 
-func (service *SmtpService) GetDailyBounces(limit, offset int, date time.Time) (*BouncesList, error) {
+func (service *SmtpService) GetDailyBounces(ctx context.Context, limit, offset int, date time.Time) (*BouncesList, error) {
 	path := fmt.Sprintf("/smtp/bounces/day?limit=%d&offset=%d", limit, offset)
 	if !date.IsZero() {
 		path += "&date=" + date.Format("2006-01-02")
 	}
 
 	var respData *BouncesList
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData, err
 }
 
-func (service *SmtpService) CountBounces() (int, error) {
+func (service *SmtpService) CountBounces(ctx context.Context) (int, error) {
 	path := "/smtp/bounces/day/total"
 
 	var respData struct {
 		Total int `json:"total"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Total, err
 }
 
@@ -186,7 +187,7 @@ type SmtpUnsubscribeEmail struct {
 	Comment string `json:"comment"`
 }
 
-func (service *SmtpService) UnsubscribeEmails(emails []*SmtpUnsubscribeEmail) error {
+func (service *SmtpService) UnsubscribeEmails(ctx context.Context, emails []*SmtpUnsubscribeEmail) error {
 	path := "/smtp/unsubscribe"
 
 	type paramsFormat struct {
@@ -198,11 +199,11 @@ func (service *SmtpService) UnsubscribeEmails(emails []*SmtpUnsubscribeEmail) er
 	var respData struct {
 		Result bool `json:"true"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, data, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, data, &respData, true)
 	return err
 }
 
-func (service *SmtpService) DeleteUnsubscribedEmails(emails []string) error {
+func (service *SmtpService) DeleteUnsubscribedEmails(ctx context.Context, emails []string) error {
 	path := "/smtp/unsubscribe"
 
 	type paramsFormat struct {
@@ -214,7 +215,7 @@ func (service *SmtpService) DeleteUnsubscribedEmails(emails []string) error {
 	var respData struct {
 		Result bool `json:"true"`
 	}
-	_, err := service.client.newRequest(http.MethodDelete, path, data, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodDelete, path, data, &respData, true)
 	return err
 }
 
@@ -232,7 +233,7 @@ type Unsubscribed struct {
 	Date              DateTimeType `json:"date"`
 }
 
-func (service *SmtpService) GetUnsubscribedEmails(params UnsubscribedListParams) ([]Unsubscribed, error) {
+func (service *SmtpService) GetUnsubscribedEmails(ctx context.Context, params UnsubscribedListParams) ([]Unsubscribed, error) {
 	path := fmt.Sprintf("/smtp/unsubscribe?offset=%d", params.Offset)
 	if params.Limit != 0 {
 		path += fmt.Sprintf("&limit=%d", params.Limit)
@@ -244,35 +245,35 @@ func (service *SmtpService) GetUnsubscribedEmails(params UnsubscribedListParams)
 
 	var respData []Unsubscribed
 
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData, err
 }
 
-func (service *SmtpService) GetSendersIPs() ([]string, error) {
+func (service *SmtpService) GetSendersIPs(ctx context.Context) ([]string, error) {
 	path := "/smtp/ips"
 
 	var respData []string
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData, err
 }
 
-func (service *SmtpService) GetSendersEmails() ([]string, error) {
+func (service *SmtpService) GetSendersEmails(ctx context.Context) ([]string, error) {
 	path := "/smtp/senders"
 
 	var respData []string
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData, err
 }
 
-func (service *SmtpService) GetAllowedDomains() ([]string, error) {
+func (service *SmtpService) GetAllowedDomains(ctx context.Context) ([]string, error) {
 	path := "/smtp/domains"
 
 	var respData []string
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData, err
 }
 
-func (service *SmtpService) AddDomain(email string) error {
+func (service *SmtpService) AddDomain(ctx context.Context, email string) error {
 	path := "/smtp/domains"
 
 	type data struct {
@@ -284,17 +285,17 @@ func (service *SmtpService) AddDomain(email string) error {
 	}
 	params := data{Email: email}
 
-	_, err := service.client.newRequest(http.MethodPost, path, params, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, params, &respData, true)
 	return err
 }
 
-func (service *SmtpService) VerifyDomain(email string) error {
+func (service *SmtpService) VerifyDomain(ctx context.Context, email string) error {
 	path := fmt.Sprintf("/domains/%s", email)
 
 	var respData struct {
 		Result bool `json:"result"`
 	}
 
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return err
 }

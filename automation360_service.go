@@ -1,6 +1,7 @@
 package sendpulse_sdk_go
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 )
@@ -40,22 +41,22 @@ type Autoresponder struct {
 }
 
 // GetAutoresponderStatistics returns statistics about an automation flow
-func (service *Automation360Service) GetAutoresponderStatistics(id int) (*Autoresponder, error) {
+func (service *Automation360Service) GetAutoresponderStatistics(ctx context.Context, id int) (*Autoresponder, error) {
 	path := fmt.Sprintf("/a360/autoresponders/%d", id)
 
 	var respData *Autoresponder
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData, err
 }
 
 // StartEvent sends event to SendPulse
-func (service *Automation360Service) StartEvent(eventName string, variables map[string]interface{}) error {
+func (service *Automation360Service) StartEvent(ctx context.Context, eventName string, variables map[string]interface{}) error {
 	path := fmt.Sprintf("/events/name/%s", eventName)
 
 	var respData struct {
 		Result bool `json:"result"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, variables, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, variables, &respData, true)
 	return err
 }
 
@@ -67,13 +68,13 @@ type MainTriggerBlockStat struct {
 }
 
 // GetStartBlockStatistics returns statistics about the "Start" element
-func (service *Automation360Service) GetStartBlockStatistics(id int) (*MainTriggerBlockStat, error) {
+func (service *Automation360Service) GetStartBlockStatistics(ctx context.Context, id int) (*MainTriggerBlockStat, error) {
 	path := fmt.Sprintf("/a360/stats/main-trigger/%d/group-stat", id)
 
 	var respData struct {
 		Data *MainTriggerBlockStat `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -99,13 +100,13 @@ type EmailBlockStat struct {
 }
 
 // GetEmailBlockStatistics returns statistics about the "Email" element
-func (service *Automation360Service) GetEmailBlockStatistics(id int) (*EmailBlockStat, error) {
+func (service *Automation360Service) GetEmailBlockStatistics(ctx context.Context, id int) (*EmailBlockStat, error) {
 	path := fmt.Sprintf("/a360/stats/email/%d/group-stat", id)
 
 	var respData struct {
 		Data *EmailBlockStat `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -120,13 +121,13 @@ type PushBlockStat struct {
 }
 
 // GetPushBlockStatistics returns statistics about the "Push" element
-func (service *Automation360Service) GetPushBlockStatistics(id int) (*PushBlockStat, error) {
+func (service *Automation360Service) GetPushBlockStatistics(ctx context.Context, id int) (*PushBlockStat, error) {
 	path := fmt.Sprintf("/a360/stats/push/%d/group-stat", id)
 
 	var respData struct {
 		Data *PushBlockStat `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -143,13 +144,13 @@ type SmsBlockStat struct {
 }
 
 // GetSmsBlockStatistics returns statistics about the "SMS" element
-func (service *Automation360Service) GetSmsBlockStatistics(id int) (*SmsBlockStat, error) {
+func (service *Automation360Service) GetSmsBlockStatistics(ctx context.Context, id int) (*SmsBlockStat, error) {
 	path := fmt.Sprintf("/a360/stats/sms/%d/group-stat", id)
 
 	var respData struct {
 		Data *SmsBlockStat `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -162,13 +163,13 @@ type MessengerBlockStat struct {
 }
 
 // GetMessengerBlockStatistics returns statistics about the "Messenger" element
-func (service *Automation360Service) GetMessengerBlockStatistics(id int) (*MessengerBlockStat, error) {
+func (service *Automation360Service) GetMessengerBlockStatistics(ctx context.Context, id int) (*MessengerBlockStat, error) {
 	path := fmt.Sprintf("/a360/stats/messenger/%d/group-stat", id)
 
 	var respData struct {
 		Data *MessengerBlockStat `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -180,13 +181,13 @@ type FilterBlockStat struct {
 }
 
 // GetFilterBlockStatistics returns statistics about the "Filter" element
-func (service *Automation360Service) GetFilterBlockStatistics(id int) (*FilterBlockStat, error) {
+func (service *Automation360Service) GetFilterBlockStatistics(ctx context.Context, id int) (*FilterBlockStat, error) {
 	path := fmt.Sprintf("/a360/stats/filter/%d/group-stat", id)
 
 	var respData struct {
 		Data *FilterBlockStat `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -198,13 +199,13 @@ type TriggerBlockStat struct {
 }
 
 // GetTriggerBlockStatistics returns statistics about the "Condition" element
-func (service *Automation360Service) GetTriggerBlockStatistics(id int) (*TriggerBlockStat, error) {
+func (service *Automation360Service) GetTriggerBlockStatistics(ctx context.Context, id int) (*TriggerBlockStat, error) {
 	path := fmt.Sprintf("/a360/stats/trigger/%d/group-stat", id)
 
 	var respData struct {
 		Data *TriggerBlockStat `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -221,13 +222,13 @@ type GoalBlockStat struct {
 }
 
 // GetGoalBlockStatistics returns statistics about the "Goal" element
-func (service *Automation360Service) GetGoalBlockStatistics(id int) (*GoalBlockStat, error) {
+func (service *Automation360Service) GetGoalBlockStatistics(ctx context.Context, id int) (*GoalBlockStat, error) {
 	path := fmt.Sprintf("/a360/stats/goal/%d/group-stat", id)
 
 	var respData struct {
 		Data *GoalBlockStat `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -239,13 +240,13 @@ type ActionBlockStat struct {
 }
 
 // GetActionBlockStatistics returns statistics about the "Action" element
-func (service *Automation360Service) GetActionBlockStatistics(id int) (*ActionBlockStat, error) {
+func (service *Automation360Service) GetActionBlockStatistics(ctx context.Context, id int) (*ActionBlockStat, error) {
 	path := fmt.Sprintf("/a360/stats/action/%d/group-stat", id)
 
 	var respData struct {
 		Data *ActionBlockStat `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -273,13 +274,13 @@ type AutoresponderConversion struct {
 }
 
 // GetAutoresponderConversions returns the flow conversions list
-func (service *Automation360Service) GetAutoresponderConversions(id int) (*AutoresponderConversion, error) {
+func (service *Automation360Service) GetAutoresponderConversions(ctx context.Context, id int) (*AutoresponderConversion, error) {
 	path := fmt.Sprintf("/a360/autoresponders/%d/conversions", id)
 
 	var respData struct {
 		Data *AutoresponderConversion `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -295,12 +296,12 @@ type AutoresponderContact struct {
 }
 
 // GetAutoresponderContacts returns a list of the contacts that converted
-func (service *Automation360Service) GetAutoresponderContacts(id int) ([]*AutoresponderContact, error) {
+func (service *Automation360Service) GetAutoresponderContacts(ctx context.Context, id int) ([]*AutoresponderContact, error) {
 	path := fmt.Sprintf("/a360/autoresponders/%d/conversions/list/all", id)
 
 	var respData struct {
 		Items []*AutoresponderContact `json:"items"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Items, err
 }

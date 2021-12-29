@@ -1,6 +1,7 @@
 package sendpulse_sdk_go
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"strings"
@@ -38,7 +39,7 @@ type Push struct {
 }
 
 // GetMessages retrieves a list of sent web push campaigns
-func (service *PushService) GetMessages(params PushListParams) ([]Push, error) {
+func (service *PushService) GetMessages(ctx context.Context, params PushListParams) ([]Push, error) {
 	path := "/push/tasks/"
 	var urlParts []string
 	urlParts = append(urlParts, fmt.Sprintf("offset=%d", params.Offset))
@@ -60,17 +61,17 @@ func (service *PushService) GetMessages(params PushListParams) ([]Push, error) {
 	}
 
 	var respData []Push
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData, err
 }
 
 // CountWebsites retrieves the total number of websites
-func (service *PushService) CountWebsites() (int, error) {
+func (service *PushService) CountWebsites(ctx context.Context) (int, error) {
 	path := "/push/websites/total"
 	var respData struct {
 		Total int `json:"total"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Total, err
 }
 
@@ -82,10 +83,10 @@ type PushWebsite struct {
 }
 
 // GetWebsites retrieves a list of websites
-func (service *PushService) GetWebsites(limit, offset int) ([]*PushWebsite, error) {
+func (service *PushService) GetWebsites(ctx context.Context, limit, offset int) ([]*PushWebsite, error) {
 	path := fmt.Sprintf("/push/websites/?limit=%d&offset=%d", limit, offset)
 	var respData []*PushWebsite
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData, err
 }
 
@@ -97,10 +98,10 @@ type PushWebsiteVariable struct {
 }
 
 // GetWebsiteVariables returns a list of variables for specific website
-func (service *PushService) GetWebsiteVariables(websiteID int) ([]*PushWebsiteVariable, error) {
+func (service *PushService) GetWebsiteVariables(ctx context.Context, websiteID int) ([]*PushWebsiteVariable, error) {
 	path := fmt.Sprintf("/push/websites/%d/variables", websiteID)
 	var respData []*PushWebsiteVariable
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData, err
 }
 
@@ -126,7 +127,7 @@ type WebsiteSubscription struct {
 }
 
 // GetWebsiteSubscriptions returns a list subscribers for a certain website
-func (service *PushService) GetWebsiteSubscriptions(websiteID int, params WebsiteSubscriptionsParams) ([]*WebsiteSubscription, error) {
+func (service *PushService) GetWebsiteSubscriptions(ctx context.Context, websiteID int, params WebsiteSubscriptionsParams) ([]*WebsiteSubscription, error) {
 	path := fmt.Sprintf("/push/websites/%d/subscriptions", websiteID)
 
 	var urlParts []string
@@ -146,17 +147,17 @@ func (service *PushService) GetWebsiteSubscriptions(websiteID int, params Websit
 	}
 
 	var respData []*WebsiteSubscription
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData, err
 }
 
 // CountWebsiteSubscriptions returns the total number of website subscribers
-func (service *PushService) CountWebsiteSubscriptions(websiteID int) (int, error) {
+func (service *PushService) CountWebsiteSubscriptions(ctx context.Context, websiteID int) (int, error) {
 	path := fmt.Sprintf("/push/websites/%d/subscriptions/total", websiteID)
 	var respData struct {
 		Total int `json:"total"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Total, err
 }
 
@@ -174,15 +175,15 @@ type WebsiteInfo struct {
 }
 
 // GetWebsiteInfo returns information about specific website
-func (service *PushService) GetWebsiteInfo(websiteID int) (*WebsiteInfo, error) {
+func (service *PushService) GetWebsiteInfo(ctx context.Context, websiteID int) (*WebsiteInfo, error) {
 	path := fmt.Sprintf("/push/websites/info/%d", websiteID)
 	var respData *WebsiteInfo
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData, err
 }
 
 // ActivateSubscription activates a subscriber
-func (service *PushService) ActivateSubscription(subscriptionID int) error {
+func (service *PushService) ActivateSubscription(ctx context.Context, subscriptionID int) error {
 	path := "/push/subscriptions/state"
 	type paramsFormat struct {
 		ID    int `json:"id"`
@@ -194,12 +195,12 @@ func (service *PushService) ActivateSubscription(subscriptionID int) error {
 	var respData struct {
 		Result bool `json:"true"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, data, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, data, &respData, true)
 	return err
 }
 
 // DeactivateSubscription deactivates a subscriber
-func (service *PushService) DeactivateSubscription(subscriptionID int) error {
+func (service *PushService) DeactivateSubscription(ctx context.Context, subscriptionID int) error {
 	path := "/push/subscriptions/state"
 	type paramsFormat struct {
 		ID    int `json:"id"`
@@ -211,7 +212,7 @@ func (service *PushService) DeactivateSubscription(subscriptionID int) error {
 	var respData struct {
 		Result bool `json:"true"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, data, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, data, &respData, true)
 	return err
 }
 
@@ -253,14 +254,14 @@ type PushMessageParams struct {
 }
 
 // CreatePushCampaign creates new push campaign
-func (service *PushService) CreatePushCampaign(params PushMessageParams) (int, error) {
+func (service *PushService) CreatePushCampaign(ctx context.Context, params PushMessageParams) (int, error) {
 	path := "/push/tasks"
 
 	var respData struct {
 		ID     int  `json:"id"`
 		Result bool `json:"true"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, params, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, params, &respData, true)
 	return respData.ID, err
 }
 
@@ -281,10 +282,10 @@ type PushMessagesStatistics struct {
 }
 
 // GetPushMessagesStatistics returns statistics on sent campaigns
-func (service *PushService) GetPushMessagesStatistics(taskID int) (*PushMessagesStatistics, error) {
+func (service *PushService) GetPushMessagesStatistics(ctx context.Context, taskID int) (*PushMessagesStatistics, error) {
 	path := fmt.Sprintf("/push/tasks/%d", taskID)
 
 	var respData *PushMessagesStatistics
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData, err
 }

@@ -1,6 +1,7 @@
 package sendpulse_sdk_go
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 )
@@ -13,7 +14,7 @@ func newSendersService(cl *Client) *SendersService {
 	return &SendersService{client: cl}
 }
 
-func (service *SendersService) CreateSender(name string, email string) error {
+func (service *SendersService) CreateSender(ctx context.Context, name string, email string) error {
 	path := "/senders"
 
 	type paramsFormat struct {
@@ -30,21 +31,21 @@ func (service *SendersService) CreateSender(name string, email string) error {
 		Result bool `json:"result"`
 	}
 
-	_, err := service.client.newRequest(http.MethodPost, path, params, &response, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, params, &response, true)
 	return err
 }
 
-func (service *SendersService) GetSenderActivationCode(email string) error {
+func (service *SendersService) GetSenderActivationCode(ctx context.Context, email string) error {
 	path := fmt.Sprintf("/senders/%s/code", email)
 
 	var response struct {
 		Result bool `json:"result"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &response, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &response, true)
 	return err
 }
 
-func (service *SendersService) ActivateSender(email, code string) error {
+func (service *SendersService) ActivateSender(ctx context.Context, email, code string) error {
 	path := fmt.Sprintf("/senders/%s/code", email)
 
 	type paramsFormat struct {
@@ -58,7 +59,7 @@ func (service *SendersService) ActivateSender(email, code string) error {
 	var response struct {
 		Result bool `json:"result"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, params, &response, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, params, &response, true)
 	return err
 }
 
@@ -68,15 +69,15 @@ type Sender struct {
 	Status string `json:"status"`
 }
 
-func (service *SendersService) GetSenders() ([]*Sender, error) {
+func (service *SendersService) GetSenders(ctx context.Context) ([]*Sender, error) {
 	path := "/senders"
 
 	var respData []*Sender
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData, err
 }
 
-func (service *SendersService) DeleteSender(email string) error {
+func (service *SendersService) DeleteSender(ctx context.Context, email string) error {
 	path := "/senders"
 
 	type paramsFormat struct {
@@ -90,6 +91,6 @@ func (service *SendersService) DeleteSender(email string) error {
 	var response struct {
 		Result bool `json:"result"`
 	}
-	_, err := service.client.newRequest(http.MethodDelete, path, params, &response, true)
+	_, err := service.client.newRequest(ctx, http.MethodDelete, path, params, &response, true)
 	return err
 }

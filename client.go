@@ -71,7 +71,7 @@ func NewClient(client *http.Client, config *Config) *Client {
 }
 
 // getToken returns new token to interact with Sendpulse or returns it from stored value if it already exists
-func (c *Client) getToken() (string, error) {
+func (c *Client) getToken(ctx context.Context) (string, error) {
 	c.tokenLock.RLock()
 	token := c.token
 	c.tokenLock.RUnlock()
@@ -90,7 +90,7 @@ func (c *Client) getToken() (string, error) {
 		AccessToken string `json:"access_token"`
 	}
 
-	_, err := c.newRequest(http.MethodPost, path, data, &respData, false)
+	_, err := c.newRequest(ctx, http.MethodPost, path, data, &respData, false)
 	if err != nil {
 		return "", err
 	}
@@ -111,8 +111,7 @@ func (c *Client) clearToken() {
 }
 
 // newRequest makes new http request to SendPulse
-func (c *Client) newRequest(method string, path string, body interface{}, result interface{}, useToken bool) (*http.Response, error) {
-	ctx := context.Background()
+func (c *Client) newRequest(ctx context.Context, method string, path string, body interface{}, result interface{}, useToken bool) (*http.Response, error) {
 	if err := c.rateLimiter.Wait(ctx); err != nil {
 		return nil, err
 	}
@@ -137,7 +136,7 @@ func (c *Client) newRequest(method string, path string, body interface{}, result
 	}
 
 	if useToken {
-		token, err := c.getToken()
+		token, err := c.getToken(ctx)
 		if err != nil {
 			return nil, err
 		}
@@ -152,7 +151,7 @@ func (c *Client) newRequest(method string, path string, body interface{}, result
 
 	if resp.StatusCode == http.StatusUnauthorized && useToken {
 		c.clearToken()
-		respData, err := c.newRequest(method, path, body, result, useToken)
+		respData, err := c.newRequest(ctx, method, path, body, result, useToken)
 		if err != nil {
 			return nil, err
 		}
@@ -176,7 +175,7 @@ func (c *Client) newRequest(method string, path string, body interface{}, result
 }
 
 // newFormDataRequest makes new http request to SendPulse with form-data
-func (c *Client) newFormDataRequest(path string, buffer *bytes.Buffer, contentType string, result interface{}, useToken bool) (*http.Response, error) {
+func (c *Client) newFormDataRequest(ctx context.Context, path string, buffer *bytes.Buffer, contentType string, result interface{}, useToken bool) (*http.Response, error) {
 	fullPath := apiBaseUrl + path
 	req, e := http.NewRequest(http.MethodPost, fullPath, buffer)
 	if e != nil {
@@ -186,7 +185,7 @@ func (c *Client) newFormDataRequest(path string, buffer *bytes.Buffer, contentTy
 	req.Header.Set("Content-Type", contentType)
 
 	if useToken {
-		token, err := c.getToken()
+		token, err := c.getToken(ctx)
 		if err != nil {
 			return nil, err
 		}
@@ -201,7 +200,7 @@ func (c *Client) newFormDataRequest(path string, buffer *bytes.Buffer, contentTy
 
 	if resp.StatusCode == http.StatusUnauthorized && useToken {
 		c.clearToken()
-		respData, err := c.newFormDataRequest(path, buffer, contentType, result, useToken)
+		respData, err := c.newFormDataRequest(ctx, path, buffer, contentType, result, useToken)
 		if err != nil {
 			return nil, err
 		}

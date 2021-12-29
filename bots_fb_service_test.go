@@ -1,6 +1,7 @@
 package sendpulse_sdk_go
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"time"
@@ -36,7 +37,7 @@ func (suite *SendpulseTestSuite) TestBotsFbService_GetAccount() {
 		}`)
 	})
 
-	account, err := suite.client.Bots.Fb.GetAccount()
+	account, err := suite.client.Bots.Fb.GetAccount(context.Background())
 	suite.NoError(err)
 	suite.True(account.Tariff.Branding)
 }
@@ -65,7 +66,7 @@ func (suite *SendpulseTestSuite) TestBotsFbService_GetBots() {
 		}`)
 	})
 
-	bots, err := suite.client.Bots.Fb.GetBots()
+	bots, err := suite.client.Bots.Fb.GetBots(context.Background())
 	suite.NoError(err)
 	suite.Equal("12345", bots[0].ID)
 }
@@ -102,7 +103,7 @@ func (suite *SendpulseTestSuite) TestBotsFbService_GetContact() {
 		}`)
 	})
 
-	contact, err := suite.client.Bots.Fb.GetContact("1")
+	contact, err := suite.client.Bots.Fb.GetContact(context.Background(), "1")
 	suite.NoError(err)
 	suite.Equal("1234", contact.ID)
 }
@@ -139,7 +140,7 @@ func (suite *SendpulseTestSuite) TestBotsFbService_GetContactsByTag() {
 		}`)
 	})
 
-	contacts, err := suite.client.Bots.Fb.GetContactsByTag("tag", "bot_id")
+	contacts, err := suite.client.Bots.Fb.GetContactsByTag(context.Background(), "tag", "bot_id")
 	suite.NoError(err)
 	suite.Equal("1234", contacts[0].ID)
 }
@@ -176,7 +177,7 @@ func (suite *SendpulseTestSuite) TestBotsFbService_GetContactsByVariable() {
 		}`)
 	})
 
-	contacts, err := suite.client.Bots.Fb.GetContactsByVariable(BotContactsByVariableParams{
+	contacts, err := suite.client.Bots.Fb.GetContactsByVariable(context.Background(), BotContactsByVariableParams{
 		VariableID:    "var_id",
 		VariableName:  "name",
 		BotID:         "qwe123",
@@ -195,7 +196,7 @@ func (suite *SendpulseTestSuite) TestBotsFbService_SendTextByContact() {
 		}`)
 	})
 
-	err := suite.client.Bots.Fb.SendTextByContact(FbBotSendTextParams{
+	err := suite.client.Bots.Fb.SendTextByContact(context.Background(), FbBotSendTextParams{
 		ContactID:   "qwe12345",
 		MessageType: "RESPONSE",
 		MessageTag:  "ACCOUNT_UPDATE",
@@ -213,7 +214,7 @@ func (suite *SendpulseTestSuite) TestBotsFbService_SetVariableToContact() {
 		}`)
 	})
 
-	err := suite.client.Bots.Fb.SetVariableToContact("contactId", "variableId", "variableName", 123)
+	err := suite.client.Bots.Fb.SetVariableToContact(context.Background(), "contactId", "variableId", "variableName", 123)
 	suite.NoError(err)
 }
 
@@ -226,7 +227,7 @@ func (suite *SendpulseTestSuite) TestBotsFbService_SetTagsToContact() {
 		}`)
 	})
 
-	err := suite.client.Bots.Fb.SetTagsToContact("contactId", []string{"tag1", "tag2"})
+	err := suite.client.Bots.Fb.SetTagsToContact(context.Background(), "contactId", []string{"tag1", "tag2"})
 	suite.NoError(err)
 }
 
@@ -239,7 +240,7 @@ func (suite *SendpulseTestSuite) TestBotsFbService_DeleteTagFromContact() {
 		}`)
 	})
 
-	err := suite.client.Bots.Fb.DeleteTagFromContact("contactId", "tag1")
+	err := suite.client.Bots.Fb.DeleteTagFromContact(context.Background(), "contactId", "tag1")
 	suite.NoError(err)
 }
 
@@ -252,7 +253,7 @@ func (suite *SendpulseTestSuite) TestBotsFbService_DisableContact() {
 		}`)
 	})
 
-	err := suite.client.Bots.Fb.DisableContact("contactId")
+	err := suite.client.Bots.Fb.DisableContact(context.Background(), "contactId")
 	suite.NoError(err)
 }
 
@@ -265,7 +266,7 @@ func (suite *SendpulseTestSuite) TestBotsFbService_EnableContact() {
 		}`)
 	})
 
-	err := suite.client.Bots.Fb.EnableContact("contactId")
+	err := suite.client.Bots.Fb.EnableContact(context.Background(), "contactId")
 	suite.NoError(err)
 }
 
@@ -278,7 +279,7 @@ func (suite *SendpulseTestSuite) TestBotsFbService_DeleteContact() {
 		}`)
 	})
 
-	err := suite.client.Bots.Fb.DeleteContact("contactId")
+	err := suite.client.Bots.Fb.DeleteContact(context.Background(), "contactId")
 	suite.NoError(err)
 }
 
@@ -294,7 +295,7 @@ func (suite *SendpulseTestSuite) TestBotsFbService_GetPauseAutomation() {
 		}`)
 	})
 
-	p, err := suite.client.Bots.Fb.GetPauseAutomation("contactId")
+	p, err := suite.client.Bots.Fb.GetPauseAutomation(context.Background(), "contactId")
 	suite.NoError(err)
 	suite.Equal(123, p)
 }
@@ -308,7 +309,7 @@ func (suite *SendpulseTestSuite) TestBotsFbService_SetPauseAutomation() {
 		}`)
 	})
 
-	err := suite.client.Bots.Fb.SetPauseAutomation("contactId", 60)
+	err := suite.client.Bots.Fb.SetPauseAutomation(context.Background(), "contactId", 60)
 	suite.NoError(err)
 }
 
@@ -321,7 +322,7 @@ func (suite *SendpulseTestSuite) TestBotsFbService_DeletePauseAutomation() {
 		}`)
 	})
 
-	err := suite.client.Bots.Fb.DeletePauseAutomation("contactId")
+	err := suite.client.Bots.Fb.DeletePauseAutomation(context.Background(), "contactId")
 	suite.NoError(err)
 }
 
@@ -344,7 +345,7 @@ func (suite *SendpulseTestSuite) TestBotsFbService_GetBotVariables() {
 		}`)
 	})
 
-	variables, err := suite.client.Bots.Fb.GetBotVariables("contactId")
+	variables, err := suite.client.Bots.Fb.GetBotVariables(context.Background(), "contactId")
 	suite.NoError(err)
 	suite.Equal("qwerty", variables[0].ID)
 }
@@ -371,7 +372,7 @@ func (suite *SendpulseTestSuite) TestBotsFbService_GetFlows() {
 		}`)
 	})
 
-	flows, err := suite.client.Bots.Fb.GetFlows("contactId")
+	flows, err := suite.client.Bots.Fb.GetFlows(context.Background(), "contactId")
 	suite.NoError(err)
 	suite.Equal("qwe123", flows[0].ID)
 }
@@ -385,7 +386,7 @@ func (suite *SendpulseTestSuite) TestBotsFbService_RunFlow() {
 		}`)
 	})
 
-	err := suite.client.Bots.Fb.RunFlow("contactId", "flowId", map[string]interface{}{
+	err := suite.client.Bots.Fb.RunFlow(context.Background(), "contactId", "flowId", map[string]interface{}{
 		"tracking_number": "1234-0987-5678-9012",
 	})
 	suite.NoError(err)
@@ -400,7 +401,7 @@ func (suite *SendpulseTestSuite) TestBotsFbService_RunFlowByTrigger() {
 		}`)
 	})
 
-	err := suite.client.Bots.Fb.RunFlowByTrigger("contactId", "keyword", map[string]interface{}{
+	err := suite.client.Bots.Fb.RunFlowByTrigger(context.Background(), "contactId", "keyword", map[string]interface{}{
 		"tracking_number": "1234-0987-5678-9012",
 	})
 	suite.NoError(err)
@@ -431,7 +432,7 @@ func (suite *SendpulseTestSuite) TestBotsFbService_GetBotTriggers() {
 		}`)
 	})
 
-	triggers, err := suite.client.Bots.Fb.GetBotTriggers("bot")
+	triggers, err := suite.client.Bots.Fb.GetBotTriggers(context.Background(), "bot")
 	suite.NoError(err)
 	suite.Equal("qwe1234", triggers[0].ID)
 }
@@ -486,7 +487,7 @@ func (suite *SendpulseTestSuite) TestBotsFbService_GetBotChats() {
 		}`)
 	})
 
-	chats, err := suite.client.Bots.Fb.GetBotChats("bot")
+	chats, err := suite.client.Bots.Fb.GetBotChats(context.Background(), "bot")
 	suite.NoError(err)
 	suite.Equal("string", chats[0].InboxLastMessage.CampaignID)
 }
@@ -515,7 +516,7 @@ func (suite *SendpulseTestSuite) TestBotsFbService_GetContactMessages() {
 		}`)
 	})
 
-	messages, err := suite.client.Bots.Fb.GetContactMessages("bot")
+	messages, err := suite.client.Bots.Fb.GetContactMessages(context.Background(), "bot")
 	suite.NoError(err)
 	suite.Equal("string", messages[0].ID)
 }
@@ -539,7 +540,7 @@ func (suite *SendpulseTestSuite) TestBotsFbService_SendCampaign() {
 		},
 	})
 
-	err := suite.client.Bots.Fb.SendCampaign(FbBotSendCampaignParams{
+	err := suite.client.Bots.Fb.SendCampaign(context.Background(), FbBotSendCampaignParams{
 		Title:                   "Title",
 		BotID:                   "qwe123",
 		MessageTag:              "ACCOUNT_UPDATE",

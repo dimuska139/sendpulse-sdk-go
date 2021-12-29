@@ -1,6 +1,7 @@
 package sendpulse_sdk_go
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -36,14 +37,14 @@ type TelegramAccount struct {
 	} `json:"statistics"`
 }
 
-func (service *BotsTelegramService) GetAccount() (*TelegramAccount, error) {
+func (service *BotsTelegramService) GetAccount(ctx context.Context) (*TelegramAccount, error) {
 	path := "/telegram/account"
 
 	var respData struct {
 		Success bool             `json:"success"`
 		Data    *TelegramAccount `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -71,14 +72,14 @@ type TelegramBot struct {
 	} `json:"commands_menu"`
 }
 
-func (service *BotsTelegramService) GetBots() ([]*TelegramBot, error) {
+func (service *BotsTelegramService) GetBots(ctx context.Context) ([]*TelegramBot, error) {
 	path := "/telegram/bots"
 
 	var respData struct {
 		Success bool           `json:"success"`
 		Data    []*TelegramBot `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -101,29 +102,29 @@ type TelegramBotContact struct {
 	CreatedAt             time.Time              `json:"created_at"`
 }
 
-func (service *BotsTelegramService) GetContact(contactID string) (*TelegramBotContact, error) {
+func (service *BotsTelegramService) GetContact(ctx context.Context, contactID string) (*TelegramBotContact, error) {
 	path := fmt.Sprintf("/telegram/contacts/get?id=%s", contactID)
 
 	var respData struct {
 		Success bool                `json:"success"`
 		Data    *TelegramBotContact `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
-func (service *BotsTelegramService) GetContactsByTag(tag, botID string) ([]*TelegramBotContact, error) {
+func (service *BotsTelegramService) GetContactsByTag(ctx context.Context, tag, botID string) ([]*TelegramBotContact, error) {
 	path := fmt.Sprintf("/telegram/contacts/getByTag?tag=%s&bot_id=%s", tag, botID)
 
 	var respData struct {
 		Success bool                  `json:"success"`
 		Data    []*TelegramBotContact `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
-func (service *BotsTelegramService) GetContactsByVariable(params BotContactsByVariableParams) ([]*TelegramBotContact, error) {
+func (service *BotsTelegramService) GetContactsByVariable(ctx context.Context, params BotContactsByVariableParams) ([]*TelegramBotContact, error) {
 	urlParams := url.Values{}
 	urlParams.Add("variable_value", params.VariableValue)
 	if params.VariableID != "" {
@@ -141,11 +142,11 @@ func (service *BotsTelegramService) GetContactsByVariable(params BotContactsByVa
 		Success bool                  `json:"success"`
 		Data    []*TelegramBotContact `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
-func (service *BotsTelegramService) SendTextByContact(contactID string, text string) error {
+func (service *BotsTelegramService) SendTextByContact(ctx context.Context, contactID string, text string) error {
 	path := "/telegram/contacts/sendText"
 
 	type bodyFormat struct {
@@ -160,11 +161,11 @@ func (service *BotsTelegramService) SendTextByContact(contactID string, text str
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, body, &respData, true)
 	return err
 }
 
-func (service *BotsTelegramService) SetVariableToContact(contactID string, variableID string, variableName string, variableValue interface{}) error {
+func (service *BotsTelegramService) SetVariableToContact(ctx context.Context, contactID string, variableID string, variableName string, variableValue interface{}) error {
 	path := "/telegram/contacts/setVariable"
 
 	type bodyFormat struct {
@@ -183,11 +184,11 @@ func (service *BotsTelegramService) SetVariableToContact(contactID string, varia
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, body, &respData, true)
 	return err
 }
 
-func (service *BotsTelegramService) SetTagsToContact(contactID string, tags []string) error {
+func (service *BotsTelegramService) SetTagsToContact(ctx context.Context, contactID string, tags []string) error {
 	path := "/telegram/contacts/setTag"
 
 	type bodyFormat struct {
@@ -202,11 +203,11 @@ func (service *BotsTelegramService) SetTagsToContact(contactID string, tags []st
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, body, &respData, true)
 	return err
 }
 
-func (service *BotsTelegramService) DeleteTagFromContact(contactID string, tag string) error {
+func (service *BotsTelegramService) DeleteTagFromContact(ctx context.Context, contactID string, tag string) error {
 	path := "/telegram/contacts/deleteTag"
 
 	type bodyFormat struct {
@@ -221,11 +222,11 @@ func (service *BotsTelegramService) DeleteTagFromContact(contactID string, tag s
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, body, &respData, true)
 	return err
 }
 
-func (service *BotsTelegramService) DisableContact(contactID string) error {
+func (service *BotsTelegramService) DisableContact(ctx context.Context, contactID string) error {
 	path := "/telegram/contacts/disable"
 
 	type bodyFormat struct {
@@ -238,11 +239,11 @@ func (service *BotsTelegramService) DisableContact(contactID string) error {
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, body, &respData, true)
 	return err
 }
 
-func (service *BotsTelegramService) EnableContact(contactID string) error {
+func (service *BotsTelegramService) EnableContact(ctx context.Context, contactID string) error {
 	path := "/telegram/contacts/enable"
 
 	type bodyFormat struct {
@@ -255,11 +256,11 @@ func (service *BotsTelegramService) EnableContact(contactID string) error {
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, body, &respData, true)
 	return err
 }
 
-func (service *BotsTelegramService) DeleteContact(contactID string) error {
+func (service *BotsTelegramService) DeleteContact(ctx context.Context, contactID string) error {
 	path := "/telegram/contacts/delete"
 
 	type bodyFormat struct {
@@ -272,11 +273,11 @@ func (service *BotsTelegramService) DeleteContact(contactID string) error {
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, body, &respData, true)
 	return err
 }
 
-func (service *BotsTelegramService) GetPauseAutomation(contactID string) (int, error) {
+func (service *BotsTelegramService) GetPauseAutomation(ctx context.Context, contactID string) (int, error) {
 	path := fmt.Sprintf("/telegram/contacts/getPauseAutomation?contact_id=%s", contactID)
 
 	var respData struct {
@@ -285,11 +286,11 @@ func (service *BotsTelegramService) GetPauseAutomation(contactID string) (int, e
 			Minutes int `json:"minutes"`
 		} `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data.Minutes, err
 }
 
-func (service *BotsTelegramService) SetPauseAutomation(contactID string, minutes int) error {
+func (service *BotsTelegramService) SetPauseAutomation(ctx context.Context, contactID string, minutes int) error {
 	path := "/telegram/contacts/setPauseAutomation"
 	type bodyFormat struct {
 		ContactID string `json:"contact_id"`
@@ -303,11 +304,11 @@ func (service *BotsTelegramService) SetPauseAutomation(contactID string, minutes
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, body, &respData, true)
 	return err
 }
 
-func (service *BotsTelegramService) DeletePauseAutomation(contactID string) error {
+func (service *BotsTelegramService) DeletePauseAutomation(ctx context.Context, contactID string) error {
 	path := "/telegram/contacts/deletePauseAutomation"
 	type bodyFormat struct {
 		ContactID string `json:"contact_id"`
@@ -319,33 +320,33 @@ func (service *BotsTelegramService) DeletePauseAutomation(contactID string) erro
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, body, &respData, true)
 	return err
 }
 
-func (service *BotsTelegramService) GetBotVariables(botID string) ([]*BotVariable, error) {
+func (service *BotsTelegramService) GetBotVariables(ctx context.Context, botID string) ([]*BotVariable, error) {
 	path := fmt.Sprintf("/telegram/variables?bot_id=%s", botID)
 
 	var respData struct {
 		Success bool           `json:"success"`
 		Data    []*BotVariable `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
-func (service *BotsTelegramService) GetFlows(botID string) ([]*BotFlow, error) {
+func (service *BotsTelegramService) GetFlows(ctx context.Context, botID string) ([]*BotFlow, error) {
 	path := fmt.Sprintf("/telegram/flows?bot_id=%s", botID)
 
 	var respData struct {
 		Success bool       `json:"success"`
 		Data    []*BotFlow `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
-func (service *BotsTelegramService) RunFlow(contactID, flowID string, externalData map[string]interface{}) error {
+func (service *BotsTelegramService) RunFlow(ctx context.Context, contactID, flowID string, externalData map[string]interface{}) error {
 	path := "/telegram/flows/run"
 
 	type bodyFormat struct {
@@ -362,11 +363,11 @@ func (service *BotsTelegramService) RunFlow(contactID, flowID string, externalDa
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, body, &respData, true)
 	return err
 }
 
-func (service *BotsTelegramService) RunFlowByTrigger(contactID, triggerKeyword string, externalData map[string]interface{}) error {
+func (service *BotsTelegramService) RunFlowByTrigger(ctx context.Context, contactID, triggerKeyword string, externalData map[string]interface{}) error {
 	path := "/telegram/flows/runByTrigger"
 
 	type bodyFormat struct {
@@ -383,18 +384,18 @@ func (service *BotsTelegramService) RunFlowByTrigger(contactID, triggerKeyword s
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, body, &respData, true)
 	return err
 }
 
-func (service *BotsTelegramService) GetBotTriggers(botID string) ([]*BotTrigger, error) {
+func (service *BotsTelegramService) GetBotTriggers(ctx context.Context, botID string) ([]*BotTrigger, error) {
 	path := fmt.Sprintf("/telegram/triggers?bot_id=%s", botID)
 
 	var respData struct {
 		Success bool          `json:"success"`
 		Data    []*BotTrigger `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -415,25 +416,25 @@ type TelegramBotChat struct {
 	InboxUnread      int                 `json:"inbox_unread"`
 }
 
-func (service *BotsTelegramService) GetBotChats(botID string) ([]*TelegramBotChat, error) {
+func (service *BotsTelegramService) GetBotChats(ctx context.Context, botID string) ([]*TelegramBotChat, error) {
 	path := fmt.Sprintf("/telegram/chats?bot_id=%s", botID)
 
 	var respData struct {
 		Success bool               `json:"success"`
 		Data    []*TelegramBotChat `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
-func (service *BotsTelegramService) GetContactMessages(contactID string) ([]*TelegramBotMessage, error) {
+func (service *BotsTelegramService) GetContactMessages(ctx context.Context, contactID string) ([]*TelegramBotMessage, error) {
 	path := fmt.Sprintf("/telegram/chats/messages?contact_id=%s", contactID)
 
 	var respData struct {
 		Success bool                  `json:"success"`
 		Data    []*TelegramBotMessage `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -451,12 +452,12 @@ type TelegramBotCampaignMessage struct {
 	} `json:"message"`
 }
 
-func (service *BotsTelegramService) SendCampaign(params TelegramBotSendCampaignParams) error {
+func (service *BotsTelegramService) SendCampaign(ctx context.Context, params TelegramBotSendCampaignParams) error {
 	path := "/telegram/campaigns/send"
 
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, params, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, params, &respData, true)
 	return err
 }

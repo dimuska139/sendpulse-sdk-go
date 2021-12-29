@@ -1,6 +1,7 @@
 package sendpulse_sdk_go
 
 import (
+	"context"
 	"fmt"
 	"github.com/bxcodec/faker/v3"
 	"net/http"
@@ -36,7 +37,7 @@ func (suite *SendpulseTestSuite) TestBotsWhatsAppService_GetAccount() {
 		}`)
 	})
 
-	account, err := suite.client.Bots.WhatsApp.GetAccount()
+	account, err := suite.client.Bots.WhatsApp.GetAccount(context.Background())
 	suite.NoError(err)
 	suite.Equal("Plan code", account.Plan.Code)
 }
@@ -63,7 +64,7 @@ func (suite *SendpulseTestSuite) TestBotsWhatsAppService_GetBots() {
 		}`)
 	})
 
-	bots, err := suite.client.Bots.WhatsApp.GetBots()
+	bots, err := suite.client.Bots.WhatsApp.GetBots(context.Background())
 	suite.NoError(err)
 	suite.Equal("12345", bots[0].ID)
 }
@@ -98,7 +99,7 @@ func (suite *SendpulseTestSuite) TestBotsWhatsAppService_CreateContact() {
 		}`)
 	})
 
-	contact, err := suite.client.Bots.WhatsApp.CreateContact("6789", "89221112233", "Aleksey")
+	contact, err := suite.client.Bots.WhatsApp.CreateContact(context.Background(), "6789", "89221112233", "Aleksey")
 	suite.NoError(err)
 	suite.Equal("12345", contact.ID)
 }
@@ -133,7 +134,7 @@ func (suite *SendpulseTestSuite) TestBotsWhatsAppService_GetContact() {
 		}`)
 	})
 
-	contact, err := suite.client.Bots.WhatsApp.GetContact("1")
+	contact, err := suite.client.Bots.WhatsApp.GetContact(context.Background(), "1")
 	suite.NoError(err)
 	suite.Equal("12345", contact.ID)
 }
@@ -168,7 +169,7 @@ func (suite *SendpulseTestSuite) TestBotsWhatsAppService_GetContactsByPhone() {
 		}`)
 	})
 
-	contacts, err := suite.client.Bots.WhatsApp.GetContactsByPhone("89991112233", "6789")
+	contacts, err := suite.client.Bots.WhatsApp.GetContactsByPhone(context.Background(), "89991112233", "6789")
 	suite.NoError(err)
 	suite.Equal("12345", contacts[0].ID)
 }
@@ -203,7 +204,7 @@ func (suite *SendpulseTestSuite) TestBotsWhatsAppService_GetContactsByTag() {
 		}`)
 	})
 
-	contacts, err := suite.client.Bots.WhatsApp.GetContactsByTag("tag1", "6789")
+	contacts, err := suite.client.Bots.WhatsApp.GetContactsByTag(context.Background(), "tag1", "6789")
 	suite.NoError(err)
 	suite.Equal("12345", contacts[0].ID)
 }
@@ -238,7 +239,7 @@ func (suite *SendpulseTestSuite) TestBotsWhatsAppService_GetContactsByVariable()
 		}`)
 	})
 
-	contacts, err := suite.client.Bots.WhatsApp.GetContactsByVariable(BotContactsByVariableParams{
+	contacts, err := suite.client.Bots.WhatsApp.GetContactsByVariable(context.Background(), BotContactsByVariableParams{
 		VariableName:  "name",
 		VariableValue: "Aleksey",
 		VariableID:    "12345",
@@ -267,7 +268,7 @@ func (suite *SendpulseTestSuite) TestBotsWhatsAppService_SendByContact() {
 			Caption: faker.Word(),
 		},
 	}
-	err := suite.client.Bots.WhatsApp.SendByContact("12345", &msg)
+	err := suite.client.Bots.WhatsApp.SendByContact(context.Background(), "12345", &msg)
 	suite.NoError(err)
 }
 
@@ -290,7 +291,7 @@ func (suite *SendpulseTestSuite) TestBotsWhatsAppService_SendByPhone() {
 			Caption: faker.Word(),
 		},
 	}
-	err := suite.client.Bots.WhatsApp.SendByPhone("12345", "89221112345", &msg)
+	err := suite.client.Bots.WhatsApp.SendByPhone(context.Background(), "12345", "89221112345", &msg)
 	suite.NoError(err)
 }
 
@@ -303,7 +304,7 @@ func (suite *SendpulseTestSuite) TestBotsWhatsAppService_SendTemplate() {
 		}`)
 	})
 
-	err := suite.client.Bots.WhatsApp.SendTemplate("12345", "first_template", "ru")
+	err := suite.client.Bots.WhatsApp.SendTemplate(context.Background(), "12345", "first_template", "ru")
 	suite.NoError(err)
 }
 
@@ -316,7 +317,7 @@ func (suite *SendpulseTestSuite) TestBotsWhatsAppService_SendTemplateWithVariabl
 		}`)
 	})
 
-	err := suite.client.Bots.WhatsApp.SendTemplateWithVariables("12345", "first_template", "ru", []string{
+	err := suite.client.Bots.WhatsApp.SendTemplateWithVariables(context.Background(), "12345", "first_template", "ru", []string{
 		"текст переменной",
 		"{{last_name}}",
 	})
@@ -332,7 +333,7 @@ func (suite *SendpulseTestSuite) TestBotsWhatsAppService_SendTemplateWithImage()
 		}`)
 	})
 
-	err := suite.client.Bots.WhatsApp.SendTemplateWithImage("12345", "first_template", "ru", faker.Word())
+	err := suite.client.Bots.WhatsApp.SendTemplateWithImage(context.Background(), "12345", "first_template", "ru", faker.Word())
 	suite.NoError(err)
 }
 
@@ -345,7 +346,7 @@ func (suite *SendpulseTestSuite) TestBotsWhatsAppService_SendTemplateByPhone() {
 		}`)
 	})
 
-	err := suite.client.Bots.WhatsApp.SendTemplateByPhone("12345", "89991112233", "first_template", "ru")
+	err := suite.client.Bots.WhatsApp.SendTemplateByPhone(context.Background(), "12345", "89991112233", "first_template", "ru")
 	suite.NoError(err)
 }
 
@@ -358,7 +359,7 @@ func (suite *SendpulseTestSuite) TestBotsWhatsAppService_SendTemplateByPhoneWith
 		}`)
 	})
 
-	err := suite.client.Bots.WhatsApp.SendTemplateByPhoneWithVariables("12345",
+	err := suite.client.Bots.WhatsApp.SendTemplateByPhoneWithVariables(context.Background(), "12345",
 		"89991112233",
 		"first_template",
 		"ru",
@@ -378,7 +379,7 @@ func (suite *SendpulseTestSuite) TestBotsWhatsAppService_SendTemplateByPhoneWith
 		}`)
 	})
 
-	err := suite.client.Bots.WhatsApp.SendTemplateByPhoneWithImage("12345",
+	err := suite.client.Bots.WhatsApp.SendTemplateByPhoneWithImage(context.Background(), "12345",
 		"89991112233",
 		"first_template",
 		"ru",
@@ -395,7 +396,7 @@ func (suite *SendpulseTestSuite) TestBotsWhatsAppService_SetVariableToContact() 
 		}`)
 	})
 
-	err := suite.client.Bots.WhatsApp.SetVariableToContact("contactId", "variableId", "variableName", 123)
+	err := suite.client.Bots.WhatsApp.SetVariableToContact(context.Background(), "contactId", "variableId", "variableName", 123)
 	suite.NoError(err)
 }
 
@@ -408,7 +409,7 @@ func (suite *SendpulseTestSuite) TestBotsWhatsAppService_SetTagsToContact() {
 		}`)
 	})
 
-	err := suite.client.Bots.WhatsApp.SetTagsToContact("contactId", []string{"tag1", "tag2"})
+	err := suite.client.Bots.WhatsApp.SetTagsToContact(context.Background(), "contactId", []string{"tag1", "tag2"})
 	suite.NoError(err)
 }
 
@@ -421,7 +422,7 @@ func (suite *SendpulseTestSuite) TestBotsWhatsAppService_DeleteTagFromContact() 
 		}`)
 	})
 
-	err := suite.client.Bots.WhatsApp.DeleteTagFromContact("contactId", "tag1")
+	err := suite.client.Bots.WhatsApp.DeleteTagFromContact(context.Background(), "contactId", "tag1")
 	suite.NoError(err)
 }
 
@@ -434,7 +435,7 @@ func (suite *SendpulseTestSuite) TestBotsWhatsAppService_DisableContact() {
 		}`)
 	})
 
-	err := suite.client.Bots.WhatsApp.DisableContact("contactId")
+	err := suite.client.Bots.WhatsApp.DisableContact(context.Background(), "contactId")
 	suite.NoError(err)
 }
 
@@ -447,7 +448,7 @@ func (suite *SendpulseTestSuite) TestBotsWhatsAppService_EnableContact() {
 		}`)
 	})
 
-	err := suite.client.Bots.WhatsApp.EnableContact("contactId")
+	err := suite.client.Bots.WhatsApp.EnableContact(context.Background(), "contactId")
 	suite.NoError(err)
 }
 
@@ -460,7 +461,7 @@ func (suite *SendpulseTestSuite) TestBotsWhatsAppService_DeleteContact() {
 		}`)
 	})
 
-	err := suite.client.Bots.WhatsApp.DeleteContact("contactId")
+	err := suite.client.Bots.WhatsApp.DeleteContact(context.Background(), "contactId")
 	suite.NoError(err)
 }
 
@@ -476,7 +477,7 @@ func (suite *SendpulseTestSuite) TestBotsWhatsAppService_GetPauseAutomation() {
 		}`)
 	})
 
-	p, err := suite.client.Bots.WhatsApp.GetPauseAutomation("contactId")
+	p, err := suite.client.Bots.WhatsApp.GetPauseAutomation(context.Background(), "contactId")
 	suite.NoError(err)
 	suite.Equal(123, p)
 }
@@ -490,7 +491,7 @@ func (suite *SendpulseTestSuite) TestBotsWhatsAppService_SetPauseAutomation() {
 		}`)
 	})
 
-	err := suite.client.Bots.WhatsApp.SetPauseAutomation("contactId", 60)
+	err := suite.client.Bots.WhatsApp.SetPauseAutomation(context.Background(), "contactId", 60)
 	suite.NoError(err)
 }
 
@@ -503,7 +504,7 @@ func (suite *SendpulseTestSuite) TestBotsWhatsAppService_DeletePauseAutomation()
 		}`)
 	})
 
-	err := suite.client.Bots.WhatsApp.DeletePauseAutomation("contactId")
+	err := suite.client.Bots.WhatsApp.DeletePauseAutomation(context.Background(), "contactId")
 	suite.NoError(err)
 }
 
@@ -526,7 +527,7 @@ func (suite *SendpulseTestSuite) TestBotsWhatsAppService_GetBotVariables() {
 		}`)
 	})
 
-	variables, err := suite.client.Bots.WhatsApp.GetBotVariables("contactId")
+	variables, err := suite.client.Bots.WhatsApp.GetBotVariables(context.Background(), "contactId")
 	suite.NoError(err)
 	suite.Equal("qwerty", variables[0].ID)
 }
@@ -553,7 +554,7 @@ func (suite *SendpulseTestSuite) TestBotsWhatsAppService_GetFlows() {
 		}`)
 	})
 
-	flows, err := suite.client.Bots.WhatsApp.GetFlows("contactId")
+	flows, err := suite.client.Bots.WhatsApp.GetFlows(context.Background(), "contactId")
 	suite.NoError(err)
 	suite.Equal("qwe123", flows[0].ID)
 }
@@ -567,7 +568,7 @@ func (suite *SendpulseTestSuite) TestBotsWhatsAppService_RunFlow() {
 		}`)
 	})
 
-	err := suite.client.Bots.WhatsApp.RunFlow("contactId", "flowId", map[string]interface{}{
+	err := suite.client.Bots.WhatsApp.RunFlow(context.Background(), "contactId", "flowId", map[string]interface{}{
 		"tracking_number": "1234-0987-5678-9012",
 	})
 	suite.NoError(err)
@@ -582,7 +583,7 @@ func (suite *SendpulseTestSuite) TestBotsWhatsAppService_RunFlowByTrigger() {
 		}`)
 	})
 
-	err := suite.client.Bots.WhatsApp.RunFlowByTrigger("contactId", "keyword", map[string]interface{}{
+	err := suite.client.Bots.WhatsApp.RunFlowByTrigger(context.Background(), "contactId", "keyword", map[string]interface{}{
 		"tracking_number": "1234-0987-5678-9012",
 	})
 	suite.NoError(err)
@@ -613,7 +614,7 @@ func (suite *SendpulseTestSuite) TestBotsWhatsAppService_GetBotTriggers() {
 		}`)
 	})
 
-	triggers, err := suite.client.Bots.WhatsApp.GetBotTriggers("bot")
+	triggers, err := suite.client.Bots.WhatsApp.GetBotTriggers(context.Background(), "bot")
 	suite.NoError(err)
 	suite.Equal("qwe1234", triggers[0].ID)
 }
@@ -668,7 +669,7 @@ func (suite *SendpulseTestSuite) TestBotsWhatsAppService_GetBotChats() {
 		}`)
 	})
 
-	chats, err := suite.client.Bots.WhatsApp.GetBotChats("bot")
+	chats, err := suite.client.Bots.WhatsApp.GetBotChats(context.Background(), "bot")
 	suite.NoError(err)
 	suite.Equal("string", chats[0].InboxLastMessage.CampaignID)
 }
@@ -697,7 +698,7 @@ func (suite *SendpulseTestSuite) TestBotsWhatsAppService_GetContactMessages() {
 		}`)
 	})
 
-	messages, err := suite.client.Bots.WhatsApp.GetContactMessages("bot")
+	messages, err := suite.client.Bots.WhatsApp.GetContactMessages(context.Background(), "bot")
 	suite.NoError(err)
 	suite.Equal("string", messages[0].ID)
 }
@@ -723,7 +724,7 @@ func (suite *SendpulseTestSuite) TestBotsWhatsAppService_SendCampaign() {
 		},
 	}
 
-	err := suite.client.Bots.WhatsApp.SendCampaign(WhatsAppBotSendCampaignParams{
+	err := suite.client.Bots.WhatsApp.SendCampaign(context.Background(), WhatsAppBotSendCampaignParams{
 		Title:    "Title",
 		BotID:    "qwe123",
 		SendAt:   time.Now(),
@@ -753,7 +754,7 @@ func (suite *SendpulseTestSuite) TestBotsWhatsAppService_SendCampaignByTemplate(
 		},
 	}
 
-	err := suite.client.Bots.WhatsApp.SendCampaignByTemplate(WhatsAppBotSendCampaignByTemplateParams{
+	err := suite.client.Bots.WhatsApp.SendCampaignByTemplate(context.Background(), WhatsAppBotSendCampaignByTemplateParams{
 		TemplateName: "first_template",
 		LanguageCode: "en",
 		Title:        "Title",
@@ -799,7 +800,7 @@ func (suite *SendpulseTestSuite) TestBotsWhatsAppService_GetTemplates() {
 		},
 	}
 
-	templates, err := suite.client.Bots.WhatsApp.GetTemplates()
+	templates, err := suite.client.Bots.WhatsApp.GetTemplates(context.Background())
 	suite.NoError(err)
 	suite.Equal("456", templates[0].BotID)
 }

@@ -1,6 +1,7 @@
 package sendpulse_sdk_go
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -36,14 +37,14 @@ type WhatsAppAccount struct {
 	} `json:"statistics"`
 }
 
-func (service *BotsWhatsAppService) GetAccount() (*WhatsAppAccount, error) {
+func (service *BotsWhatsAppService) GetAccount(ctx context.Context) (*WhatsAppAccount, error) {
 	path := "/whatsapp/account"
 
 	var respData struct {
 		Success bool             `json:"success"`
 		Data    *WhatsAppAccount `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -61,14 +62,14 @@ type WhatsAppBot struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
-func (service *BotsWhatsAppService) GetBots() ([]*WhatsAppBot, error) {
+func (service *BotsWhatsAppService) GetBots(ctx context.Context) ([]*WhatsAppBot, error) {
 	path := "/whatsapp/bots"
 
 	var respData struct {
 		Success bool           `json:"success"`
 		Data    []*WhatsAppBot `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -106,7 +107,7 @@ type WhatsAppMessage struct {
 	} `json:"document,omitempty"`
 }
 
-func (service *BotsWhatsAppService) CreateContact(botID, phone, name string) (*WhatsAppBotContact, error) {
+func (service *BotsWhatsAppService) CreateContact(ctx context.Context, botID, phone, name string) (*WhatsAppBotContact, error) {
 	path := "/whatsapp/contacts"
 
 	type bodyFormat struct {
@@ -124,44 +125,44 @@ func (service *BotsWhatsAppService) CreateContact(botID, phone, name string) (*W
 		Success bool                `json:"success"`
 		Data    *WhatsAppBotContact `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, body, &respData, true)
 	return respData.Data, err
 }
 
-func (service *BotsWhatsAppService) GetContact(contactID string) (*WhatsAppBotContact, error) {
+func (service *BotsWhatsAppService) GetContact(ctx context.Context, contactID string) (*WhatsAppBotContact, error) {
 	path := fmt.Sprintf("/whatsapp/contacts/get?id=%s", contactID)
 
 	var respData struct {
 		Success bool                `json:"success"`
 		Data    *WhatsAppBotContact `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
-func (service *BotsWhatsAppService) GetContactsByPhone(phone, botID string) ([]*WhatsAppBotContact, error) {
+func (service *BotsWhatsAppService) GetContactsByPhone(ctx context.Context, phone, botID string) ([]*WhatsAppBotContact, error) {
 	path := fmt.Sprintf("/whatsapp/contacts/getByPhone?tag=%s&bot_id=%s", phone, botID)
 
 	var respData struct {
 		Success bool                  `json:"success"`
 		Data    []*WhatsAppBotContact `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
-func (service *BotsWhatsAppService) GetContactsByTag(tag, botID string) ([]*WhatsAppBotContact, error) {
+func (service *BotsWhatsAppService) GetContactsByTag(ctx context.Context, tag, botID string) ([]*WhatsAppBotContact, error) {
 	path := fmt.Sprintf("/whatsapp/contacts/getByTag?tag=%s&bot_id=%s", tag, botID)
 
 	var respData struct {
 		Success bool                  `json:"success"`
 		Data    []*WhatsAppBotContact `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
-func (service *BotsWhatsAppService) GetContactsByVariable(params BotContactsByVariableParams) ([]*WhatsAppBotContact, error) {
+func (service *BotsWhatsAppService) GetContactsByVariable(ctx context.Context, params BotContactsByVariableParams) ([]*WhatsAppBotContact, error) {
 	urlParams := url.Values{}
 	urlParams.Add("variable_value", params.VariableValue)
 	if params.VariableID != "" {
@@ -179,11 +180,11 @@ func (service *BotsWhatsAppService) GetContactsByVariable(params BotContactsByVa
 		Success bool                  `json:"success"`
 		Data    []*WhatsAppBotContact `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
-func (service *BotsWhatsAppService) SendByContact(contactID string, message *WhatsAppMessage) error {
+func (service *BotsWhatsAppService) SendByContact(ctx context.Context, contactID string, message *WhatsAppMessage) error {
 	path := "/whatsapp/contacts/send"
 
 	type bodyFormat struct {
@@ -198,11 +199,11 @@ func (service *BotsWhatsAppService) SendByContact(contactID string, message *Wha
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, body, &respData, true)
 	return err
 }
 
-func (service *BotsWhatsAppService) SendByPhone(botID, phone string, message *WhatsAppMessage) error {
+func (service *BotsWhatsAppService) SendByPhone(ctx context.Context, botID, phone string, message *WhatsAppMessage) error {
 	path := "/whatsapp/contacts/sendByPhone"
 
 	type bodyFormat struct {
@@ -219,11 +220,11 @@ func (service *BotsWhatsAppService) SendByPhone(botID, phone string, message *Wh
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, body, &respData, true)
 	return err
 }
 
-func (service *BotsWhatsAppService) SendTemplate(contactID, templateName, languageCode string) error {
+func (service *BotsWhatsAppService) SendTemplate(ctx context.Context, contactID, templateName, languageCode string) error {
 	path := "/whatsapp/contacts/sendTemplate"
 
 	type bodyFormat struct {
@@ -255,11 +256,11 @@ func (service *BotsWhatsAppService) SendTemplate(contactID, templateName, langua
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, body, &respData, true)
 	return err
 }
 
-func (service *BotsWhatsAppService) SendTemplateWithVariables(contactID, templateName, languageCode string, variables []string) error {
+func (service *BotsWhatsAppService) SendTemplateWithVariables(ctx context.Context, contactID, templateName, languageCode string, variables []string) error {
 	path := "/whatsapp/contacts/sendTemplate"
 
 	type bodyComponentVariableFormat struct {
@@ -317,11 +318,11 @@ func (service *BotsWhatsAppService) SendTemplateWithVariables(contactID, templat
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, body, &respData, true)
 	return err
 }
 
-func (service *BotsWhatsAppService) SendTemplateWithImage(contactID, templateName, languageCode, imageLink string) error {
+func (service *BotsWhatsAppService) SendTemplateWithImage(ctx context.Context, contactID, templateName, languageCode, imageLink string) error {
 	path := "/whatsapp/contacts/sendTemplate"
 
 	type bodyComponentImageFormat struct {
@@ -383,11 +384,11 @@ func (service *BotsWhatsAppService) SendTemplateWithImage(contactID, templateNam
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, body, &respData, true)
 	return err
 }
 
-func (service *BotsWhatsAppService) SendTemplateByPhone(botID, phone, templateName, languageCode string) error {
+func (service *BotsWhatsAppService) SendTemplateByPhone(ctx context.Context, botID, phone, templateName, languageCode string) error {
 	path := "/whatsapp/contacts/sendTemplateByPhone"
 
 	type bodyFormat struct {
@@ -421,11 +422,11 @@ func (service *BotsWhatsAppService) SendTemplateByPhone(botID, phone, templateNa
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, body, &respData, true)
 	return err
 }
 
-func (service *BotsWhatsAppService) SendTemplateByPhoneWithVariables(botID, phone, templateName, languageCode string, variables []string) error {
+func (service *BotsWhatsAppService) SendTemplateByPhoneWithVariables(ctx context.Context, botID, phone, templateName, languageCode string, variables []string) error {
 	path := "/whatsapp/contacts/sendTemplateByPhone"
 
 	type bodyComponentVariableFormat struct {
@@ -485,11 +486,11 @@ func (service *BotsWhatsAppService) SendTemplateByPhoneWithVariables(botID, phon
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, body, &respData, true)
 	return err
 }
 
-func (service *BotsWhatsAppService) SendTemplateByPhoneWithImage(botID, phone, templateName, languageCode, imageLink string) error {
+func (service *BotsWhatsAppService) SendTemplateByPhoneWithImage(ctx context.Context, botID, phone, templateName, languageCode, imageLink string) error {
 	path := "/whatsapp/contacts/sendTemplateByPhone"
 
 	type bodyComponentImageFormat struct {
@@ -553,11 +554,11 @@ func (service *BotsWhatsAppService) SendTemplateByPhoneWithImage(botID, phone, t
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, body, &respData, true)
 	return err
 }
 
-func (service *BotsWhatsAppService) SetVariableToContact(contactID string, variableID string, variableName string, variableValue interface{}) error {
+func (service *BotsWhatsAppService) SetVariableToContact(ctx context.Context, contactID string, variableID string, variableName string, variableValue interface{}) error {
 	path := "/whatsapp/contacts/setVariable"
 
 	type bodyFormat struct {
@@ -576,11 +577,11 @@ func (service *BotsWhatsAppService) SetVariableToContact(contactID string, varia
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, body, &respData, true)
 	return err
 }
 
-func (service *BotsWhatsAppService) SetTagsToContact(contactID string, tags []string) error {
+func (service *BotsWhatsAppService) SetTagsToContact(ctx context.Context, contactID string, tags []string) error {
 	path := "/whatsapp/contacts/setTag"
 
 	type bodyFormat struct {
@@ -595,11 +596,11 @@ func (service *BotsWhatsAppService) SetTagsToContact(contactID string, tags []st
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, body, &respData, true)
 	return err
 }
 
-func (service *BotsWhatsAppService) DeleteTagFromContact(contactID string, tag string) error {
+func (service *BotsWhatsAppService) DeleteTagFromContact(ctx context.Context, contactID string, tag string) error {
 	path := "/whatsapp/contacts/deleteTag"
 
 	type bodyFormat struct {
@@ -614,11 +615,11 @@ func (service *BotsWhatsAppService) DeleteTagFromContact(contactID string, tag s
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, body, &respData, true)
 	return err
 }
 
-func (service *BotsWhatsAppService) DisableContact(contactID string) error {
+func (service *BotsWhatsAppService) DisableContact(ctx context.Context, contactID string) error {
 	path := "/whatsapp/contacts/disable"
 
 	type bodyFormat struct {
@@ -631,11 +632,11 @@ func (service *BotsWhatsAppService) DisableContact(contactID string) error {
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, body, &respData, true)
 	return err
 }
 
-func (service *BotsWhatsAppService) EnableContact(contactID string) error {
+func (service *BotsWhatsAppService) EnableContact(ctx context.Context, contactID string) error {
 	path := "/whatsapp/contacts/enable"
 
 	type bodyFormat struct {
@@ -648,11 +649,11 @@ func (service *BotsWhatsAppService) EnableContact(contactID string) error {
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, body, &respData, true)
 	return err
 }
 
-func (service *BotsWhatsAppService) DeleteContact(contactID string) error {
+func (service *BotsWhatsAppService) DeleteContact(ctx context.Context, contactID string) error {
 	path := "/whatsapp/contacts/delete"
 
 	type bodyFormat struct {
@@ -665,11 +666,11 @@ func (service *BotsWhatsAppService) DeleteContact(contactID string) error {
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, body, &respData, true)
 	return err
 }
 
-func (service *BotsWhatsAppService) GetPauseAutomation(contactID string) (int, error) {
+func (service *BotsWhatsAppService) GetPauseAutomation(ctx context.Context, contactID string) (int, error) {
 	path := fmt.Sprintf("/whatsapp/contacts/getPauseAutomation?contact_id=%s", contactID)
 
 	var respData struct {
@@ -678,11 +679,11 @@ func (service *BotsWhatsAppService) GetPauseAutomation(contactID string) (int, e
 			Minutes int `json:"minutes"`
 		} `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data.Minutes, err
 }
 
-func (service *BotsWhatsAppService) SetPauseAutomation(contactID string, minutes int) error {
+func (service *BotsWhatsAppService) SetPauseAutomation(ctx context.Context, contactID string, minutes int) error {
 	path := "/whatsapp/contacts/setPauseAutomation"
 	type bodyFormat struct {
 		ContactID string `json:"contact_id"`
@@ -696,11 +697,11 @@ func (service *BotsWhatsAppService) SetPauseAutomation(contactID string, minutes
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, body, &respData, true)
 	return err
 }
 
-func (service *BotsWhatsAppService) DeletePauseAutomation(contactID string) error {
+func (service *BotsWhatsAppService) DeletePauseAutomation(ctx context.Context, contactID string) error {
 	path := "/whatsapp/contacts/deletePauseAutomation"
 	type bodyFormat struct {
 		ContactID string `json:"contact_id"`
@@ -712,33 +713,33 @@ func (service *BotsWhatsAppService) DeletePauseAutomation(contactID string) erro
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, body, &respData, true)
 	return err
 }
 
-func (service *BotsWhatsAppService) GetBotVariables(botID string) ([]*BotVariable, error) {
+func (service *BotsWhatsAppService) GetBotVariables(ctx context.Context, botID string) ([]*BotVariable, error) {
 	path := fmt.Sprintf("/whatsapp/variables?bot_id=%s", botID)
 
 	var respData struct {
 		Success bool           `json:"success"`
 		Data    []*BotVariable `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
-func (service *BotsWhatsAppService) GetFlows(botID string) ([]*BotFlow, error) {
+func (service *BotsWhatsAppService) GetFlows(ctx context.Context, botID string) ([]*BotFlow, error) {
 	path := fmt.Sprintf("/whatsapp/flows?bot_id=%s", botID)
 
 	var respData struct {
 		Success bool       `json:"success"`
 		Data    []*BotFlow `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
-func (service *BotsWhatsAppService) RunFlow(contactID, flowID string, externalData map[string]interface{}) error {
+func (service *BotsWhatsAppService) RunFlow(ctx context.Context, contactID, flowID string, externalData map[string]interface{}) error {
 	path := "/whatsapp/flows/run"
 
 	type bodyFormat struct {
@@ -755,11 +756,11 @@ func (service *BotsWhatsAppService) RunFlow(contactID, flowID string, externalDa
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, body, &respData, true)
 	return err
 }
 
-func (service *BotsWhatsAppService) RunFlowByTrigger(contactID, triggerKeyword string, externalData map[string]interface{}) error {
+func (service *BotsWhatsAppService) RunFlowByTrigger(ctx context.Context, contactID, triggerKeyword string, externalData map[string]interface{}) error {
 	path := "/whatsapp/flows/runByTrigger"
 
 	type bodyFormat struct {
@@ -776,18 +777,18 @@ func (service *BotsWhatsAppService) RunFlowByTrigger(contactID, triggerKeyword s
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, body, &respData, true)
 	return err
 }
 
-func (service *BotsWhatsAppService) GetBotTriggers(botID string) ([]*BotTrigger, error) {
+func (service *BotsWhatsAppService) GetBotTriggers(ctx context.Context, botID string) ([]*BotTrigger, error) {
 	path := fmt.Sprintf("/whatsapp/triggers?bot_id=%s", botID)
 
 	var respData struct {
 		Success bool          `json:"success"`
 		Data    []*BotTrigger `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -808,25 +809,25 @@ type WhatsAppBotChat struct {
 	InboxUnread      int                 `json:"inbox_unread"`
 }
 
-func (service *BotsWhatsAppService) GetBotChats(botID string) ([]*WhatsAppBotChat, error) {
+func (service *BotsWhatsAppService) GetBotChats(ctx context.Context, botID string) ([]*WhatsAppBotChat, error) {
 	path := fmt.Sprintf("/whatsapp/chats?bot_id=%s", botID)
 
 	var respData struct {
 		Success bool               `json:"success"`
 		Data    []*WhatsAppBotChat `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
-func (service *BotsWhatsAppService) GetContactMessages(contactID string) ([]*WhatsAppBotMessage, error) {
+func (service *BotsWhatsAppService) GetContactMessages(ctx context.Context, contactID string) ([]*WhatsAppBotMessage, error) {
 	path := fmt.Sprintf("/whatsapp/chats/messages?contact_id=%s", contactID)
 
 	var respData struct {
 		Success bool                  `json:"success"`
 		Data    []*WhatsAppBotMessage `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -837,13 +838,13 @@ type WhatsAppBotSendCampaignParams struct {
 	Messages []WhatsAppMessage `json:"messages"`
 }
 
-func (service *BotsWhatsAppService) SendCampaign(params WhatsAppBotSendCampaignParams) error {
+func (service *BotsWhatsAppService) SendCampaign(ctx context.Context, params WhatsAppBotSendCampaignParams) error {
 	path := "/whatsapp/campaigns/send"
 
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, params, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, params, &respData, true)
 	return err
 }
 
@@ -856,7 +857,7 @@ type WhatsAppBotSendCampaignByTemplateParams struct {
 	LanguageCode string
 }
 
-func (service *BotsWhatsAppService) SendCampaignByTemplate(params WhatsAppBotSendCampaignByTemplateParams) error {
+func (service *BotsWhatsAppService) SendCampaignByTemplate(ctx context.Context, params WhatsAppBotSendCampaignByTemplateParams) error {
 	path := "/whatsapp/campaigns/sendTemplate"
 	type bodyFormat struct {
 		Title    string       `json:"title"`
@@ -904,7 +905,7 @@ func (service *BotsWhatsAppService) SendCampaignByTemplate(params WhatsAppBotSen
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, body, &respData, true)
 	return err
 }
 
@@ -921,13 +922,13 @@ type WhatsAppTemplate struct {
 	CreatedAt      time.Time         `json:"created_at"`
 }
 
-func (service *BotsWhatsAppService) GetTemplates() ([]*WhatsAppTemplate, error) {
+func (service *BotsWhatsAppService) GetTemplates(ctx context.Context) ([]*WhatsAppTemplate, error) {
 	path := "/whatsapp/templates"
 
 	var respData struct {
 		Success bool                `json:"success"`
 		Data    []*WhatsAppTemplate `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, nil, &respData, true)
 	return respData.Data, err
 }

@@ -1,6 +1,7 @@
 package sendpulse_sdk_go
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -36,14 +37,14 @@ type VkAccount struct {
 	} `json:"statistics"`
 }
 
-func (service *BotsVkService) GetAccount() (*VkAccount, error) {
+func (service *BotsVkService) GetAccount(ctx context.Context) (*VkAccount, error) {
 	path := "/vk/account"
 
 	var respData struct {
 		Success bool       `json:"success"`
 		Data    *VkAccount `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -63,14 +64,14 @@ type VkBot struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
-func (service *BotsVkService) GetBots() ([]*VkBot, error) {
+func (service *BotsVkService) GetBots(ctx context.Context) ([]*VkBot, error) {
 	path := "/vk/bots"
 
 	var respData struct {
 		Success bool     `json:"success"`
 		Data    []*VkBot `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -92,29 +93,29 @@ type VkBotContact struct {
 	CreatedAt             time.Time              `json:"created_at"`
 }
 
-func (service *BotsVkService) GetContact(contactID string) (*VkBotContact, error) {
+func (service *BotsVkService) GetContact(ctx context.Context, contactID string) (*VkBotContact, error) {
 	path := fmt.Sprintf("/vk/contacts/get?id=%s", contactID)
 
 	var respData struct {
 		Success bool          `json:"success"`
 		Data    *VkBotContact `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
-func (service *BotsVkService) GetContactsByTag(tag, botID string) ([]*VkBotContact, error) {
+func (service *BotsVkService) GetContactsByTag(ctx context.Context, tag, botID string) ([]*VkBotContact, error) {
 	path := fmt.Sprintf("/vk/contacts/getByTag?tag=%s&bot_id=%s", tag, botID)
 
 	var respData struct {
 		Success bool            `json:"success"`
 		Data    []*VkBotContact `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
-func (service *BotsVkService) GetContactsByVariable(params BotContactsByVariableParams) ([]*VkBotContact, error) {
+func (service *BotsVkService) GetContactsByVariable(ctx context.Context, params BotContactsByVariableParams) ([]*VkBotContact, error) {
 	urlParams := url.Values{}
 	urlParams.Add("variable_value", params.VariableValue)
 	if params.VariableID != "" {
@@ -132,11 +133,11 @@ func (service *BotsVkService) GetContactsByVariable(params BotContactsByVariable
 		Success bool            `json:"success"`
 		Data    []*VkBotContact `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
-func (service *BotsVkService) SendTextByContact(contactID string, text string) error {
+func (service *BotsVkService) SendTextByContact(ctx context.Context, contactID string, text string) error {
 	path := "/vk/contacts/sendText"
 
 	type bodyFormat struct {
@@ -151,11 +152,11 @@ func (service *BotsVkService) SendTextByContact(contactID string, text string) e
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, body, &respData, true)
 	return err
 }
 
-func (service *BotsVkService) SetVariableToContact(contactID string, variableID string, variableName string, variableValue interface{}) error {
+func (service *BotsVkService) SetVariableToContact(ctx context.Context, contactID string, variableID string, variableName string, variableValue interface{}) error {
 	path := "/vk/contacts/setVariable"
 
 	type bodyFormat struct {
@@ -174,11 +175,11 @@ func (service *BotsVkService) SetVariableToContact(contactID string, variableID 
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, body, &respData, true)
 	return err
 }
 
-func (service *BotsVkService) SetTagsToContact(contactID string, tags []string) error {
+func (service *BotsVkService) SetTagsToContact(ctx context.Context, contactID string, tags []string) error {
 	path := "/vk/contacts/setTag"
 
 	type bodyFormat struct {
@@ -193,11 +194,11 @@ func (service *BotsVkService) SetTagsToContact(contactID string, tags []string) 
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, body, &respData, true)
 	return err
 }
 
-func (service *BotsVkService) DeleteTagFromContact(contactID string, tag string) error {
+func (service *BotsVkService) DeleteTagFromContact(ctx context.Context, contactID string, tag string) error {
 	path := "/vk/contacts/deleteTag"
 
 	type bodyFormat struct {
@@ -212,11 +213,11 @@ func (service *BotsVkService) DeleteTagFromContact(contactID string, tag string)
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, body, &respData, true)
 	return err
 }
 
-func (service *BotsVkService) DisableContact(contactID string) error {
+func (service *BotsVkService) DisableContact(ctx context.Context, contactID string) error {
 	path := "/vk/contacts/disable"
 
 	type bodyFormat struct {
@@ -229,11 +230,11 @@ func (service *BotsVkService) DisableContact(contactID string) error {
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, body, &respData, true)
 	return err
 }
 
-func (service *BotsVkService) EnableContact(contactID string) error {
+func (service *BotsVkService) EnableContact(ctx context.Context, contactID string) error {
 	path := "/vk/contacts/enable"
 
 	type bodyFormat struct {
@@ -246,11 +247,11 @@ func (service *BotsVkService) EnableContact(contactID string) error {
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, body, &respData, true)
 	return err
 }
 
-func (service *BotsVkService) DeleteContact(contactID string) error {
+func (service *BotsVkService) DeleteContact(ctx context.Context, contactID string) error {
 	path := "/vk/contacts/delete"
 
 	type bodyFormat struct {
@@ -263,11 +264,11 @@ func (service *BotsVkService) DeleteContact(contactID string) error {
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, body, &respData, true)
 	return err
 }
 
-func (service *BotsVkService) GetPauseAutomation(contactID string) (int, error) {
+func (service *BotsVkService) GetPauseAutomation(ctx context.Context, contactID string) (int, error) {
 	path := fmt.Sprintf("/vk/contacts/getPauseAutomation?contact_id=%s", contactID)
 
 	var respData struct {
@@ -276,11 +277,11 @@ func (service *BotsVkService) GetPauseAutomation(contactID string) (int, error) 
 			Minutes int `json:"minutes"`
 		} `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data.Minutes, err
 }
 
-func (service *BotsVkService) SetPauseAutomation(contactID string, minutes int) error {
+func (service *BotsVkService) SetPauseAutomation(ctx context.Context, contactID string, minutes int) error {
 	path := "/vk/contacts/setPauseAutomation"
 	type bodyFormat struct {
 		ContactID string `json:"contact_id"`
@@ -294,11 +295,11 @@ func (service *BotsVkService) SetPauseAutomation(contactID string, minutes int) 
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, body, &respData, true)
 	return err
 }
 
-func (service *BotsVkService) DeletePauseAutomation(contactID string) error {
+func (service *BotsVkService) DeletePauseAutomation(ctx context.Context, contactID string) error {
 	path := "/vk/contacts/deletePauseAutomation"
 	type bodyFormat struct {
 		ContactID string `json:"contact_id"`
@@ -310,33 +311,33 @@ func (service *BotsVkService) DeletePauseAutomation(contactID string) error {
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, body, &respData, true)
 	return err
 }
 
-func (service *BotsVkService) GetBotVariables(botID string) ([]*BotVariable, error) {
+func (service *BotsVkService) GetBotVariables(ctx context.Context, botID string) ([]*BotVariable, error) {
 	path := fmt.Sprintf("/vk/variables?bot_id=%s", botID)
 
 	var respData struct {
 		Success bool           `json:"success"`
 		Data    []*BotVariable `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
-func (service *BotsVkService) GetFlows(botID string) ([]*BotFlow, error) {
+func (service *BotsVkService) GetFlows(ctx context.Context, botID string) ([]*BotFlow, error) {
 	path := fmt.Sprintf("/vk/flows?bot_id=%s", botID)
 
 	var respData struct {
 		Success bool       `json:"success"`
 		Data    []*BotFlow `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
-func (service *BotsVkService) RunFlow(contactID, flowID string, externalData map[string]interface{}) error {
+func (service *BotsVkService) RunFlow(ctx context.Context, contactID, flowID string, externalData map[string]interface{}) error {
 	path := "/vk/flows/run"
 
 	type bodyFormat struct {
@@ -353,11 +354,11 @@ func (service *BotsVkService) RunFlow(contactID, flowID string, externalData map
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, body, &respData, true)
 	return err
 }
 
-func (service *BotsVkService) RunFlowByTrigger(contactID, triggerKeyword string, externalData map[string]interface{}) error {
+func (service *BotsVkService) RunFlowByTrigger(ctx context.Context, contactID, triggerKeyword string, externalData map[string]interface{}) error {
 	path := "/vk/flows/runByTrigger"
 
 	type bodyFormat struct {
@@ -374,18 +375,18 @@ func (service *BotsVkService) RunFlowByTrigger(contactID, triggerKeyword string,
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, body, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, body, &respData, true)
 	return err
 }
 
-func (service *BotsVkService) GetBotTriggers(botID string) ([]*BotTrigger, error) {
+func (service *BotsVkService) GetBotTriggers(ctx context.Context, botID string) ([]*BotTrigger, error) {
 	path := fmt.Sprintf("/vk/triggers?bot_id=%s", botID)
 
 	var respData struct {
 		Success bool          `json:"success"`
 		Data    []*BotTrigger `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -406,25 +407,25 @@ type VkBotChat struct {
 	InboxUnread      int           `json:"inbox_unread"`
 }
 
-func (service *BotsVkService) GetBotChats(botID string) ([]*VkBotChat, error) {
+func (service *BotsVkService) GetBotChats(ctx context.Context, botID string) ([]*VkBotChat, error) {
 	path := fmt.Sprintf("/vk/chats?bot_id=%s", botID)
 
 	var respData struct {
 		Success bool         `json:"success"`
 		Data    []*VkBotChat `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
-func (service *BotsVkService) GetContactMessages(contactID string) ([]*VkBotMessage, error) {
+func (service *BotsVkService) GetContactMessages(ctx context.Context, contactID string) ([]*VkBotMessage, error) {
 	path := fmt.Sprintf("/vk/chats/messages?contact_id=%s", contactID)
 
 	var respData struct {
 		Success bool            `json:"success"`
 		Data    []*VkBotMessage `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -442,12 +443,12 @@ type VkBotCampaignMessage struct {
 	} `json:"message"`
 }
 
-func (service *BotsVkService) SendCampaign(params VkBotSendCampaignParams) error {
+func (service *BotsVkService) SendCampaign(ctx context.Context, params VkBotSendCampaignParams) error {
 	path := "/vk/campaigns/send"
 
 	var respData struct {
 		Success bool `json:"success"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, params, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, params, &respData, true)
 	return err
 }

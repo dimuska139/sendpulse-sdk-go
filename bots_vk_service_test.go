@@ -1,6 +1,7 @@
 package sendpulse_sdk_go
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"time"
@@ -35,7 +36,7 @@ func (suite *SendpulseTestSuite) TestBotsVkService_GetAccount() {
 		}`)
 	})
 
-	account, err := suite.client.Bots.Vk.GetAccount()
+	account, err := suite.client.Bots.Vk.GetAccount(context.Background())
 	suite.NoError(err)
 	suite.True(account.Plan.Branding)
 }
@@ -64,7 +65,7 @@ func (suite *SendpulseTestSuite) TestBotsVkService_GetBots() {
 		}`)
 	})
 
-	bots, err := suite.client.Bots.Vk.GetBots()
+	bots, err := suite.client.Bots.Vk.GetBots(context.Background())
 	suite.NoError(err)
 	suite.Equal("12345", bots[0].ID)
 }
@@ -99,7 +100,7 @@ func (suite *SendpulseTestSuite) TestBotsVkService_GetContact() {
 		}`)
 	})
 
-	contact, err := suite.client.Bots.Vk.GetContact("1")
+	contact, err := suite.client.Bots.Vk.GetContact(context.Background(), "1")
 	suite.NoError(err)
 	suite.Equal("1234", contact.ID)
 }
@@ -133,7 +134,7 @@ func (suite *SendpulseTestSuite) TestBotsVkService_GetContactsByTag() {
 		}`)
 	})
 
-	contacts, err := suite.client.Bots.Vk.GetContactsByTag("tag", "bot_id")
+	contacts, err := suite.client.Bots.Vk.GetContactsByTag(context.Background(), "tag", "bot_id")
 	suite.NoError(err)
 	suite.Equal("1234", contacts[0].ID)
 }
@@ -167,7 +168,7 @@ func (suite *SendpulseTestSuite) TestBotsVkService_GetContactsByVariable() {
 		}`)
 	})
 
-	contacts, err := suite.client.Bots.Vk.GetContactsByVariable(BotContactsByVariableParams{
+	contacts, err := suite.client.Bots.Vk.GetContactsByVariable(context.Background(), BotContactsByVariableParams{
 		VariableID:    "var_id",
 		VariableName:  "name",
 		BotID:         "qwe123",
@@ -186,7 +187,7 @@ func (suite *SendpulseTestSuite) TestBotsVkService_SendTextByContact() {
 		}`)
 	})
 
-	err := suite.client.Bots.Vk.SendTextByContact("qwe12345", "hello")
+	err := suite.client.Bots.Vk.SendTextByContact(context.Background(), "qwe12345", "hello")
 	suite.NoError(err)
 }
 
@@ -199,7 +200,7 @@ func (suite *SendpulseTestSuite) TestBotsVkService_SetVariableToContact() {
 		}`)
 	})
 
-	err := suite.client.Bots.Vk.SetVariableToContact("contactId", "variableId", "variableName", 123)
+	err := suite.client.Bots.Vk.SetVariableToContact(context.Background(), "contactId", "variableId", "variableName", 123)
 	suite.NoError(err)
 }
 
@@ -212,7 +213,7 @@ func (suite *SendpulseTestSuite) TestBotsVkService_SetTagsToContact() {
 		}`)
 	})
 
-	err := suite.client.Bots.Vk.SetTagsToContact("contactId", []string{"tag1", "tag2"})
+	err := suite.client.Bots.Vk.SetTagsToContact(context.Background(), "contactId", []string{"tag1", "tag2"})
 	suite.NoError(err)
 }
 
@@ -225,7 +226,7 @@ func (suite *SendpulseTestSuite) TestBotsVkService_DeleteTagFromContact() {
 		}`)
 	})
 
-	err := suite.client.Bots.Vk.DeleteTagFromContact("contactId", "tag1")
+	err := suite.client.Bots.Vk.DeleteTagFromContact(context.Background(), "contactId", "tag1")
 	suite.NoError(err)
 }
 
@@ -238,7 +239,7 @@ func (suite *SendpulseTestSuite) TestBotsVkService_DisableContact() {
 		}`)
 	})
 
-	err := suite.client.Bots.Vk.DisableContact("contactId")
+	err := suite.client.Bots.Vk.DisableContact(context.Background(), "contactId")
 	suite.NoError(err)
 }
 
@@ -251,7 +252,7 @@ func (suite *SendpulseTestSuite) TestBotsVkService_EnableContact() {
 		}`)
 	})
 
-	err := suite.client.Bots.Vk.EnableContact("contactId")
+	err := suite.client.Bots.Vk.EnableContact(context.Background(), "contactId")
 	suite.NoError(err)
 }
 
@@ -264,7 +265,7 @@ func (suite *SendpulseTestSuite) TestBotsVkService_DeleteContact() {
 		}`)
 	})
 
-	err := suite.client.Bots.Vk.DeleteContact("contactId")
+	err := suite.client.Bots.Vk.DeleteContact(context.Background(), "contactId")
 	suite.NoError(err)
 }
 
@@ -280,7 +281,7 @@ func (suite *SendpulseTestSuite) TestBotsVkService_GetPauseAutomation() {
 		}`)
 	})
 
-	p, err := suite.client.Bots.Vk.GetPauseAutomation("contactId")
+	p, err := suite.client.Bots.Vk.GetPauseAutomation(context.Background(), "contactId")
 	suite.NoError(err)
 	suite.Equal(123, p)
 }
@@ -294,7 +295,7 @@ func (suite *SendpulseTestSuite) TestBotsVkService_SetPauseAutomation() {
 		}`)
 	})
 
-	err := suite.client.Bots.Vk.SetPauseAutomation("contactId", 60)
+	err := suite.client.Bots.Vk.SetPauseAutomation(context.Background(), "contactId", 60)
 	suite.NoError(err)
 }
 
@@ -307,7 +308,7 @@ func (suite *SendpulseTestSuite) TestBotsVkService_DeletePauseAutomation() {
 		}`)
 	})
 
-	err := suite.client.Bots.Vk.DeletePauseAutomation("contactId")
+	err := suite.client.Bots.Vk.DeletePauseAutomation(context.Background(), "contactId")
 	suite.NoError(err)
 }
 
@@ -330,7 +331,7 @@ func (suite *SendpulseTestSuite) TestBotsVkService_GetBotVariables() {
 		}`)
 	})
 
-	variables, err := suite.client.Bots.Vk.GetBotVariables("contactId")
+	variables, err := suite.client.Bots.Vk.GetBotVariables(context.Background(), "contactId")
 	suite.NoError(err)
 	suite.Equal("qwerty", variables[0].ID)
 }
@@ -357,7 +358,7 @@ func (suite *SendpulseTestSuite) TestBotsVkService_GetFlows() {
 		}`)
 	})
 
-	flows, err := suite.client.Bots.Vk.GetFlows("contactId")
+	flows, err := suite.client.Bots.Vk.GetFlows(context.Background(), "contactId")
 	suite.NoError(err)
 	suite.Equal("qwe123", flows[0].ID)
 }
@@ -371,7 +372,7 @@ func (suite *SendpulseTestSuite) TestBotsVkService_RunFlow() {
 		}`)
 	})
 
-	err := suite.client.Bots.Vk.RunFlow("contactId", "flowId", map[string]interface{}{
+	err := suite.client.Bots.Vk.RunFlow(context.Background(), "contactId", "flowId", map[string]interface{}{
 		"tracking_number": "1234-0987-5678-9012",
 	})
 	suite.NoError(err)
@@ -386,7 +387,7 @@ func (suite *SendpulseTestSuite) TestBotsVkService_RunFlowByTrigger() {
 		}`)
 	})
 
-	err := suite.client.Bots.Vk.RunFlowByTrigger("contactId", "keyword", map[string]interface{}{
+	err := suite.client.Bots.Vk.RunFlowByTrigger(context.Background(), "contactId", "keyword", map[string]interface{}{
 		"tracking_number": "1234-0987-5678-9012",
 	})
 	suite.NoError(err)
@@ -417,7 +418,7 @@ func (suite *SendpulseTestSuite) TestBotsVkService_GetBotTriggers() {
 		}`)
 	})
 
-	triggers, err := suite.client.Bots.Vk.GetBotTriggers("bot")
+	triggers, err := suite.client.Bots.Vk.GetBotTriggers(context.Background(), "bot")
 	suite.NoError(err)
 	suite.Equal("qwe1234", triggers[0].ID)
 }
@@ -469,7 +470,7 @@ func (suite *SendpulseTestSuite) TestBotsVkService_GetBotChats() {
 		}`)
 	})
 
-	chats, err := suite.client.Bots.Vk.GetBotChats("bot")
+	chats, err := suite.client.Bots.Vk.GetBotChats(context.Background(), "bot")
 	suite.NoError(err)
 	suite.Equal("string", chats[0].InboxLastMessage.CampaignID)
 }
@@ -498,7 +499,7 @@ func (suite *SendpulseTestSuite) TestBotsVkService_GetContactMessages() {
 		}`)
 	})
 
-	messages, err := suite.client.Bots.Vk.GetContactMessages("bot")
+	messages, err := suite.client.Bots.Vk.GetContactMessages(context.Background(), "bot")
 	suite.NoError(err)
 	suite.Equal("string", messages[0].ID)
 }
@@ -522,7 +523,7 @@ func (suite *SendpulseTestSuite) TestBotsVkService_SendCampaign() {
 		},
 	})
 
-	err := suite.client.Bots.Vk.SendCampaign(VkBotSendCampaignParams{
+	err := suite.client.Bots.Vk.SendCampaign(context.Background(), VkBotSendCampaignParams{
 		Title:    "Title",
 		BotID:    "qwe123",
 		SendAt:   time.Now(),

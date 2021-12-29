@@ -1,6 +1,7 @@
 package sendpulse_sdk_go
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 )
@@ -14,7 +15,7 @@ func (suite *SendpulseTestSuite) TestBalanceService_GetCommon() {
 		}`)
 	})
 
-	balance, err := suite.client.Balance.GetBalance("RUB")
+	balance, err := suite.client.Balance.GetBalance(context.Background(), "RUB")
 	suite.NoError(err)
 	suite.Equal("RUR", balance.Currency)
 }
@@ -48,7 +49,7 @@ func (suite *SendpulseTestSuite) TestBalanceService_GetDetailed() {
 		}`)
 	})
 
-	balance, err := suite.client.Balance.GetDetailedBalance()
+	balance, err := suite.client.Balance.GetDetailedBalance(context.Background())
 	suite.NoError(err)
 	suite.Equal("RUR", balance.Balance.Currency)
 }

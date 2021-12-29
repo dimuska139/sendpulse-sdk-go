@@ -1,6 +1,7 @@
 package sendpulse_sdk_go
 
 import (
+	"context"
 	b64 "encoding/base64"
 	"encoding/json"
 	"fmt"
@@ -16,7 +17,7 @@ func newTemplatesService(cl *Client) *TemplatesService {
 	return &TemplatesService{client: cl}
 }
 
-func (service *TemplatesService) CreateTemplate(name string, body string, lang string) (int, error) {
+func (service *TemplatesService) CreateTemplate(ctx context.Context, name string, body string, lang string) (int, error) {
 	path := "/template"
 
 	type paramsFormat struct {
@@ -38,11 +39,11 @@ func (service *TemplatesService) CreateTemplate(name string, body string, lang s
 		Result bool `json:"result"`
 		RealID int  `json:"real_id"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, params, &response, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, params, &response, true)
 	return response.RealID, err
 }
 
-func (service *TemplatesService) UpdateTemplate(templateID int, body string, lang string) error {
+func (service *TemplatesService) UpdateTemplate(ctx context.Context, templateID int, body string, lang string) error {
 	path := fmt.Sprintf("/template/edit/%d", templateID)
 
 	type paramsFormat struct {
@@ -58,7 +59,7 @@ func (service *TemplatesService) UpdateTemplate(templateID int, body string, lan
 	var response struct {
 		Result bool `json:"result"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, params, &response, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, params, &response, true)
 	return err
 }
 
@@ -102,20 +103,20 @@ func (t *Template) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (service *TemplatesService) GetTemplate(templateID int) (*Template, error) {
+func (service *TemplatesService) GetTemplate(ctx context.Context, templateID int) (*Template, error) {
 	path := fmt.Sprintf("/template/%d", templateID)
 	var respData Template
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return &respData, err
 }
 
-func (service *TemplatesService) GetTemplates(limit, offset int, owner string) ([]*Template, error) {
+func (service *TemplatesService) GetTemplates(ctx context.Context, limit, offset int, owner string) ([]*Template, error) {
 	path := fmt.Sprintf("/templates?limit=%d&offset=%d", limit, offset)
 	if owner != "" {
 		path += fmt.Sprintf("&owner=%s", owner)
 	}
 
 	var respData []*Template
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData, err
 }

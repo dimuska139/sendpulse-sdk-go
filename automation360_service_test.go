@@ -1,6 +1,7 @@
 package sendpulse_sdk_go
 
 import (
+	"context"
 	"fmt"
 	"github.com/bxcodec/faker/v3"
 	"net/http"
@@ -82,7 +83,7 @@ func (suite *SendpulseTestSuite) TestAutomation360Service_GetAutoresponderStatis
 		}`)
 	})
 
-	statistics, err := suite.client.Automation360.GetAutoresponderStatistics(id)
+	statistics, err := suite.client.Automation360.GetAutoresponderStatistics(context.Background(), id)
 	suite.NoError(err)
 	suite.Equal(4, len(statistics.Flows))
 }
@@ -97,7 +98,7 @@ func (suite *SendpulseTestSuite) TestAutomation360Service_StartEvent() {
 		}`)
 	})
 
-	err := suite.client.Automation360.StartEvent(eventName, map[string]interface{}{
+	err := suite.client.Automation360.StartEvent(context.Background(), eventName, map[string]interface{}{
 		"email": faker.Email(),
 		"name":  faker.Name(),
 	})
@@ -118,7 +119,7 @@ func (suite *SendpulseTestSuite) TestAutomation360Service_GetStartBlockStatistic
 		}`)
 	})
 
-	statistics, err := suite.client.Automation360.GetStartBlockStatistics(id)
+	statistics, err := suite.client.Automation360.GetStartBlockStatistics(context.Background(), id)
 	suite.NoError(err)
 	suite.Equal(456, statistics.Executed)
 }
@@ -151,7 +152,7 @@ func (suite *SendpulseTestSuite) TestAutomation360Service_GetEmailBlockStatistic
 		}`)
 	})
 
-	statistics, err := suite.client.Automation360.GetEmailBlockStatistics(id)
+	statistics, err := suite.client.Automation360.GetEmailBlockStatistics(context.Background(), id)
 	suite.NoError(err)
 	suite.Equal(467511, statistics.FlowID)
 }
@@ -173,7 +174,7 @@ func (suite *SendpulseTestSuite) TestAutomation360Service_GetPushBlockStatistics
 		}`)
 	})
 
-	statistics, err := suite.client.Automation360.GetPushBlockStatistics(id)
+	statistics, err := suite.client.Automation360.GetPushBlockStatistics(context.Background(), id)
 	suite.NoError(err)
 	suite.Equal(467511, statistics.FlowID)
 }
@@ -197,7 +198,7 @@ func (suite *SendpulseTestSuite) TestAutomation360Service_GetSmsBlockStatistics(
 		}`)
 	})
 
-	statistics, err := suite.client.Automation360.GetSmsBlockStatistics(id)
+	statistics, err := suite.client.Automation360.GetSmsBlockStatistics(context.Background(), id)
 	suite.NoError(err)
 	suite.Equal(467511, statistics.FlowID)
 }
@@ -217,7 +218,7 @@ func (suite *SendpulseTestSuite) TestAutomation360Service_GetMessengerBlockStati
 		}`)
 	})
 
-	statistics, err := suite.client.Automation360.GetMessengerBlockStatistics(id)
+	statistics, err := suite.client.Automation360.GetMessengerBlockStatistics(context.Background(), id)
 	suite.NoError(err)
 	suite.Equal(234728, statistics.FlowID)
 }
@@ -236,7 +237,7 @@ func (suite *SendpulseTestSuite) TestAutomation360Service_GetFilterBlockStatisti
 		}`)
 	})
 
-	statistics, err := suite.client.Automation360.GetFilterBlockStatistics(id)
+	statistics, err := suite.client.Automation360.GetFilterBlockStatistics(context.Background(), id)
 	suite.NoError(err)
 	suite.Equal(234728, statistics.FlowID)
 }
@@ -255,7 +256,7 @@ func (suite *SendpulseTestSuite) TestAutomation360Service_GetTriggerBlockStatist
 		}`)
 	})
 
-	statistics, err := suite.client.Automation360.GetTriggerBlockStatistics(id)
+	statistics, err := suite.client.Automation360.GetTriggerBlockStatistics(context.Background(), id)
 	suite.NoError(err)
 	suite.Equal(234728, statistics.FlowID)
 }
@@ -279,7 +280,7 @@ func (suite *SendpulseTestSuite) TestAutomation360Service_GetGoalBlockStatistics
 		}`)
 	})
 
-	statistics, err := suite.client.Automation360.GetGoalBlockStatistics(id)
+	statistics, err := suite.client.Automation360.GetGoalBlockStatistics(context.Background(), id)
 	suite.NoError(err)
 	suite.Equal(234728, statistics.FlowID)
 }
@@ -298,7 +299,7 @@ func (suite *SendpulseTestSuite) TestAutomation360Service_GetActionBlockStatisti
 		}`)
 	})
 
-	statistics, err := suite.client.Automation360.GetActionBlockStatistics(id)
+	statistics, err := suite.client.Automation360.GetActionBlockStatistics(context.Background(), id)
 	suite.NoError(err)
 	suite.Equal(234728, statistics.FlowID)
 }
@@ -343,7 +344,7 @@ func (suite *SendpulseTestSuite) TestAutomation360Service_GetAutoresponderConver
 		}`)
 	})
 
-	conversions, err := suite.client.Automation360.GetAutoresponderConversions(id)
+	conversions, err := suite.client.Automation360.GetAutoresponderConversions(context.Background(), id)
 	suite.NoError(err)
 	suite.Equal(5, conversions.TotalConversions)
 }
@@ -405,7 +406,7 @@ func (suite *SendpulseTestSuite) TestAutomation360Service_GetAutoresponderContac
 		}`)
 	})
 
-	contacts, err := suite.client.Automation360.GetAutoresponderContacts(id)
+	contacts, err := suite.client.Automation360.GetAutoresponderContacts(context.Background(), id)
 	suite.NoError(err)
 	suite.Equal(5, len(contacts))
 }

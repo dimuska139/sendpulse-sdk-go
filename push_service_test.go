@@ -1,6 +1,7 @@
 package sendpulse_sdk_go
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"net/http"
@@ -23,7 +24,7 @@ func (suite *SendpulseTestSuite) TestPushService_List() {
 		]`)
 	})
 
-	list, err := suite.client.Push.GetMessages(PushListParams{
+	list, err := suite.client.Push.GetMessages(context.Background(), PushListParams{
 		Limit:     10,
 		Offset:    0,
 		From:      time.Now(),
@@ -42,7 +43,7 @@ func (suite *SendpulseTestSuite) TestPushService_WebsitesTotal() {
 		}`)
 	})
 
-	total, err := suite.client.Push.CountWebsites()
+	total, err := suite.client.Push.CountWebsites(context.Background())
 	suite.NoError(err)
 	suite.Equal(2, total)
 }
@@ -60,7 +61,7 @@ func (suite *SendpulseTestSuite) TestPushService_WebsitesList() {
 		]`)
 	})
 
-	list, err := suite.client.Push.GetWebsites(10, 0)
+	list, err := suite.client.Push.GetWebsites(context.Background(), 10, 0)
 	suite.NoError(err)
 	suite.Equal(53, list[0].ID)
 }
@@ -78,7 +79,7 @@ func (suite *SendpulseTestSuite) TestPushService_WebsiteVariables() {
 		]`)
 	})
 
-	variables, err := suite.client.Push.GetWebsiteVariables(websiteID)
+	variables, err := suite.client.Push.GetWebsiteVariables(context.Background(), websiteID)
 	suite.NoError(err)
 	suite.Equal("uname", variables[0].Name)
 }
@@ -113,7 +114,7 @@ func (suite *SendpulseTestSuite) TestPushService_WebsiteSubscriptions() {
 		]`)
 	})
 
-	subscriptions, err := suite.client.Push.GetWebsiteSubscriptions(websiteID, WebsiteSubscriptionsParams{
+	subscriptions, err := suite.client.Push.GetWebsiteSubscriptions(context.Background(), websiteID, WebsiteSubscriptionsParams{
 		Limit:  10,
 		Offset: 0,
 		From:   time.Now(),
@@ -132,7 +133,7 @@ func (suite *SendpulseTestSuite) TestPushService_SubscriptionsTotal() {
 		}`)
 	})
 
-	total, err := suite.client.Push.CountWebsiteSubscriptions(websiteID)
+	total, err := suite.client.Push.CountWebsiteSubscriptions(context.Background(), websiteID)
 	suite.NoError(err)
 	suite.Equal(2, total)
 }
@@ -154,7 +155,7 @@ func (suite *SendpulseTestSuite) TestPushService_WebsiteInfo() {
 		}`)
 	})
 
-	info, err := suite.client.Push.GetWebsiteInfo(websiteID)
+	info, err := suite.client.Push.GetWebsiteInfo(context.Background(), websiteID)
 	suite.NoError(err)
 	suite.Equal("https://login.sendpulse.com/img/my/push/push-default-icons/icon.png", info.Icon)
 }
@@ -171,7 +172,7 @@ func (suite *SendpulseTestSuite) TestPushService_ActivateSubscription() {
 		}`)
 	})
 
-	err := suite.client.Push.ActivateSubscription(subscrID)
+	err := suite.client.Push.ActivateSubscription(context.Background(), subscrID)
 	suite.NoError(err)
 }
 
@@ -187,7 +188,7 @@ func (suite *SendpulseTestSuite) TestPushService_DeactivateSubscription() {
 		}`)
 	})
 
-	err := suite.client.Push.DeactivateSubscription(subscrID)
+	err := suite.client.Push.DeactivateSubscription(context.Background(), subscrID)
 	suite.NoError(err)
 }
 
@@ -201,7 +202,7 @@ func (suite *SendpulseTestSuite) TestPushService_CreatePushTask() {
 		}`)
 	})
 
-	taskID, err := suite.client.Push.CreatePushCampaign(PushMessageParams{
+	taskID, err := suite.client.Push.CreatePushCampaign(context.Background(), PushMessageParams{
 		Title:                "Title",
 		WebsiteID:            10,
 		Body:                 "Hello",
@@ -245,7 +246,7 @@ func (suite *SendpulseTestSuite) TestPushService_PushTaskStatistics() {
 		}`)
 	})
 
-	stat, err := suite.client.Push.GetPushMessagesStatistics(taskID)
+	stat, err := suite.client.Push.GetPushMessagesStatistics(context.Background(), taskID)
 	suite.NoError(err)
 	suite.Equal(36, stat.ID)
 }

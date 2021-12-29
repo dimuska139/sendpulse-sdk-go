@@ -1,6 +1,7 @@
 package sendpulse_sdk_go
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -18,7 +19,7 @@ func newValidatorService(cl *Client) *ValidatorService {
 }
 
 // ValidateMailingList sends a mailing list for review
-func (service *ValidatorService) ValidateMailingList(mailingListID int) error {
+func (service *ValidatorService) ValidateMailingList(ctx context.Context, mailingListID int) error {
 	path := "/verifier-service/send-list-to-verify/"
 	var response struct {
 		Result bool `json:"result"`
@@ -27,7 +28,7 @@ func (service *ValidatorService) ValidateMailingList(mailingListID int) error {
 		ID int `json:"id"`
 	}
 	body := bodyFormat{ID: mailingListID}
-	_, err := service.client.newRequest(http.MethodPost, path, body, &response, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, body, &response, true)
 	return err
 }
 
@@ -38,13 +39,13 @@ type ValidationProgress struct {
 }
 
 // GetMailingListValidationProgress returns a progress of mailing list validation
-func (service *ValidatorService) GetMailingListValidationProgress(mailingListID int) (*ValidationProgress, error) {
+func (service *ValidatorService) GetMailingListValidationProgress(ctx context.Context, mailingListID int) (*ValidationProgress, error) {
 	path := fmt.Sprintf("/verifier-service/get-progress/?id=%d", mailingListID)
 	var response struct {
 		Result bool                `json:"result"`
 		Data   *ValidationProgress `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &response, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &response, true)
 	return response.Data, err
 }
 
@@ -80,26 +81,26 @@ type MailingListValidationResultDetailed struct {
 }
 
 // GetMailingListValidationResult returns a list of email addresses from a mailing list with their verification results
-func (service *ValidatorService) GetMailingListValidationResult(mailingListID int) (*MailingListValidationResultDetailed, error) {
+func (service *ValidatorService) GetMailingListValidationResult(ctx context.Context, mailingListID int) (*MailingListValidationResultDetailed, error) {
 	path := fmt.Sprintf("/verifier-service/check/?id=%d", mailingListID)
 	var response *MailingListValidationResultDetailed
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &response, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &response, true)
 	return response, err
 }
 
 // GetValidatedMailingLists returns a list of verified mailing lists
-func (service *ValidatorService) GetValidatedMailingLists(limit, offset int) ([]*MailingListValidationResult, error) {
+func (service *ValidatorService) GetValidatedMailingLists(ctx context.Context, limit, offset int) ([]*MailingListValidationResult, error) {
 	path := fmt.Sprintf("/verifier-service/check-list?start=%d&count=%d", offset, limit)
 	var response struct {
 		Total int                            `json:"total"`
 		List  []*MailingListValidationResult `json:"list"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &response, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &response, true)
 	return response.List, err
 }
 
 // ValidateEmail verifies one email address
-func (service *ValidatorService) ValidateEmail(email string) error {
+func (service *ValidatorService) ValidateEmail(ctx context.Context, email string) error {
 	path := "/verifier-service/send-single-to-verify/"
 	var response struct {
 		Result bool `json:"result"`
@@ -108,7 +109,7 @@ func (service *ValidatorService) ValidateEmail(email string) error {
 		Email string `json:"email"`
 	}
 	body := bodyFormat{Email: email}
-	_, err := service.client.newRequest(http.MethodPost, path, body, &response, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, body, &response, true)
 	return err
 }
 
@@ -126,18 +127,18 @@ type EmailValidationResult struct {
 }
 
 // GetEmailValidationResult returns the results of a verification of specific email
-func (service *ValidatorService) GetEmailValidationResult(email string) (*EmailValidationResult, error) {
+func (service *ValidatorService) GetEmailValidationResult(ctx context.Context, email string) (*EmailValidationResult, error) {
 	path := fmt.Sprintf("/verifier-service/get-single-result/?email=%s", email)
 	var response struct {
 		Result bool                   `json:"result"`
 		Data   *EmailValidationResult `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &response, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &response, true)
 	return response.Data, err
 }
 
 // DeleteEmailValidationResult removes the result of checking one address
-func (service *ValidatorService) DeleteEmailValidationResult(email string) error {
+func (service *ValidatorService) DeleteEmailValidationResult(ctx context.Context, email string) error {
 	path := "/verifier-service/delete-single-result"
 	var response struct {
 		Result bool `json:"result"`
@@ -146,7 +147,7 @@ func (service *ValidatorService) DeleteEmailValidationResult(email string) error
 		Email string `json:"email"`
 	}
 	body := bodyFormat{Email: email}
-	_, err := service.client.newRequest(http.MethodGet, path, body, &response, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, body, &response, true)
 	return err
 }
 
@@ -159,7 +160,7 @@ type MailingListReportParams struct {
 }
 
 // CreateMailingListValidationReport creates a report with the verification results for a given mailing list
-func (service *ValidatorService) CreateMailingListValidationReport(params MailingListReportParams) error {
+func (service *ValidatorService) CreateMailingListValidationReport(ctx context.Context, params MailingListReportParams) error {
 	path := "/verifier-service/make-report"
 	var response struct {
 		Result bool `json:"result"`
@@ -186,14 +187,14 @@ func (service *ValidatorService) CreateMailingListValidationReport(params Mailin
 		body.Statuses = "[" + strings.Join(strStatuses, ",") + "]"
 	}
 
-	_, err := service.client.newRequest(http.MethodPost, path, params, &response, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, params, &response, true)
 	return err
 }
 
 // GetMailingListValidationReport returns a report with the results of a mailing list verification
-func (service *ValidatorService) GetMailingListValidationReport(mailingListID int) (*MailingListValidationResultDetailed, error) {
+func (service *ValidatorService) GetMailingListValidationReport(ctx context.Context, mailingListID int) (*MailingListValidationResultDetailed, error) {
 	path := fmt.Sprintf("/verifier-service/check-report?id=%d", mailingListID)
 	var response *MailingListValidationResultDetailed
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &response, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &response, true)
 	return response, err
 }

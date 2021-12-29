@@ -1,6 +1,7 @@
 package sendpulse_sdk_go
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 )
@@ -30,15 +31,15 @@ type EmailInfo struct {
 }
 
 // GetEmailInfo returns general information about specific email address
-func (service *AddressService) GetEmailInfo(email string) ([]*EmailInfo, error) {
+func (service *AddressService) GetEmailInfo(ctx context.Context, email string) ([]*EmailInfo, error) {
 	path := fmt.Sprintf("/emails/%s", email)
 	var response []*EmailInfo
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &response, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &response, true)
 	return response, err
 }
 
 // GetEmailsInfo retrieves general informaion for a List of Email Addresses
-func (service *AddressService) GetEmailsInfo(emails []string) (map[string][]*EmailInfo, error) {
+func (service *AddressService) GetEmailsInfo(ctx context.Context, emails []string) (map[string][]*EmailInfo, error) {
 	path := "/emails"
 	type data struct {
 		Emails []string `json:"emails"`
@@ -46,7 +47,7 @@ func (service *AddressService) GetEmailsInfo(emails []string) (map[string][]*Ema
 
 	params := data{Emails: emails}
 	respData := make(map[string][]*EmailInfo)
-	_, err := service.client.newRequest(http.MethodPost, path, params, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, params, &respData, true)
 	return respData, err
 }
 
@@ -59,18 +60,18 @@ type EmailInfoList struct {
 }
 
 // GetDetails retrieves detailed information about specific email address
-func (service *AddressService) GetDetails(email string) ([]*EmailInfoList, error) {
+func (service *AddressService) GetDetails(ctx context.Context, email string) ([]*EmailInfoList, error) {
 	path := fmt.Sprintf("/emails/%s/details", email)
 	var response []*EmailInfoList
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &response, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &response, true)
 	return response, err
 }
 
 // GetStatisticsByCampaign returns information for a specific email address from a specific campaign
-func (service *AddressService) GetStatisticsByCampaign(campaignID int, email string) (*CampaignEmailStatistics, error) {
+func (service *AddressService) GetStatisticsByCampaign(ctx context.Context, campaignID int, email string) (*CampaignEmailStatistics, error) {
 	path := fmt.Sprintf("/campaigns/%d/email/%s", campaignID, email)
 	var respData *CampaignEmailStatistics
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData, err
 }
 
@@ -93,20 +94,20 @@ type CampaignEmailStatistics struct {
 }
 
 // GetStatisticsByAddressBook returns information for a specific email address from a specific address book
-func (service *AddressService) GetStatisticsByAddressBook(addressBookID int, email string) (*AddressBookEmailStatistics, error) {
+func (service *AddressService) GetStatisticsByAddressBook(ctx context.Context, addressBookID int, email string) (*AddressBookEmailStatistics, error) {
 	path := fmt.Sprintf("/addressbooks/%d/emails/%s", addressBookID, email)
 	var respData AddressBookEmailStatistics
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return &respData, err
 }
 
 // DeleteFromAllAddressBooks removes specific email address from all address books
-func (service *AddressService) DeleteFromAllAddressBooks(email string) error {
+func (service *AddressService) DeleteFromAllAddressBooks(ctx context.Context, email string) error {
 	path := fmt.Sprintf("/emails/%s", email)
 	var respData struct {
 		Result bool
 	}
-	_, err := service.client.newRequest(http.MethodDelete, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodDelete, path, nil, &respData, true)
 	return err
 }
 
@@ -125,10 +126,10 @@ type CampaignsEmailStatistics struct {
 }
 
 // GetEmailStatisticsByCampaignsAndAddressBooks returns statistics for an email address and campaigns it is in
-func (service *AddressService) GetEmailStatisticsByCampaignsAndAddressBooks(email string) (*CampaignsEmailStatistics, error) {
+func (service *AddressService) GetEmailStatisticsByCampaignsAndAddressBooks(ctx context.Context, email string) (*CampaignsEmailStatistics, error) {
 	path := fmt.Sprintf("/emails/%s/campaigns", email)
 	var respData *CampaignsEmailStatistics
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData, err
 }
 
@@ -145,7 +146,7 @@ type CampaignsAndAddressBooksEmailStatistics struct {
 }
 
 // GetEmailsStatisticsByCampaignsAndAddressBooks returns statistics for multiple email addresses and campaigns they are in
-func (service *AddressService) GetEmailsStatisticsByCampaignsAndAddressBooks(emails []string) (map[string]*CampaignsAndAddressBooksEmailStatistics, error) {
+func (service *AddressService) GetEmailsStatisticsByCampaignsAndAddressBooks(ctx context.Context, emails []string) (map[string]*CampaignsAndAddressBooksEmailStatistics, error) {
 	path := "/emails/campaigns"
 	respData := make(map[string]*CampaignsAndAddressBooksEmailStatistics)
 
@@ -154,12 +155,12 @@ func (service *AddressService) GetEmailsStatisticsByCampaignsAndAddressBooks(ema
 	}
 
 	params := data{Emails: emails}
-	_, err := service.client.newRequest(http.MethodPost, path, params, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, params, &respData, true)
 	return respData, err
 }
 
 // ChangeVariables is a method for change a variable for an email contact
-func (service *AddressService) ChangeVariables(addressBookID int, email string, variables []*Variable) error {
+func (service *AddressService) ChangeVariables(ctx context.Context, addressBookID int, email string, variables []*Variable) error {
 	path := fmt.Sprintf("/addressbooks/%d/emails/variable", addressBookID)
 
 	type data struct {
@@ -171,6 +172,6 @@ func (service *AddressService) ChangeVariables(addressBookID int, email string, 
 	var respData struct {
 		Result bool `json:"result"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, params, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, params, &respData, true)
 	return err
 }

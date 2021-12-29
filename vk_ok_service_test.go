@@ -1,6 +1,7 @@
 package sendpulse_sdk_go
 
 import (
+	"context"
 	"encoding/base64"
 	"fmt"
 	"net/http"
@@ -39,7 +40,7 @@ func (suite *SendpulseTestSuite) TestVkOkService_CreateSender() {
 		panic(err)
 	}
 
-	id, err := suite.client.VkOk.CreateSender(CreateVkOkSenderParams{
+	id, err := suite.client.VkOk.CreateSender(context.Background(), CreateVkOkSenderParams{
 		Name:        "Test",
 		VkUrl:       "https://vk.com/vk",
 		OkUrl:       "https://ok.com/ok",
@@ -81,7 +82,7 @@ func (suite *SendpulseTestSuite) TestVkOkService_CreateTemplate() {
 		}`)
 	})
 
-	tplID, err := suite.client.VkOk.CreateTemplate(CreateVkOkTemplateParams{
+	tplID, err := suite.client.VkOk.CreateTemplate(context.Background(), CreateVkOkTemplateParams{
 		Name:      "Test",
 		VkMessage: "Test message",
 		SenderID:  12345,
@@ -145,7 +146,7 @@ func (suite *SendpulseTestSuite) TestVkOkService_Templates() {
 		}`)
 	})
 
-	templates, err := suite.client.VkOk.GetTemplates()
+	templates, err := suite.client.VkOk.GetTemplates(context.Background())
 	suite.NoError(err)
 	suite.Equal(6615360, templates[0].UserID)
 }
@@ -182,7 +183,7 @@ func (suite *SendpulseTestSuite) TestVkOkService_Template() {
 		}`)
 	})
 
-	template, err := suite.client.VkOk.GetTemplate(tplID)
+	template, err := suite.client.VkOk.GetTemplate(context.Background(), tplID)
 	suite.NoError(err)
 	suite.Equal(6615360, template.UserID)
 }
@@ -199,7 +200,7 @@ func (suite *SendpulseTestSuite) TestVkOkService_Send() {
 		}`)
 	})
 
-	campaignID, err := suite.client.VkOk.Send(SendVkOkTemplateParams{
+	campaignID, err := suite.client.VkOk.Send(context.Background(), SendVkOkTemplateParams{
 		AddressBooks: []int{123, 456},
 		Recipients: []struct {
 			Phone     string                 `json:"phone"`
@@ -273,7 +274,7 @@ func (suite *SendpulseTestSuite) TestVkOkService_CampaignsStatistics() {
 		}`)
 	})
 
-	statistics, err := suite.client.VkOk.GetCampaignsStatistics()
+	statistics, err := suite.client.VkOk.GetCampaignsStatistics(context.Background())
 	suite.NoError(err)
 	suite.Equal(6615360, statistics[0].UserID)
 }
@@ -347,7 +348,7 @@ func (suite *SendpulseTestSuite) TestVkOkService_CampaignStatistics() {
 		}`)
 	})
 
-	statistics, err := suite.client.VkOk.GetCampaignStatistics(campaignID)
+	statistics, err := suite.client.VkOk.GetCampaignStatistics(context.Background(), campaignID)
 	suite.NoError(err)
 	suite.Equal(6615360, statistics.UserID)
 }
@@ -409,7 +410,7 @@ func (suite *SendpulseTestSuite) TestVkOkService_CampaignPhones() {
 		}`)
 	})
 
-	phones, err := suite.client.VkOk.GetCampaignPhones(campaignID)
+	phones, err := suite.client.VkOk.GetCampaignPhones(context.Background(), campaignID)
 	suite.NoError(err)
 	suite.Equal(2, len(phones))
 }

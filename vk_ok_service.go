@@ -2,6 +2,7 @@ package sendpulse_sdk_go
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"io"
 	"mime/multipart"
@@ -25,7 +26,7 @@ type CreateVkOkSenderParams struct {
 	CoverLetter *os.File
 }
 
-func (service *VkOkService) CreateSender(params CreateVkOkSenderParams) (int, error) {
+func (service *VkOkService) CreateSender(ctx context.Context, params CreateVkOkSenderParams) (int, error) {
 	path := "/vk-ok/senders"
 	body := &bytes.Buffer{}
 	writer := multipart.NewWriter(body)
@@ -56,7 +57,7 @@ func (service *VkOkService) CreateSender(params CreateVkOkSenderParams) (int, er
 	var respData struct {
 		ID int `json:"id"`
 	}
-	_, err := service.client.newFormDataRequest(path, body, writer.FormDataContentType(), &respData, true)
+	_, err := service.client.newFormDataRequest(ctx, path, body, writer.FormDataContentType(), &respData, true)
 	return respData.ID, err
 }
 
@@ -67,7 +68,7 @@ type CreateVkOkTemplateParams struct {
 	SenderID  int    `json:"sender_id"`
 }
 
-func (service *VkOkService) CreateTemplate(params CreateVkOkTemplateParams) (int, error) {
+func (service *VkOkService) CreateTemplate(ctx context.Context, params CreateVkOkTemplateParams) (int, error) {
 	path := "/vk-ok/templates"
 
 	var respData struct {
@@ -76,7 +77,7 @@ func (service *VkOkService) CreateTemplate(params CreateVkOkTemplateParams) (int
 			ID int `json:"id"`
 		} `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, params, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, params, &respData, true)
 	return respData.Data.ID, err
 }
 
@@ -103,25 +104,25 @@ type VkOkTemplate struct {
 	} `json:"status_detail"`
 }
 
-func (service *VkOkService) GetTemplates() ([]*VkOkTemplate, error) {
+func (service *VkOkService) GetTemplates(ctx context.Context) ([]*VkOkTemplate, error) {
 	path := "/vk-ok/templates"
 
 	var respData struct {
 		Total int             `json:"total"`
 		Data  []*VkOkTemplate `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
-func (service *VkOkService) GetTemplate(templateID int) (*VkOkTemplate, error) {
+func (service *VkOkService) GetTemplate(ctx context.Context, templateID int) (*VkOkTemplate, error) {
 	path := fmt.Sprintf("/vk-ok/templates/%d", templateID)
 
 	var respData struct {
 		Total int           `json:"total"`
 		Data  *VkOkTemplate `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
@@ -139,7 +140,7 @@ type SendVkOkTemplateParams struct {
 	TemplateID int             `json:"template_id"`
 }
 
-func (service *VkOkService) Send(params SendVkOkTemplateParams) (int, error) {
+func (service *VkOkService) Send(ctx context.Context, params SendVkOkTemplateParams) (int, error) {
 	path := "/vk-ok/campaigns"
 
 	var respData struct {
@@ -148,7 +149,7 @@ func (service *VkOkService) Send(params SendVkOkTemplateParams) (int, error) {
 			ID int `json:"id"`
 		}
 	}
-	_, err := service.client.newRequest(http.MethodPost, path, params, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodPost, path, params, &respData, true)
 	return respData.Data.ID, err
 }
 
@@ -186,23 +187,23 @@ type VkOkCampaignStatistics struct {
 	} `json:"group_stat"`
 }
 
-func (service *VkOkService) GetCampaignsStatistics() ([]*VkOkCampaignStatistics, error) {
+func (service *VkOkService) GetCampaignsStatistics(ctx context.Context) ([]*VkOkCampaignStatistics, error) {
 	path := "/vk-ok/campaigns"
 
 	var respData struct {
 		Total int                       `json:"total"`
 		Data  []*VkOkCampaignStatistics `json:"data"`
 	}
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }
 
-func (service *VkOkService) GetCampaignStatistics(campaignID int) (*VkOkCampaignStatistics, error) {
+func (service *VkOkService) GetCampaignStatistics(ctx context.Context, campaignID int) (*VkOkCampaignStatistics, error) {
 	path := fmt.Sprintf("/vk-ok/campaigns/%d", campaignID)
 
 	var respData *VkOkCampaignStatistics
 
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData, err
 }
 
@@ -224,7 +225,7 @@ type VkOkCampaignPhone struct {
 	} `json:"status_detail"`
 }
 
-func (service *VkOkService) GetCampaignPhones(campaignID int) ([]*VkOkCampaignPhone, error) {
+func (service *VkOkService) GetCampaignPhones(ctx context.Context, campaignID int) ([]*VkOkCampaignPhone, error) {
 	path := fmt.Sprintf("/vk-ok/campaigns/%d/phones", campaignID)
 
 	var respData struct {
@@ -232,6 +233,6 @@ func (service *VkOkService) GetCampaignPhones(campaignID int) ([]*VkOkCampaignPh
 		Data  []*VkOkCampaignPhone `json:"data"`
 	}
 
-	_, err := service.client.newRequest(http.MethodGet, path, nil, &respData, true)
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData.Data, err
 }

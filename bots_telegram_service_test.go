@@ -1,6 +1,7 @@
 package sendpulse_sdk_go
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"time"
@@ -35,7 +36,7 @@ func (suite *SendpulseTestSuite) TestBotsTelegramService_GetAccount() {
 		}`)
 	})
 
-	account, err := suite.client.Bots.Telegram.GetAccount()
+	account, err := suite.client.Bots.Telegram.GetAccount(context.Background())
 	suite.NoError(err)
 	suite.True(account.Plan.Branding)
 }
@@ -74,7 +75,7 @@ func (suite *SendpulseTestSuite) TestBotsTelegramService_GetBots() {
 		}`)
 	})
 
-	bots, err := suite.client.Bots.Telegram.GetBots()
+	bots, err := suite.client.Bots.Telegram.GetBots(context.Background())
 	suite.NoError(err)
 	suite.Equal("12345", bots[0].ID)
 }
@@ -109,7 +110,7 @@ func (suite *SendpulseTestSuite) TestBotsTelegramService_GetContact() {
 		}`)
 	})
 
-	contact, err := suite.client.Bots.Telegram.GetContact("1")
+	contact, err := suite.client.Bots.Telegram.GetContact(context.Background(), "1")
 	suite.NoError(err)
 	suite.Equal("1234", contact.ID)
 }
@@ -144,7 +145,7 @@ func (suite *SendpulseTestSuite) TestBotsTelegramService_GetContactsByTag() {
 		}`)
 	})
 
-	contacts, err := suite.client.Bots.Telegram.GetContactsByTag("tag", "bot_id")
+	contacts, err := suite.client.Bots.Telegram.GetContactsByTag(context.Background(), "tag", "bot_id")
 	suite.NoError(err)
 	suite.Equal("1234", contacts[0].ID)
 }
@@ -179,7 +180,7 @@ func (suite *SendpulseTestSuite) TestBotsTelegramService_GetContactsByVariable()
 		}`)
 	})
 
-	contacts, err := suite.client.Bots.Telegram.GetContactsByVariable(BotContactsByVariableParams{
+	contacts, err := suite.client.Bots.Telegram.GetContactsByVariable(context.Background(), BotContactsByVariableParams{
 		VariableID:    "var_id",
 		VariableName:  "name",
 		BotID:         "qwe123",
@@ -198,7 +199,7 @@ func (suite *SendpulseTestSuite) TestBotsTelegramService_SendTextByContact() {
 		}`)
 	})
 
-	err := suite.client.Bots.Telegram.SendTextByContact("qwe12345", "hello")
+	err := suite.client.Bots.Telegram.SendTextByContact(context.Background(), "qwe12345", "hello")
 	suite.NoError(err)
 }
 
@@ -211,7 +212,7 @@ func (suite *SendpulseTestSuite) TestBotsTelegramService_SetVariableToContact() 
 		}`)
 	})
 
-	err := suite.client.Bots.Telegram.SetVariableToContact("contactId", "variableId", "variableName", 123)
+	err := suite.client.Bots.Telegram.SetVariableToContact(context.Background(), "contactId", "variableId", "variableName", 123)
 	suite.NoError(err)
 }
 
@@ -224,7 +225,7 @@ func (suite *SendpulseTestSuite) TestBotsTelegramService_SetTagsToContact() {
 		}`)
 	})
 
-	err := suite.client.Bots.Telegram.SetTagsToContact("contactId", []string{"tag1", "tag2"})
+	err := suite.client.Bots.Telegram.SetTagsToContact(context.Background(), "contactId", []string{"tag1", "tag2"})
 	suite.NoError(err)
 }
 
@@ -237,7 +238,7 @@ func (suite *SendpulseTestSuite) TestBotsTelegramService_DeleteTagFromContact() 
 		}`)
 	})
 
-	err := suite.client.Bots.Telegram.DeleteTagFromContact("contactId", "tag1")
+	err := suite.client.Bots.Telegram.DeleteTagFromContact(context.Background(), "contactId", "tag1")
 	suite.NoError(err)
 }
 
@@ -250,7 +251,7 @@ func (suite *SendpulseTestSuite) TestBotsTelegramService_DisableContact() {
 		}`)
 	})
 
-	err := suite.client.Bots.Telegram.DisableContact("contactId")
+	err := suite.client.Bots.Telegram.DisableContact(context.Background(), "contactId")
 	suite.NoError(err)
 }
 
@@ -263,7 +264,7 @@ func (suite *SendpulseTestSuite) TestBotsTelegramService_EnableContact() {
 		}`)
 	})
 
-	err := suite.client.Bots.Telegram.EnableContact("contactId")
+	err := suite.client.Bots.Telegram.EnableContact(context.Background(), "contactId")
 	suite.NoError(err)
 }
 
@@ -276,7 +277,7 @@ func (suite *SendpulseTestSuite) TestBotsTelegramService_DeleteContact() {
 		}`)
 	})
 
-	err := suite.client.Bots.Telegram.DeleteContact("contactId")
+	err := suite.client.Bots.Telegram.DeleteContact(context.Background(), "contactId")
 	suite.NoError(err)
 }
 
@@ -292,7 +293,7 @@ func (suite *SendpulseTestSuite) TestBotsTelegramService_GetPauseAutomation() {
 		}`)
 	})
 
-	p, err := suite.client.Bots.Telegram.GetPauseAutomation("contactId")
+	p, err := suite.client.Bots.Telegram.GetPauseAutomation(context.Background(), "contactId")
 	suite.NoError(err)
 	suite.Equal(123, p)
 }
@@ -306,7 +307,7 @@ func (suite *SendpulseTestSuite) TestBotsTelegramService_SetPauseAutomation() {
 		}`)
 	})
 
-	err := suite.client.Bots.Telegram.SetPauseAutomation("contactId", 60)
+	err := suite.client.Bots.Telegram.SetPauseAutomation(context.Background(), "contactId", 60)
 	suite.NoError(err)
 }
 
@@ -319,7 +320,7 @@ func (suite *SendpulseTestSuite) TestBotsTelegramService_DeletePauseAutomation()
 		}`)
 	})
 
-	err := suite.client.Bots.Telegram.DeletePauseAutomation("contactId")
+	err := suite.client.Bots.Telegram.DeletePauseAutomation(context.Background(), "contactId")
 	suite.NoError(err)
 }
 
@@ -342,7 +343,7 @@ func (suite *SendpulseTestSuite) TestBotsTelegramService_GetBotVariables() {
 		}`)
 	})
 
-	variables, err := suite.client.Bots.Telegram.GetBotVariables("contactId")
+	variables, err := suite.client.Bots.Telegram.GetBotVariables(context.Background(), "contactId")
 	suite.NoError(err)
 	suite.Equal("qwerty", variables[0].ID)
 }
@@ -369,7 +370,7 @@ func (suite *SendpulseTestSuite) TestBotsTelegramService_GetFlows() {
 		}`)
 	})
 
-	flows, err := suite.client.Bots.Telegram.GetFlows("contactId")
+	flows, err := suite.client.Bots.Telegram.GetFlows(context.Background(), "contactId")
 	suite.NoError(err)
 	suite.Equal("qwe123", flows[0].ID)
 }
@@ -383,7 +384,7 @@ func (suite *SendpulseTestSuite) TestBotsTelegramService_RunFlow() {
 		}`)
 	})
 
-	err := suite.client.Bots.Telegram.RunFlow("contactId", "flowId", map[string]interface{}{
+	err := suite.client.Bots.Telegram.RunFlow(context.Background(), "contactId", "flowId", map[string]interface{}{
 		"tracking_number": "1234-0987-5678-9012",
 	})
 	suite.NoError(err)
@@ -398,7 +399,7 @@ func (suite *SendpulseTestSuite) TestBotsTelegramService_RunFlowByTrigger() {
 		}`)
 	})
 
-	err := suite.client.Bots.Telegram.RunFlowByTrigger("contactId", "keyword", map[string]interface{}{
+	err := suite.client.Bots.Telegram.RunFlowByTrigger(context.Background(), "contactId", "keyword", map[string]interface{}{
 		"tracking_number": "1234-0987-5678-9012",
 	})
 	suite.NoError(err)
@@ -429,7 +430,7 @@ func (suite *SendpulseTestSuite) TestBotsTelegramService_GetBotTriggers() {
 		}`)
 	})
 
-	triggers, err := suite.client.Bots.Telegram.GetBotTriggers("bot")
+	triggers, err := suite.client.Bots.Telegram.GetBotTriggers(context.Background(), "bot")
 	suite.NoError(err)
 	suite.Equal("qwe1234", triggers[0].ID)
 }
@@ -484,7 +485,7 @@ func (suite *SendpulseTestSuite) TestBotsTelegramService_GetBotChats() {
 		}`)
 	})
 
-	chats, err := suite.client.Bots.Telegram.GetBotChats("bot")
+	chats, err := suite.client.Bots.Telegram.GetBotChats(context.Background(), "bot")
 	suite.NoError(err)
 	suite.Equal("string", chats[0].InboxLastMessage.CampaignID)
 }
@@ -513,7 +514,7 @@ func (suite *SendpulseTestSuite) TestBotsTelegramService_GetContactMessages() {
 		}`)
 	})
 
-	messages, err := suite.client.Bots.Telegram.GetContactMessages("bot")
+	messages, err := suite.client.Bots.Telegram.GetContactMessages(context.Background(), "bot")
 	suite.NoError(err)
 	suite.Equal("string", messages[0].ID)
 }
@@ -537,7 +538,7 @@ func (suite *SendpulseTestSuite) TestBotsTelegramService_SendCampaign() {
 		},
 	})
 
-	err := suite.client.Bots.Telegram.SendCampaign(TelegramBotSendCampaignParams{
+	err := suite.client.Bots.Telegram.SendCampaign(context.Background(), TelegramBotSendCampaignParams{
 		Title:    "Title",
 		BotID:    "qwe123",
 		SendAt:   time.Now(),

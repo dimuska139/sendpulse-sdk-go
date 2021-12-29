@@ -1,6 +1,7 @@
 package sendpulse_sdk_go
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"net/http"
@@ -22,7 +23,7 @@ func (suite *SendpulseTestSuite) TestSmsService_AddPhones() {
 		 }`)
 	})
 
-	statistics, err := suite.client.SMS.AddPhones(123, []string{"380632631234", "38063333333"})
+	statistics, err := suite.client.SMS.AddPhones(context.Background(), 123, []string{"380632631234", "38063333333"})
 	suite.NoError(err)
 	suite.Equal(83, statistics.Exists)
 }
@@ -54,7 +55,7 @@ func (suite *SendpulseTestSuite) TestSmsService_AddPhonesWithVariables() {
 			},
 		},
 	})
-	statistics, err := suite.client.SMS.AddPhonesWithVariables(123, items)
+	statistics, err := suite.client.SMS.AddPhonesWithVariables(context.Background(), 123, items)
 	suite.NoError(err)
 	suite.Equal(83, statistics.Exists)
 }
@@ -68,7 +69,7 @@ func (suite *SendpulseTestSuite) TestSmsService_UpdateVariablesSingle() {
 		   "result": true
 		 }`)
 	})
-	err := suite.client.SMS.UpdateVariablesSingle(addressBookID, "380632631234", []SmsVariable{{
+	err := suite.client.SMS.UpdateVariablesSingle(context.Background(), addressBookID, "380632631234", []SmsVariable{{
 		Name:  "vvv",
 		Value: "value",
 	}})
@@ -86,7 +87,7 @@ func (suite *SendpulseTestSuite) TestSmsService_UpdateVariablesMultiple() {
 			}
 		}`)
 	})
-	err := suite.client.SMS.UpdateVariablesMultiple(12345, []string{"380632631234"}, []SmsVariable{{
+	err := suite.client.SMS.UpdateVariablesMultiple(context.Background(), 12345, []string{"380632631234"}, []SmsVariable{{
 		Name:  "vvv",
 		Value: "value",
 	}})
@@ -105,7 +106,7 @@ func (suite *SendpulseTestSuite) TestSmsService_DeletePhones() {
 			}
 		}`)
 	})
-	err := suite.client.SMS.DeletePhones(12345, []string{"380632631234"})
+	err := suite.client.SMS.DeletePhones(context.Background(), 12345, []string{"380632631234"})
 	suite.NoError(err)
 }
 
@@ -127,7 +128,7 @@ func (suite *SendpulseTestSuite) TestSmsService_GetPhoneInfo() {
 			}
 		}`)
 	})
-	info, err := suite.client.SMS.GetPhoneInfo(addressBookID, phone)
+	info, err := suite.client.SMS.GetPhoneInfo(context.Background(), addressBookID, phone)
 	suite.NoError(err)
 	suite.Equal("test", info.Variables["Vvv"])
 }
@@ -144,7 +145,7 @@ func (suite *SendpulseTestSuite) TestSmsService_AddToBlacklist() {
 			}
 		}`)
 	})
-	err := suite.client.SMS.AddToBlacklist([]string{"380632631234"}, "Invalid phone numbers")
+	err := suite.client.SMS.AddToBlacklist(context.Background(), []string{"380632631234"}, "Invalid phone numbers")
 	suite.NoError(err)
 }
 
@@ -159,7 +160,7 @@ func (suite *SendpulseTestSuite) TestSmsService_RemoveFromBlacklist() {
 			}
 		}`)
 	})
-	err := suite.client.SMS.RemoveFromBlacklist([]string{"380632631234"})
+	err := suite.client.SMS.RemoveFromBlacklist(context.Background(), []string{"380632631234"})
 	suite.NoError(err)
 }
 
@@ -178,7 +179,7 @@ func (suite *SendpulseTestSuite) TestSmsService_BlacklistPhones() {
 			]
 		}`)
 	})
-	items, err := suite.client.SMS.GetBlacklistedPhones([]string{"380632631234"})
+	items, err := suite.client.SMS.GetBlacklistedPhones(context.Background(), []string{"380632631234"})
 	suite.NoError(err)
 	suite.Equal("79217451232", items[0].Phone)
 }
@@ -192,7 +193,7 @@ func (suite *SendpulseTestSuite) TestSmsService_CreateCampaignByAddressBook() {
 			"campaign_id": 2623084
 		}`)
 	})
-	campaignID, err := suite.client.SMS.CreateCampaignByMailingList(CreateSmsCampaignByAddressBookParams{
+	campaignID, err := suite.client.SMS.CreateCampaignByMailingList(context.Background(), CreateSmsCampaignByAddressBookParams{
 		Sender:        "Alex",
 		MailingListID: 12345,
 		Body:          "Hello!",
@@ -217,7 +218,7 @@ func (suite *SendpulseTestSuite) TestSmsService_CreateCampaignByPhones() {
 		}`)
 	})
 
-	campaignID, err := suite.client.SMS.CreateCampaignByPhones(CreateSmsCampaignByPhonesParams{
+	campaignID, err := suite.client.SMS.CreateCampaignByPhones(context.Background(), CreateSmsCampaignByPhonesParams{
 		Sender: "Alex",
 		Phones: []string{"79217451232"},
 		Body:   "Hello",
@@ -263,7 +264,7 @@ func (suite *SendpulseTestSuite) TestSmsService_CampaignsList() {
 		 }`)
 	})
 
-	items, err := suite.client.SMS.GetCampaigns(dateFrom, dateTo)
+	items, err := suite.client.SMS.GetCampaigns(context.Background(), dateFrom, dateTo)
 	suite.NoError(err)
 	suite.Equal(2, len(items))
 }
@@ -303,7 +304,7 @@ func (suite *SendpulseTestSuite) TestSmsService_CampaignInfo() {
 		}`)
 	})
 
-	info, err := suite.client.SMS.GetCampaignInfo(campaignID)
+	info, err := suite.client.SMS.GetCampaignInfo(context.Background(), campaignID)
 	suite.NoError(err)
 	suite.Equal(7520226, info.ID)
 }
@@ -316,7 +317,7 @@ func (suite *SendpulseTestSuite) TestSmsService_CancelCampaign() {
 			"result":true
 		}`)
 	})
-	err := suite.client.SMS.CancelCampaign(campaignID)
+	err := suite.client.SMS.CancelCampaign(context.Background(), campaignID)
 	suite.NoError(err)
 }
 
@@ -332,7 +333,7 @@ func (suite *SendpulseTestSuite) TestSmsService_GetCampaignCost() {
 		}`)
 	})
 
-	cost, err := suite.client.SMS.GetCampaignCost(SmsCampaignCostParams{
+	cost, err := suite.client.SMS.GetCampaignCost(context.Background(), SmsCampaignCostParams{
 		AddressBookID: 12345,
 		Phones:        []string{"79217451232"},
 		Body:          "Hello",
@@ -382,7 +383,7 @@ func (suite *SendpulseTestSuite) TestSmsService_GetSenders() {
 		]`)
 	})
 
-	senders, err := suite.client.SMS.GetSenders()
+	senders, err := suite.client.SMS.GetSenders(context.Background())
 	suite.NoError(err)
 	suite.Equal(4, len(senders))
 }
@@ -395,6 +396,6 @@ func (suite *SendpulseTestSuite) TestSmsService_DeleteCampaign() {
 		}`)
 	})
 
-	err := suite.client.SMS.DeleteCampaign(2)
+	err := suite.client.SMS.DeleteCampaign(context.Background(), 2)
 	suite.NoError(err)
 }

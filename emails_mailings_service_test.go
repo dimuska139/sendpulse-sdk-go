@@ -1,6 +1,7 @@
 package sendpulse_sdk_go
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"time"
@@ -19,7 +20,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_MailingsService_CreateCampaig
 		}`)
 	})
 
-	mailing, err := suite.client.Emails.Campaigns.CreateCampaign(CampaignParams{
+	mailing, err := suite.client.Emails.Campaigns.CreateCampaign(context.Background(), CampaignParams{
 		SenderName:    "Admin",
 		SenderEmail:   "test@sendpulse.com",
 		Subject:       "Test message",
@@ -44,7 +45,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_MailingsService_UpdateCampaig
 		}`)
 	})
 
-	err := suite.client.Emails.Campaigns.UpdateCampaign(1, CampaignParams{
+	err := suite.client.Emails.Campaigns.UpdateCampaign(context.Background(), 1, CampaignParams{
 		SenderName:    "Admin",
 		SenderEmail:   "test@sendpulse.com",
 		Subject:       "Test message",
@@ -79,7 +80,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_MailingsService_GetCampaign()
 		}`)
 	})
 
-	mailing, err := suite.client.Emails.Campaigns.GetCampaign(1)
+	mailing, err := suite.client.Emails.Campaigns.GetCampaign(context.Background(), 1)
 	suite.NoError(err)
 	suite.Equal(4164892, mailing.ID)
 }
@@ -125,7 +126,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_MailingsService_GetCampaigns(
 		]`)
 	})
 
-	mailing, err := suite.client.Emails.Campaigns.GetCampaigns(10, 0)
+	mailing, err := suite.client.Emails.Campaigns.GetCampaigns(context.Background(), 10, 0)
 	suite.NoError(err)
 	suite.Equal(4164892, mailing[0].ID)
 	suite.Equal(7723666, mailing[1].ID)
@@ -148,7 +149,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_MailingsService_GetCampaignsB
 		]`)
 	})
 
-	tasks, err := suite.client.Emails.Campaigns.GetCampaignsByMailingList(1, 10, 0)
+	tasks, err := suite.client.Emails.Campaigns.GetCampaignsByMailingList(context.Background(), 1, 10, 0)
 	suite.NoError(err)
 	suite.Equal(2, len(tasks))
 }
@@ -162,7 +163,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_MailingsService_GetCampaignCo
 		}`)
 	})
 
-	statistics, err := suite.client.Emails.Campaigns.GetCampaignCountriesStatistics(1)
+	statistics, err := suite.client.Emails.Campaigns.GetCampaignCountriesStatistics(context.Background(), 1)
 	suite.NoError(err)
 	ua, ok := statistics["UA"]
 	suite.True(ok)
@@ -184,7 +185,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_MailingsService_GetCampaignRe
 		]`)
 	})
 
-	statistics, err := suite.client.Emails.Campaigns.GetCampaignReferralsStatistics(1)
+	statistics, err := suite.client.Emails.Campaigns.GetCampaignReferralsStatistics(context.Background(), 1)
 	suite.NoError(err)
 	suite.Equal(2, len(statistics))
 }
@@ -197,6 +198,6 @@ func (suite *SendpulseTestSuite) TestEmailsService_MailingsService_CancelCampaig
 		}`)
 	})
 
-	err := suite.client.Emails.Campaigns.CancelCampaign(1)
+	err := suite.client.Emails.Campaigns.CancelCampaign(context.Background(), 1)
 	suite.NoError(err)
 }

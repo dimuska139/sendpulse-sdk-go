@@ -1,6 +1,7 @@
 package sendpulse_sdk_go
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 )
@@ -27,7 +28,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_WebhooksService_List() {
 		}`)
 	})
 
-	webhooks, err := suite.client.Emails.Webhooks.GetWebhooks()
+	webhooks, err := suite.client.Emails.Webhooks.GetWebhooks(context.Background())
 	suite.NoError(err)
 	suite.Equal(2, len(webhooks))
 }
@@ -46,7 +47,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_WebhooksService_Get() {
 		}`)
 	})
 
-	webhook, err := suite.client.Emails.Webhooks.GetWebhook(1)
+	webhook, err := suite.client.Emails.Webhooks.GetWebhook(context.Background(), 1)
 	suite.NoError(err)
 	suite.Equal(162242, webhook.ID)
 }
@@ -73,7 +74,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_WebhooksService_Create() {
 		}`)
 	})
 
-	webhooks, err := suite.client.Emails.Webhooks.CreateWebhook([]string{"unsubscribe", "open"}, "https://sendpulse.com")
+	webhooks, err := suite.client.Emails.Webhooks.CreateWebhook(context.Background(), []string{"unsubscribe", "open"}, "https://sendpulse.com")
 	suite.NoError(err)
 	suite.Equal(2, len(webhooks))
 }
@@ -89,7 +90,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_WebhooksService_Update() {
 		}`)
 	})
 
-	err := suite.client.Emails.Webhooks.UpdateWebhook(1, "https://sendpulse.com")
+	err := suite.client.Emails.Webhooks.UpdateWebhook(context.Background(), 1, "https://sendpulse.com")
 	suite.NoError(err)
 }
 
@@ -104,6 +105,6 @@ func (suite *SendpulseTestSuite) TestEmailsService_WebhooksService_Delete() {
 		}`)
 	})
 
-	err := suite.client.Emails.Webhooks.DeleteWebhook(1)
+	err := suite.client.Emails.Webhooks.DeleteWebhook(context.Background(), 1)
 	suite.NoError(err)
 }
