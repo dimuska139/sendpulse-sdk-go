@@ -21,19 +21,19 @@ package main
 
 import (
     "context"
-	"fmt"
-	sendpulse "github.com/dimuska139/sendpulse-sdk-go/v7"
-	"net/http"
+    "fmt"
+    sendpulse "github.com/dimuska139/sendpulse-sdk-go/v7"
+    "net/http"
 )
 
 func main() {
-	config := &sendpulse.Config{
-		UserID: "",
-		Secret: "",
-	}
-	client := sendpulse.NewClient(http.DefaultClient, config)
-	
-	emails := []*sendpulse.EmailToAdd {
+    config := &sendpulse.Config{
+        UserID: "",
+        Secret: "",
+    }
+    client := sendpulse.NewClient(http.DefaultClient, config)
+
+    emails := []*sendpulse.EmailToAdd {
         &sendpulse.EmailToAdd{
             Email:     "test@test.com",
             Variables: map[string]interface{}{"age": 21, "weight": 99},
