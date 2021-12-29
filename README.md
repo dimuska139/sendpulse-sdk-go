@@ -41,10 +41,10 @@ func main() {
     }
     
     ctx := context.Background()
-	if err := client.Emails.MailingLists.SingleOptIn(ctx, 1266208, emails); err != nil {
-		fmt.Println(err)
-	}
-	fmt.Println(*emails[0])
+    if err := client.Emails.MailingLists.SingleOptIn(ctx, 1266208, emails); err != nil {
+        fmt.Println(err)
+    }
+    fmt.Println(*emails[0])
 }
 ```
 
