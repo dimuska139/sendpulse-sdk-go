@@ -17,24 +17,25 @@ func newSmtpService(cl *Client) *SmtpService {
 	return &SmtpService{client: cl}
 }
 
+type EmailTemplate struct {
+	ID        string                 `json:"id"`
+	Variables map[string]interface{} `json:"variables"`
+}
+
+type User struct {
+	Name  string `json:"name"`
+	Email string `json:"email"`
+}
+
 type SendEmailParams struct {
-	Html     string `json:"html,omitempty"`
-	Text     string `json:"text,omitempty"`
-	Template *struct {
-		ID        string                 `json:"id"`
-		Variables map[string]interface{} `json:"variables"`
-	} `json:"template"`
-	AutoPlainText bool   `json:"auto_plain_text"`
-	Subject       string `json:"subject"`
-	From          struct {
-		Name  string `json:"name"`
-		Email string `json:"email"`
-	} `json:"from"`
-	To struct {
-		Name  string `json:"name"`
-		Email string `json:"email"`
-	} `json:"to"`
-	Attachments map[string]string `json:"attachments"`
+	Html          string            `json:"html,omitempty"`
+	Text          string            `json:"text,omitempty"`
+	Template      *EmailTemplate    `json:"template"`
+	AutoPlainText bool              `json:"auto_plain_text"`
+	Subject       string            `json:"subject"`
+	From          User              `json:"from"`
+	To            []User            `json:"to"`
+	Attachments   map[string]string `json:"attachments"`
 }
 
 func (service *SmtpService) SendMessage(ctx context.Context, params SendEmailParams) (string, error) {
