@@ -1,4 +1,4 @@
-module github.com/dimuska139/sendpulse-sdk-go/v7
+module ggithub.com/SarapDev/sendpulse-sdk-go
 
 go 1.14
 
