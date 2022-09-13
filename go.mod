@@ -1,4 +1,4 @@
-module ggithub.com/SarapDev/sendpulse-sdk-go
+module github.com/SarapDev/sendpulse-sdk-go
 
 go 1.14
 
