@@ -17,26 +17,19 @@ func (suite *SendpulseTestSuite) TestSmtpService_Send() {
 		}`)
 	})
 
+	user := []User{{Name: "Andy", Email: "Forest"}}
+
 	id, err := suite.client.SMTP.SendMessage(context.Background(), SendEmailParams{
 		Html:          "<h1>Hello</h1>",
 		Text:          "",
 		Template:      nil,
 		AutoPlainText: false,
 		Subject:       "Notification",
-		From: struct {
-			Name  string `json:"name"`
-			Email string `json:"email"`
-		}{
+		From: User{
 			Name:  "Alex",
 			Email: "Brown",
 		},
-		To: struct {
-			Name  string `json:"name"`
-			Email string `json:"email"`
-		}{
-			Name:  "Andy",
-			Email: "Forest",
-		},
+		To:          user,
 		Attachments: nil,
 	})
 	suite.NoError(err)
