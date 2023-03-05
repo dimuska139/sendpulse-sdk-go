@@ -12,7 +12,7 @@ SendPulse API official documentation [https://sendpulse.com/api](https://sendpul
 ### Installation
 
 ```shell
-go get -u github.com/dimuska139/sendpulse-sdk-go/sendpulse
+go get -u github.com/dimuska139/sendpulse-sdk-go/v7
 ```
 
 ### Usage
