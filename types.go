@@ -25,7 +25,7 @@ func (d *DateTimeType) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (d *DateTimeType) MarshalJSON() ([]byte, error) {
+func (d DateTimeType) MarshalJSON() ([]byte, error) {
 	return []byte(d.String()), nil
 }
 
