@@ -297,7 +297,7 @@ type SmsCampaignInfo struct {
 	ID            int          `json:"id"`
 	AddressBookID int          `json:"address_book_id"`
 	Currency      string       `json:"currency"`
-	CompanyPrice  float32      `json:"company_price"`
+	CompanyPrice  string       `json:"company_price"`
 	SendDate      DateTimeType `json:"send_date"`
 	DateCreated   DateTimeType `json:"date_created"`
 	SenderName    string       `json:"sender_name"`
