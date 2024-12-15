@@ -18,8 +18,8 @@ func newSmtpService(cl *Client) *SmtpService {
 }
 
 type EmailTemplate struct {
-	ID        string                 `json:"id"`
-	Variables map[string]interface{} `json:"variables"`
+	ID        string         `json:"id"`
+	Variables map[string]any `json:"variables"`
 }
 
 type User struct {
@@ -61,34 +61,34 @@ func (service *SmtpService) SendMessage(ctx context.Context, params SendEmailPar
 }
 
 type SmtpMessage struct {
-	ID                    string       `json:"id"`
-	Sender                string       `json:"sender"`
-	TotalSize             int          `json:"total_size"`
-	SenderIP              string       `json:"sender_ip"`
-	SmtpAnswerCode        int          `json:"smtp_answer_code"`
-	SmtpAnswerCodeExplain string       `json:"smtp_answer_code_explain"`
-	SmtpAnswerSubcode     string       `json:"smtp_answer_subcode"`
-	SmtpAnswerData        string       `json:"smtp_answer_data"`
-	UsedIP                string       `json:"used_ip"`
-	Recipient             string       `json:"recipient"`
-	Subject               string       `json:"subject"`
-	SendDate              DateTimeType `json:"send_date"`
+	ID                    string   `json:"id"`
+	Sender                string   `json:"sender"`
+	TotalSize             int      `json:"total_size"`
+	SenderIP              string   `json:"sender_ip"`
+	SmtpAnswerCode        int      `json:"smtp_answer_code"`
+	SmtpAnswerCodeExplain string   `json:"smtp_answer_code_explain"`
+	SmtpAnswerSubcode     string   `json:"smtp_answer_subcode"`
+	SmtpAnswerData        string   `json:"smtp_answer_data"`
+	UsedIP                string   `json:"used_ip"`
+	Recipient             string   `json:"recipient"`
+	Subject               string   `json:"subject"`
+	SendDate              DateTime `json:"send_date"`
 	Tracking              struct {
 		Click int `json:"click"`
 		Open  int `json:"open"`
 		Link  []*struct {
-			Url              string       `json:"url"`
-			Browser          string       `json:"browser"`
-			Os               string       `json:"os"`
-			ScreenResolution string       `json:"screen_resolution"`
-			IP               string       `json:"ip"`
-			ActionDate       DateTimeType `json:"action_date"`
+			Url              string   `json:"url"`
+			Browser          string   `json:"browser"`
+			Os               string   `json:"os"`
+			ScreenResolution string   `json:"screen_resolution"`
+			IP               string   `json:"ip"`
+			ActionDate       DateTime `json:"action_date"`
 		} `json:"link"`
 		ClientInfo []*struct {
-			Browser    string       `json:"browser"`
-			Os         string       `json:"os"`
-			IP         string       `json:"ip"`
-			ActionDate DateTimeType `json:"action_date"`
+			Browser    string   `json:"browser"`
+			Os         string   `json:"os"`
+			IP         string   `json:"ip"`
+			ActionDate DateTime `json:"action_date"`
 		} `json:"client_info"`
 	} `json:"tracking"`
 }
@@ -150,13 +150,13 @@ func (service *SmtpService) GetMessage(ctx context.Context, id int) (*SmtpMessag
 type BouncesList struct {
 	Total  int `json:"total"`
 	Emails []struct {
-		EmailTo           string       `json:"email_to"`
-		Sender            string       `json:"sender"`
-		SendDate          DateTimeType `json:"send_date"`
-		Subject           string       `json:"subject"`
-		SmtpAnswerCode    int          `json:"smtp_answer_code"`
-		SmtpAnswerSubcode string       `json:"smtp_answer_subcode"`
-		SmtpAnswerData    string       `json:"smtp_answer_data"`
+		EmailTo           string   `json:"email_to"`
+		Sender            string   `json:"sender"`
+		SendDate          DateTime `json:"send_date"`
+		Subject           string   `json:"subject"`
+		SmtpAnswerCode    int      `json:"smtp_answer_code"`
+		SmtpAnswerSubcode string   `json:"smtp_answer_subcode"`
+		SmtpAnswerData    string   `json:"smtp_answer_data"`
 	} `json:"emails"`
 	RequestLimit int `json:"request_limit"`
 	Found        int `json:"found"`
@@ -227,11 +227,11 @@ type UnsubscribedListParams struct {
 }
 
 type Unsubscribed struct {
-	Email             string       `json:"email"`
-	UnsubscribeByLink int          `json:"unsubscribe_by_link"`
-	UnsubscribeByUser int          `json:"unsubscribe_by_user"`
-	SpamComplaint     int          `json:"spam_complaint"`
-	Date              DateTimeType `json:"date"`
+	Email             string   `json:"email"`
+	UnsubscribeByLink int      `json:"unsubscribe_by_link"`
+	UnsubscribeByUser int      `json:"unsubscribe_by_user"`
+	SpamComplaint     int      `json:"spam_complaint"`
+	Date              DateTime `json:"date"`
 }
 
 func (service *SmtpService) GetUnsubscribedEmails(ctx context.Context, params UnsubscribedListParams) ([]Unsubscribed, error) {

@@ -216,7 +216,7 @@ func (suite *SendpulseTestSuite) TestPushService_CreatePushTask() {
 		SubscriptionDateTo:   time.Now(),
 		Filter:               nil,
 		StretchTimeSec:       10,
-		SendDate:             DateTimeType(time.Now()),
+		SendDate:             DateTime(time.Now()),
 		Buttons:              nil,
 		Image:                nil,
 		Icon:                 nil,

@@ -37,7 +37,7 @@ func (suite *SendpulseTestSuite) TestViberService_CreateCampaign() {
 		MessageType:     2,
 		SenderID:        2222,
 		MessageLiveTime: 1000,
-		SendDate:        DateTimeType(time.Now()),
+		SendDate:        DateTime(time.Now()),
 		MailingListID:   12345,
 		Recipients:      []int{380931111111, 380931111112, 380931111113},
 		Message:         "Ciao! Вас вітає офіційний viber-канал бренду Yamamay та нагадує, що Ви - найчарівніша.",
@@ -80,7 +80,7 @@ func (suite *SendpulseTestSuite) TestViberService_UpdateCampaign() {
 		AddressBookID:   12345,
 		SenderID:        222,
 		MessageLiveTime: 1000,
-		SendDate:        DateTimeType(time.Now()),
+		SendDate:        DateTime(time.Now()),
 	})
 	suite.NoError(err)
 }

@@ -198,7 +198,7 @@ func (suite *SendpulseTestSuite) TestSmsService_CreateCampaignByAddressBook() {
 		MailingListID: 12345,
 		Body:          "Hello!",
 		Route:         nil,
-		Date:          DateTimeType(time.Now()),
+		Date:          DateTime(time.Now()),
 	})
 	suite.NoError(err)
 	suite.Equal(2623084, campaignID)
@@ -223,7 +223,7 @@ func (suite *SendpulseTestSuite) TestSmsService_CreateCampaignByPhones() {
 		Phones: []string{"79217451232"},
 		Body:   "Hello",
 		Route:  nil,
-		Date:   DateTimeType(time.Now()),
+		Date:   DateTime(time.Now()),
 	})
 	suite.NoError(err)
 	suite.Equal(2623085, campaignID)

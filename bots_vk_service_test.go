@@ -372,7 +372,7 @@ func (suite *SendpulseTestSuite) TestBotsVkService_RunFlow() {
 		}`)
 	})
 
-	err := suite.client.Bots.Vk.RunFlow(context.Background(), "contactId", "flowId", map[string]interface{}{
+	err := suite.client.Bots.Vk.RunFlow(context.Background(), "contactId", "flowId", map[string]any{
 		"tracking_number": "1234-0987-5678-9012",
 	})
 	suite.NoError(err)
@@ -387,7 +387,7 @@ func (suite *SendpulseTestSuite) TestBotsVkService_RunFlowByTrigger() {
 		}`)
 	})
 
-	err := suite.client.Bots.Vk.RunFlowByTrigger(context.Background(), "contactId", "keyword", map[string]interface{}{
+	err := suite.client.Bots.Vk.RunFlowByTrigger(context.Background(), "contactId", "keyword", map[string]any{
 		"tracking_number": "1234-0987-5678-9012",
 	})
 	suite.NoError(err)

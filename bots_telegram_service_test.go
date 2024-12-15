@@ -384,7 +384,7 @@ func (suite *SendpulseTestSuite) TestBotsTelegramService_RunFlow() {
 		}`)
 	})
 
-	err := suite.client.Bots.Telegram.RunFlow(context.Background(), "contactId", "flowId", map[string]interface{}{
+	err := suite.client.Bots.Telegram.RunFlow(context.Background(), "contactId", "flowId", map[string]any{
 		"tracking_number": "1234-0987-5678-9012",
 	})
 	suite.NoError(err)
@@ -399,7 +399,7 @@ func (suite *SendpulseTestSuite) TestBotsTelegramService_RunFlowByTrigger() {
 		}`)
 	})
 
-	err := suite.client.Bots.Telegram.RunFlowByTrigger(context.Background(), "contactId", "keyword", map[string]interface{}{
+	err := suite.client.Bots.Telegram.RunFlowByTrigger(context.Background(), "contactId", "keyword", map[string]any{
 		"tracking_number": "1234-0987-5678-9012",
 	})
 	suite.NoError(err)

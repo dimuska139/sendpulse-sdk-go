@@ -20,9 +20,9 @@ func newSmsService(cl *Client) *SmsService {
 }
 
 type SmsVariable struct {
-	Name  string      `json:"name"`
-	Type  string      `json:"type,omitempty"`
-	Value interface{} `json:"value"`
+	Name  string `json:"name"`
+	Type  string `json:"type,omitempty"`
+	Value any    `json:"value"`
 }
 
 type AddPhonesCounters struct {
@@ -135,9 +135,9 @@ func (service *SmsService) DeletePhones(ctx context.Context, addressBookID int, 
 }
 
 type PhoneInfo struct {
-	Status    int                    `json:"status"`
-	Variables map[string]interface{} `json:"variables"`
-	Added     DateTimeType           `json:"added"`
+	Status    int            `json:"status"`
+	Variables map[string]any `json:"variables"`
+	Added     DateTime       `json:"added"`
 }
 
 func (service *SmsService) GetPhoneInfo(ctx context.Context, addressBookID int, phone string) (*PhoneInfo, error) {
@@ -190,8 +190,8 @@ func (service *SmsService) RemoveFromBlacklist(ctx context.Context, phones []str
 
 type BlacklistPhone struct {
 	Phone       string
-	Description string       `json:"description"`
-	AddDate     DateTimeType `json:"add_date"`
+	Description string   `json:"description"`
+	AddDate     DateTime `json:"add_date"`
 }
 
 func (service *SmsService) GetBlacklistedPhones(ctx context.Context, phones []string) ([]*BlacklistPhone, error) {
@@ -230,7 +230,7 @@ type CreateSmsCampaignByAddressBookParams struct {
 	Body          string            `json:"body"`
 	Transliterate int               `json:"transliterate"`
 	Route         map[string]string `json:"route,omitempty"`
-	Date          DateTimeType      `json:"date"`
+	Date          DateTime          `json:"date"`
 	Emulate       int               `json:"emulate"`
 }
 
@@ -251,7 +251,7 @@ type CreateSmsCampaignByPhonesParams struct {
 	Body          string            `json:"body"`
 	Transliterate int               `json:"transliterate"`
 	Route         map[string]string `json:"route,omitempty"`
-	Date          DateTimeType      `json:"date"`
+	Date          DateTime          `json:"date"`
 	Emulate       int               `json:"emulate"`
 }
 
@@ -267,14 +267,14 @@ func (service *SmsService) CreateCampaignByPhones(ctx context.Context, params Cr
 }
 
 type SmsCampaign struct {
-	ID                int          `json:"id"`
-	AddressBookID     int          `json:"address_book_id"`
-	CompanyPrice      float32      `json:"company_price"`
-	CompanyCurrency   string       `json:"company_currency"`
-	SendDate          DateTimeType `json:"send_date"`
-	DateCreated       DateTimeType `json:"date_created"`
-	SenderMailAddress string       `json:"sender_mail_address"`
-	SenderMailName    string       `json:"sender_mail_name"`
+	ID                int      `json:"id"`
+	AddressBookID     int      `json:"address_book_id"`
+	CompanyPrice      Float32  `json:"company_price"`
+	CompanyCurrency   string   `json:"company_currency"`
+	SendDate          DateTime `json:"send_date"`
+	DateCreated       DateTime `json:"date_created"`
+	SenderMailAddress string   `json:"sender_mail_address"`
+	SenderMailName    string   `json:"sender_mail_name"`
 }
 
 func (service *SmsService) GetCampaigns(ctx context.Context, dateFrom, dateTo time.Time) ([]*SmsCampaign, error) {
@@ -294,13 +294,13 @@ func (service *SmsService) GetCampaigns(ctx context.Context, dateFrom, dateTo ti
 }
 
 type SmsCampaignInfo struct {
-	ID            int          `json:"id"`
-	AddressBookID int          `json:"address_book_id"`
-	Currency      string       `json:"currency"`
-	CompanyPrice  string       `json:"company_price"`
-	SendDate      DateTimeType `json:"send_date"`
-	DateCreated   DateTimeType `json:"date_created"`
-	SenderName    string       `json:"sender_name"`
+	ID            int      `json:"id"`
+	AddressBookID int      `json:"address_book_id"`
+	Currency      string   `json:"currency"`
+	CompanyPrice  Float32  `json:"company_price"`
+	SendDate      DateTime `json:"send_date"`
+	DateCreated   DateTime `json:"date_created"`
+	SenderName    string   `json:"sender_name"`
 	PhonesInfo    []struct {
 		Phone         int     `json:"phone"`
 		Status        int     `json:"status"`

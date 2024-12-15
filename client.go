@@ -80,7 +80,7 @@ func (c *Client) getToken(ctx context.Context) (string, error) {
 		return token, nil
 	}
 
-	data := make(map[string]interface{})
+	data := make(map[string]any)
 	data["grant_type"] = "client_credentials"
 	data["client_id"] = c.config.UserID
 	data["client_secret"] = c.config.Secret
@@ -111,7 +111,7 @@ func (c *Client) clearToken() {
 }
 
 // newRequest makes new http request to SendPulse
-func (c *Client) newRequest(ctx context.Context, method string, path string, body interface{}, result interface{}, useToken bool) (*http.Response, error) {
+func (c *Client) newRequest(ctx context.Context, method string, path string, body any, result any, useToken bool) (*http.Response, error) {
 	if err := c.rateLimiter.Wait(ctx); err != nil {
 		return nil, err
 	}
@@ -175,7 +175,7 @@ func (c *Client) newRequest(ctx context.Context, method string, path string, bod
 }
 
 // newFormDataRequest makes new http request to SendPulse with form-data
-func (c *Client) newFormDataRequest(ctx context.Context, path string, buffer *bytes.Buffer, contentType string, result interface{}, useToken bool) (*http.Response, error) {
+func (c *Client) newFormDataRequest(ctx context.Context, path string, buffer *bytes.Buffer, contentType string, result any, useToken bool) (*http.Response, error) {
 	fullPath := apiBaseUrl + path
 	req, e := http.NewRequest(http.MethodPost, fullPath, buffer)
 	if e != nil {

@@ -136,12 +136,12 @@ type IgBotContact struct {
 		Name       string `json:"name"`
 		ProfilePic string `json:"profile_pic"`
 	} `json:"channel_data"`
-	Tags                  []string               `json:"tags"`
-	Variables             map[string]interface{} `json:"variables"`
-	IsChatOpened          bool                   `json:"is_chat_opened"`
-	LastActivityAt        time.Time              `json:"last_activity_at"`
-	AutomationPausedUntil time.Time              `json:"automation_paused_until"`
-	CreatedAt             time.Time              `json:"created_at"`
+	Tags                  []string       `json:"tags"`
+	Variables             map[string]any `json:"variables"`
+	IsChatOpened          bool           `json:"is_chat_opened"`
+	LastActivityAt        time.Time      `json:"last_activity_at"`
+	AutomationPausedUntil time.Time      `json:"automation_paused_until"`
+	CreatedAt             time.Time      `json:"created_at"`
 }
 
 func (service *BotsIgService) GetContact(ctx context.Context, contactID string) (*IgBotContact, error) {
@@ -208,14 +208,14 @@ func (service *BotsIgService) SendTextByContact(ctx context.Context, params IgBo
 	return err
 }
 
-func (service *BotsIgService) SetVariableToContact(ctx context.Context, contactID string, variableID string, variableName string, variableValue interface{}) error {
+func (service *BotsIgService) SetVariableToContact(ctx context.Context, contactID string, variableID string, variableName string, variableValue any) error {
 	path := "/instagram/contacts/setVariable"
 
 	type bodyFormat struct {
-		ContactID     string      `json:"contact_id"`
-		VariableID    string      `json:"variable_id"`
-		VariableName  string      `json:"variable_name"`
-		VariableValue interface{} `json:"variable_value"`
+		ContactID     string `json:"contact_id"`
+		VariableID    string `json:"variable_id"`
+		VariableName  string `json:"variable_name"`
+		VariableValue any    `json:"variable_value"`
 	}
 	body := bodyFormat{
 		ContactID:     contactID,
@@ -406,13 +406,13 @@ func (service *BotsIgService) GetFlows(ctx context.Context, botID string) ([]*Bo
 	return respData.Data, err
 }
 
-func (service *BotsIgService) RunFlow(ctx context.Context, contactID, flowID string, externalData map[string]interface{}) error {
+func (service *BotsIgService) RunFlow(ctx context.Context, contactID, flowID string, externalData map[string]any) error {
 	path := "/instagram/flows/run"
 
 	type bodyFormat struct {
-		ContactID    string                 `json:"contact_id"`
-		FlowID       string                 `json:"flow_id"`
-		ExternalData map[string]interface{} `json:"external_data,omitempty"`
+		ContactID    string         `json:"contact_id"`
+		FlowID       string         `json:"flow_id"`
+		ExternalData map[string]any `json:"external_data,omitempty"`
 	}
 	body := bodyFormat{
 		ContactID:    contactID,
@@ -427,13 +427,13 @@ func (service *BotsIgService) RunFlow(ctx context.Context, contactID, flowID str
 	return err
 }
 
-func (service *BotsIgService) RunFlowByTrigger(ctx context.Context, contactID, triggerKeyword string, externalData map[string]interface{}) error {
+func (service *BotsIgService) RunFlowByTrigger(ctx context.Context, contactID, triggerKeyword string, externalData map[string]any) error {
 	path := "/instagram/flows/runByTrigger"
 
 	type bodyFormat struct {
-		ContactID      string                 `json:"contact_id"`
-		TriggerKeyword string                 `json:"trigger_keyword"`
-		ExternalData   map[string]interface{} `json:"external_data,omitempty"`
+		ContactID      string         `json:"contact_id"`
+		TriggerKeyword string         `json:"trigger_keyword"`
+		ExternalData   map[string]any `json:"external_data,omitempty"`
 	}
 	body := bodyFormat{
 		ContactID:      contactID,
@@ -460,14 +460,14 @@ func (service *BotsIgService) GetBotTriggers(ctx context.Context, botID string) 
 }
 
 type IgBotMessage struct {
-	ID         string                 `json:"id"`
-	ContactID  string                 `json:"contact_id"`
-	BotID      string                 `json:"bot_id"`
-	CampaignID string                 `json:"campaign_id"`
-	Data       map[string]interface{} `json:"data"`
-	Direction  int                    `json:"direction"`
-	Status     int                    `json:"status"`
-	CreatedAt  time.Time              `json:"created_at"`
+	ID         string         `json:"id"`
+	ContactID  string         `json:"contact_id"`
+	BotID      string         `json:"bot_id"`
+	CampaignID string         `json:"campaign_id"`
+	Data       map[string]any `json:"data"`
+	Direction  int            `json:"direction"`
+	Status     int            `json:"status"`
+	CreatedAt  time.Time      `json:"created_at"`
 }
 
 type IgBotChat struct {

@@ -26,7 +26,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_MailingsService_CreateCampaig
 		Subject:       "Test message",
 		Body:          "<h1>Hello!</h1>",
 		MailingListID: 12345,
-		SendDate:      DateTimeType(time.Now()),
+		SendDate:      DateTime(time.Now()),
 	})
 	suite.NoError(err)
 	suite.Equal(245587, mailing.ID)
@@ -51,7 +51,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_MailingsService_UpdateCampaig
 		Subject:       "Test message",
 		Body:          "<h1>Hello!</h1>",
 		MailingListID: 12345,
-		SendDate:      DateTimeType(time.Now()),
+		SendDate:      DateTime(time.Now()),
 	})
 	suite.NoError(err)
 }

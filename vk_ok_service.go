@@ -129,14 +129,14 @@ func (service *VkOkService) GetTemplate(ctx context.Context, templateID int) (*V
 type SendVkOkTemplateParams struct {
 	AddressBooks []int `json:"address_book"`
 	Recipients   []struct {
-		Phone     string                 `json:"phone"`
-		Variables map[string]interface{} `json:"variables"`
+		Phone     string         `json:"phone"`
+		Variables map[string]any `json:"variables"`
 	} `json:"recipients"`
 	LifeTime   int             `json:"life_time"`
 	LifeType   string          `json:"life_type"`
 	Name       string          `json:"name"`
 	Routes     map[string]bool `json:"routes"`
-	SendDate   DateTimeType    `json:"send_date"`
+	SendDate   DateTime        `json:"send_date"`
 	TemplateID int             `json:"template_id"`
 }
 

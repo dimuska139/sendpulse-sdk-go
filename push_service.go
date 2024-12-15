@@ -29,13 +29,13 @@ type PushListParams struct {
 
 // Push represents information of push notification
 type Push struct {
-	ID        int          `json:"id"`
-	Title     string       `json:"title"`
-	Body      string       `json:"body"`
-	WebsiteID int          `json:"website_id"`
-	From      DateTimeType `json:"from"`
-	To        DateTimeType `json:"to"`
-	Status    int          `json:"status"`
+	ID        int      `json:"id"`
+	Title     string   `json:"title"`
+	Body      string   `json:"body"`
+	WebsiteID int      `json:"website_id"`
+	From      DateTime `json:"from"`
+	To        DateTime `json:"to"`
+	Status    int      `json:"status"`
 }
 
 // GetMessages retrieves a list of sent web push campaigns
@@ -76,10 +76,10 @@ func (service *PushService) CountWebsites(ctx context.Context) (int, error) {
 }
 
 type PushWebsite struct {
-	ID      int          `json:"id"`
-	Url     string       `json:"url"`
-	AddDate DateTimeType `json:"add_date"`
-	Status  int          `json:"status"`
+	ID      int      `json:"id"`
+	Url     string   `json:"url"`
+	AddDate DateTime `json:"add_date"`
+	Status  int      `json:"status"`
 }
 
 // GetWebsites retrieves a list of websites
@@ -122,7 +122,7 @@ type WebsiteSubscription struct {
 	CountryCode      string                `json:"country_code"`
 	City             string                `json:"city"`
 	Variables        []PushWebsiteVariable `json:"variables"`
-	SubscriptionDate DateTimeType          `json:"subscription_date"`
+	SubscriptionDate DateTime              `json:"subscription_date"`
 	Status           int                   `json:"status"`
 }
 
@@ -163,15 +163,15 @@ func (service *PushService) CountWebsiteSubscriptions(ctx context.Context, websi
 
 // WebsiteInfo describes information about website
 type WebsiteInfo struct {
-	ID                int          `json:"id"`
-	Url               string       `json:"url"`
-	Status            string       `json:"status"`
-	Icon              string       `json:"icon"`
-	AddDate           DateTimeType `json:"add_date"`
-	TotalSubscribers  int          `json:"total_subscribers"`
-	Unsubscribed      int          `json:"unsubscribed"`
-	SubscribersToday  int          `json:"subscribers_today"`
-	ActiveSubscribers int          `json:"active_subscribers"`
+	ID                int      `json:"id"`
+	Url               string   `json:"url"`
+	Status            string   `json:"status"`
+	Icon              string   `json:"icon"`
+	AddDate           DateTime `json:"add_date"`
+	TotalSubscribers  int      `json:"total_subscribers"`
+	Unsubscribed      int      `json:"unsubscribed"`
+	SubscribersToday  int      `json:"subscribers_today"`
+	ActiveSubscribers int      `json:"active_subscribers"`
 }
 
 // GetWebsiteInfo returns information about specific website
@@ -233,12 +233,12 @@ type PushMessageParams struct {
 		VariableName string `json:"variable_name"`
 		Operator     string `json:"operator"`
 		Conditions   []struct {
-			Condition string      `json:"condition"`
-			Value     interface{} `json:"value"`
+			Condition string `json:"condition"`
+			Value     any    `json:"value"`
 		} `json:"conditions"`
 	} `json:"filter,omitempty"`
-	StretchTimeSec int          `json:"stretch_time"`
-	SendDate       DateTimeType `json:"send_date"`
+	StretchTimeSec int      `json:"stretch_time"`
+	SendDate       DateTime `json:"send_date"`
 	Buttons        *struct {
 		Text string `json:"text"`
 		Link string `json:"link"`

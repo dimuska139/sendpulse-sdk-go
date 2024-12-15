@@ -18,9 +18,9 @@ func newAddressService(cl *Client) *AddressService {
 
 // Variable represents a variable of email address
 type Variable struct {
-	Name  string      `json:"name"`
-	Type  string      `json:"type,omitempty"`
-	Value interface{} `json:"value"`
+	Name  string `json:"name"`
+	Type  string `json:"type,omitempty"`
+	Value any    `json:"value"`
 }
 
 // EmailInfo represents a general information of email address
@@ -53,10 +53,10 @@ func (service *AddressService) GetEmailsInfo(ctx context.Context, emails []strin
 
 // EmailInfoList represents a detailed information of email address
 type EmailInfoList struct {
-	ListName string       `json:"list_name"`
-	ListID   int          `json:"list_id"`
-	AddDate  DateTimeType `json:"add_date"`
-	Source   string       `json:"source"`
+	ListName string   `json:"list_name"`
+	ListID   int      `json:"list_id"`
+	AddDate  DateTime `json:"add_date"`
+	Source   string   `json:"source"`
 }
 
 // GetDetails retrieves detailed information about specific email address
@@ -86,11 +86,11 @@ type AddressBookEmailStatistics struct {
 
 // CampaignEmailStatistics represents statistics of specific campaign
 type CampaignEmailStatistics struct {
-	SendDate            DateTimeType `json:"send_date"`
-	GlobalStatus        int          `json:"global_status"`
-	GlobalStatusExplain string       `json:"global_status_explain"`
-	DetailStatus        int          `json:"detail_status"`
-	DetailStatusExplain string       `json:"detail_status_explain"`
+	SendDate            DateTime `json:"send_date"`
+	GlobalStatus        int      `json:"global_status"`
+	GlobalStatusExplain string   `json:"global_status_explain"`
+	DetailStatus        int      `json:"detail_status"`
+	DetailStatusExplain string   `json:"detail_status_explain"`
 }
 
 // GetStatisticsByAddressBook returns information for a specific email address from a specific address book

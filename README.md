@@ -5,7 +5,7 @@ the SendPulse API via Go.
 SendPulse API official documentation [https://sendpulse.com/api](https://sendpulse.com/api)
 
 [![Build Status](https://travis-ci.com/dimuska139/sendpulse-sdk-go.svg?branch=master)](https://travis-ci.org/dimuska139/sendpulse-sdk-go)
-[![codecov](https://codecov.io/gh/dimuska139/sendpulse-sdk-go/branch/master/graph/badge.svg)](https://codecov.io/gh/dimuska139/sendpulse-sdk-go)
+[![codecov](https://codecov.io/github/dimuska139/sendpulse-sdk-go/graph/badge.svg?token=8DVzSE0UcZ)](https://codecov.io/gh/dimuska139/sendpulse-sdk-go)
 [![Go Report Card](https://goreportcard.com/badge/github.com/dimuska139/sendpulse-sdk-go)](https://goreportcard.com/report/github.com/dimuska139/sendpulse-sdk-go)
 [![License](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/dimuska139/sendpulse-sdk-go/blob/master/LICENSE)
 
@@ -36,7 +36,7 @@ func main() {
     emails := []*sendpulse.EmailToAdd {
         &sendpulse.EmailToAdd{
             Email:     "test@test.com",
-            Variables: map[string]interface{}{"age": 21, "weight": 99},
+            Variables: map[string]any{"age": 21, "weight": 99},
         },
     }
     

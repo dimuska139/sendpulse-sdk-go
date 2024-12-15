@@ -50,14 +50,14 @@ func (service *MailingListsService) ChangeName(ctx context.Context, id int, name
 
 // MailingList represents detailed information of specific mailing list
 type MailingList struct {
-	ID               int          `json:"id"`
-	Name             string       `json:"name"`
-	AllEmailQty      int          `json:"all_email_qty"`
-	ActiveEmailQty   int          `json:"active_email_qty"`
-	InactiveEmailQty int          `json:"inactive_email_qty"`
-	CreationDate     DateTimeType `json:"creationdate"`
-	Status           int          `json:"status"`
-	StatusExplain    string       `json:"status_explain"`
+	ID               int      `json:"id"`
+	Name             string   `json:"name"`
+	AllEmailQty      int      `json:"all_email_qty"`
+	ActiveEmailQty   int      `json:"active_email_qty"`
+	InactiveEmailQty int      `json:"inactive_email_qty"`
+	CreationDate     DateTime `json:"creationdate"`
+	Status           int      `json:"status"`
+	StatusExplain    string   `json:"status_explain"`
 }
 
 // GetMailingLists returns a list of mailing lists
@@ -96,11 +96,11 @@ func (service *MailingListsService) GetMailingListVariables(ctx context.Context,
 
 // Email describes email address
 type Email struct {
-	Email         string                 `json:"email"`
-	Phone         int                    `json:"phone"`
-	Status        int                    `json:"status"`
-	StatusExplain string                 `json:"status_explain"`
-	Variables     map[string]interface{} `json:"variables"`
+	Email         string         `json:"email"`
+	Phone         int            `json:"phone"`
+	Status        int            `json:"status"`
+	StatusExplain string         `json:"status_explain"`
+	Variables     map[string]any `json:"variables"`
 }
 
 // GetMailingListEmails returns a list of emails from a mailing list
@@ -122,7 +122,7 @@ func (service *MailingListsService) CountMailingListEmails(ctx context.Context, 
 }
 
 // GetMailingListEmailsByVariable returns all contacts in mailing list by value of variable
-func (service *MailingListsService) GetMailingListEmailsByVariable(ctx context.Context, mailingListID int, variable string, value interface{}) ([]*Email, error) {
+func (service *MailingListsService) GetMailingListEmailsByVariable(ctx context.Context, mailingListID int, variable string, value any) ([]*Email, error) {
 	path := fmt.Sprintf("/addressbooks/%d/variables/%s/%v", mailingListID, variable, value)
 	var emails []*Email
 	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &emails, true)
@@ -131,8 +131,8 @@ func (service *MailingListsService) GetMailingListEmailsByVariable(ctx context.C
 
 // EmailToAdd represents structure for add email to mailing list
 type EmailToAdd struct {
-	Email     string                 `json:"email"`
-	Variables map[string]interface{} `json:"variables"`
+	Email     string         `json:"email"`
+	Variables map[string]any `json:"variables"`
 }
 
 // SingleOptIn adds emails to mailing list using single-opt-in method

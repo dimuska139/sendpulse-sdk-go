@@ -98,7 +98,7 @@ func (suite *SendpulseTestSuite) TestAutomation360Service_StartEvent() {
 		}`)
 	})
 
-	err := suite.client.Automation360.StartEvent(context.Background(), eventName, map[string]interface{}{
+	err := suite.client.Automation360.StartEvent(context.Background(), eventName, map[string]any{
 		"email": faker.Email(),
 		"name":  faker.Name(),
 	})

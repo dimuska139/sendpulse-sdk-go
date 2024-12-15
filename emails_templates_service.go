@@ -87,7 +87,7 @@ type Template struct {
 	MarkCount       int               `json:"mark_count"` //
 	Body            string            `json:"body"`       //
 	Owner           string            `json:"owner"`
-	Created         DateTimeType      `json:"created"`
+	Created         DateTime          `json:"created"`
 	Preview         string            `json:"preview"`
 	IsStructure     bool              `json:"is_structure"`
 }

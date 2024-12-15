@@ -163,7 +163,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_AddressBooksService_SingleOpt
 	emails := make([]*EmailToAdd, 0)
 	emails = append(emails, &EmailToAdd{
 		Email:     "test@test.com",
-		Variables: map[string]interface{}{"age": 21, "weight": 99},
+		Variables: map[string]any{"age": 21, "weight": 99},
 	})
 
 	suite.NoError(suite.client.Emails.MailingLists.SingleOptIn(context.Background(), 1, emails))
@@ -180,7 +180,7 @@ func (suite *SendpulseTestSuite) TestEmailsService_AddressBooksService_DoubleOpt
 	emails := make([]*EmailToAdd, 0)
 	emails = append(emails, &EmailToAdd{
 		Email:     "test@test.com",
-		Variables: map[string]interface{}{"age": 21, "weight": 99},
+		Variables: map[string]any{"age": 21, "weight": 99},
 	})
 	suite.NoError(suite.client.Emails.MailingLists.DoubleOptIn(context.Background(), 1, emails, "admin@admin.com", "ru", "tpl123"))
 }

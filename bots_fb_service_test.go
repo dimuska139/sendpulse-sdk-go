@@ -386,7 +386,7 @@ func (suite *SendpulseTestSuite) TestBotsFbService_RunFlow() {
 		}`)
 	})
 
-	err := suite.client.Bots.Fb.RunFlow(context.Background(), "contactId", "flowId", map[string]interface{}{
+	err := suite.client.Bots.Fb.RunFlow(context.Background(), "contactId", "flowId", map[string]any{
 		"tracking_number": "1234-0987-5678-9012",
 	})
 	suite.NoError(err)
@@ -401,7 +401,7 @@ func (suite *SendpulseTestSuite) TestBotsFbService_RunFlowByTrigger() {
 		}`)
 	})
 
-	err := suite.client.Bots.Fb.RunFlowByTrigger(context.Background(), "contactId", "keyword", map[string]interface{}{
+	err := suite.client.Bots.Fb.RunFlowByTrigger(context.Background(), "contactId", "keyword", map[string]any{
 		"tracking_number": "1234-0987-5678-9012",
 	})
 	suite.NoError(err)

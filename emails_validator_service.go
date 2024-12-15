@@ -51,11 +51,11 @@ func (service *ValidatorService) GetMailingListValidationProgress(ctx context.Co
 
 // MailingListValidationResult is a results of email validation progress
 type MailingListValidationResult struct {
-	ID                int          `json:"id"`
-	Name              string       `json:"address_book_name"`
-	AllEmailsQuantity int          `json:"all_emails_quantity"`
-	Status            int          `json:"status"`
-	CheckDate         DateTimeType `json:"check_date"`
+	ID                int      `json:"id"`
+	Name              string   `json:"address_book_name"`
+	AllEmailsQuantity int      `json:"all_emails_quantity"`
+	Status            int      `json:"status"`
+	CheckDate         DateTime `json:"check_date"`
 	Data              struct {
 		Unverified  int `json:"0"`
 		Valid       int `json:"1"`
@@ -71,11 +71,11 @@ type MailingListValidationResult struct {
 type MailingListValidationResultDetailed struct {
 	MailingListValidationResult
 	EmailAddresses []struct {
-		ID           int          `json:"id"`
-		EmailAddress string       `json:"email_address"`
-		CheckDate    DateTimeType `json:"check_date"`
-		Status       int          `json:"status"`
-		StatusText   string       `json:"status_text"`
+		ID           int      `json:"id"`
+		EmailAddress string   `json:"email_address"`
+		CheckDate    DateTime `json:"check_date"`
+		Status       int      `json:"status"`
+		StatusText   string   `json:"status_text"`
 	} `json:"email_addresses"`
 	EmailAddressesTotal int `json:"email_addresses_total"`
 }

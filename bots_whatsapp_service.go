@@ -84,12 +84,12 @@ type WhatsAppBotContact struct {
 		Name         string `json:"name"`
 		LanguageCode string `json:"language_code"`
 	} `json:"channel_data"`
-	Tags                  []string               `json:"tags"`
-	Variables             map[string]interface{} `json:"variables"`
-	IsChatOpened          bool                   `json:"is_chat_opened"`
-	LastActivityAt        time.Time              `json:"last_activity_at"`
-	AutomationPausedUntil time.Time              `json:"automation_paused_until"`
-	CreatedAt             time.Time              `json:"created_at"`
+	Tags                  []string       `json:"tags"`
+	Variables             map[string]any `json:"variables"`
+	IsChatOpened          bool           `json:"is_chat_opened"`
+	LastActivityAt        time.Time      `json:"last_activity_at"`
+	AutomationPausedUntil time.Time      `json:"automation_paused_until"`
+	CreatedAt             time.Time      `json:"created_at"`
 }
 
 type WhatsAppMessage struct {
@@ -558,14 +558,14 @@ func (service *BotsWhatsAppService) SendTemplateByPhoneWithImage(ctx context.Con
 	return err
 }
 
-func (service *BotsWhatsAppService) SetVariableToContact(ctx context.Context, contactID string, variableID string, variableName string, variableValue interface{}) error {
+func (service *BotsWhatsAppService) SetVariableToContact(ctx context.Context, contactID string, variableID string, variableName string, variableValue any) error {
 	path := "/whatsapp/contacts/setVariable"
 
 	type bodyFormat struct {
-		ContactID     string      `json:"contact_id"`
-		VariableID    string      `json:"variable_id,omitempty"`
-		VariableName  string      `json:"variable_name,omitempty"`
-		VariableValue interface{} `json:"variable_value"`
+		ContactID     string `json:"contact_id"`
+		VariableID    string `json:"variable_id,omitempty"`
+		VariableName  string `json:"variable_name,omitempty"`
+		VariableValue any    `json:"variable_value"`
 	}
 	body := bodyFormat{
 		ContactID:     contactID,
@@ -739,13 +739,13 @@ func (service *BotsWhatsAppService) GetFlows(ctx context.Context, botID string) 
 	return respData.Data, err
 }
 
-func (service *BotsWhatsAppService) RunFlow(ctx context.Context, contactID, flowID string, externalData map[string]interface{}) error {
+func (service *BotsWhatsAppService) RunFlow(ctx context.Context, contactID, flowID string, externalData map[string]any) error {
 	path := "/whatsapp/flows/run"
 
 	type bodyFormat struct {
-		ContactID    string                 `json:"contact_id"`
-		FlowID       string                 `json:"flow_id"`
-		ExternalData map[string]interface{} `json:"external_data,omitempty"`
+		ContactID    string         `json:"contact_id"`
+		FlowID       string         `json:"flow_id"`
+		ExternalData map[string]any `json:"external_data,omitempty"`
 	}
 	body := bodyFormat{
 		ContactID:    contactID,
@@ -760,13 +760,13 @@ func (service *BotsWhatsAppService) RunFlow(ctx context.Context, contactID, flow
 	return err
 }
 
-func (service *BotsWhatsAppService) RunFlowByTrigger(ctx context.Context, contactID, triggerKeyword string, externalData map[string]interface{}) error {
+func (service *BotsWhatsAppService) RunFlowByTrigger(ctx context.Context, contactID, triggerKeyword string, externalData map[string]any) error {
 	path := "/whatsapp/flows/runByTrigger"
 
 	type bodyFormat struct {
-		ContactID      string                 `json:"contact_id"`
-		TriggerKeyword string                 `json:"trigger_keyword"`
-		ExternalData   map[string]interface{} `json:"external_data,omitempty"`
+		ContactID      string         `json:"contact_id"`
+		TriggerKeyword string         `json:"trigger_keyword"`
+		ExternalData   map[string]any `json:"external_data,omitempty"`
 	}
 	body := bodyFormat{
 		ContactID:      contactID,
@@ -793,14 +793,14 @@ func (service *BotsWhatsAppService) GetBotTriggers(ctx context.Context, botID st
 }
 
 type WhatsAppBotMessage struct {
-	ID         string                 `json:"id"`
-	ContactID  string                 `json:"contact_id"`
-	BotID      string                 `json:"bot_id"`
-	CampaignID string                 `json:"campaign_id"`
-	Data       map[string]interface{} `json:"data"`
-	Direction  int                    `json:"direction"`
-	Status     int                    `json:"status"`
-	CreatedAt  time.Time              `json:"created_at"`
+	ID         string         `json:"id"`
+	ContactID  string         `json:"contact_id"`
+	BotID      string         `json:"bot_id"`
+	CampaignID string         `json:"campaign_id"`
+	Data       map[string]any `json:"data"`
+	Direction  int            `json:"direction"`
+	Status     int            `json:"status"`
+	CreatedAt  time.Time      `json:"created_at"`
 }
 
 type WhatsAppBotChat struct {
@@ -860,9 +860,9 @@ type WhatsAppBotSendCampaignByTemplateParams struct {
 func (service *BotsWhatsAppService) SendCampaignByTemplate(ctx context.Context, params WhatsAppBotSendCampaignByTemplateParams) error {
 	path := "/whatsapp/campaigns/sendTemplate"
 	type bodyFormat struct {
-		Title    string       `json:"title"`
-		BotID    string       `json:"bot_id"`
-		SendAt   DateTimeType `json:"send_at"`
+		Title    string   `json:"title"`
+		BotID    string   `json:"bot_id"`
+		SendAt   DateTime `json:"send_at"`
 		Template struct {
 			Name     string `json:"name"`
 			Language struct {

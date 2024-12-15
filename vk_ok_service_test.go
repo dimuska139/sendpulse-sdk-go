@@ -203,19 +203,19 @@ func (suite *SendpulseTestSuite) TestVkOkService_Send() {
 	campaignID, err := suite.client.VkOk.Send(context.Background(), SendVkOkTemplateParams{
 		AddressBooks: []int{123, 456},
 		Recipients: []struct {
-			Phone     string                 `json:"phone"`
-			Variables map[string]interface{} `json:"variables"`
+			Phone     string         `json:"phone"`
+			Variables map[string]any `json:"variables"`
 		}{
 			{
 				Phone:     "89221123344",
-				Variables: map[string]interface{}{"name": "Alex"},
+				Variables: map[string]any{"name": "Alex"},
 			},
 		},
 		LifeTime:   1000,
 		LifeType:   "min",
 		Name:       "Test",
 		Routes:     nil,
-		SendDate:   DateTimeType(time.Now()),
+		SendDate:   DateTime(time.Now()),
 		TemplateID: 12345,
 	})
 	suite.NoError(err)

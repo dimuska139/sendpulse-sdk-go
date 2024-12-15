@@ -19,19 +19,19 @@ func newAutomation360Service(cl *Client) *Automation360Service {
 // Autoresponder represents statistics about an automation flow
 type Autoresponder struct {
 	Autoresponder struct {
-		ID      int          `json:"id"`
-		Name    string       `json:"name"`
-		Status  int          `json:"status"`
-		Created DateTimeType `json:"created"`
-		Changed DateTimeType `json:"changed"`
+		ID      int      `json:"id"`
+		Name    string   `json:"name"`
+		Status  int      `json:"status"`
+		Created DateTime `json:"created"`
+		Changed DateTime `json:"changed"`
 	} `json:"autoresponder"`
 	Flows []*struct {
-		ID       int                    `json:"id"`
-		MainID   int                    `json:"main_id"`
-		AfType   string                 `json:"af_type"`
-		Created  DateTimeType           `json:"created"`
-		LastSend DateTimeType           `json:"last_send"`
-		Task     map[string]interface{} `json:"task"`
+		ID       int            `json:"id"`
+		MainID   int            `json:"main_id"`
+		AfType   string         `json:"af_type"`
+		Created  DateTime       `json:"created"`
+		LastSend DateTime       `json:"last_send"`
+		Task     map[string]any `json:"task"`
 	} `json:"flows"`
 	Starts       int `json:"starts"`
 	InQueue      int `json:"in_queue"`
@@ -50,7 +50,7 @@ func (service *Automation360Service) GetAutoresponderStatistics(ctx context.Cont
 }
 
 // StartEvent sends event to SendPulse
-func (service *Automation360Service) StartEvent(ctx context.Context, eventName string, variables map[string]interface{}) error {
+func (service *Automation360Service) StartEvent(ctx context.Context, eventName string, variables map[string]any) error {
 	path := fmt.Sprintf("/events/name/%s", eventName)
 
 	var respData struct {
@@ -82,21 +82,21 @@ func (service *Automation360Service) GetStartBlockStatistics(ctx context.Context
 type EmailBlockStat struct {
 	FlowID int `json:"flow_id"`
 	Task   struct {
-		ID                int          `json:"id"`
-		MailingListID     int          `json:"address_book_id"`
-		MessageTitle      string       `json:"message_title"`
-		SenderMailAddress string       `json:"sender_mail_address"`
-		SenderMailName    string       `json:"sender_mail_name"`
-		Created           DateTimeType `json:"created"`
+		ID                int      `json:"id"`
+		MailingListID     int      `json:"address_book_id"`
+		MessageTitle      string   `json:"message_title"`
+		SenderMailAddress string   `json:"sender_mail_address"`
+		SenderMailName    string   `json:"sender_mail_name"`
+		Created           DateTime `json:"created"`
 	} `json:"task"`
-	Sent         int          `json:"sent"`
-	Delivered    int          `json:"delivered"`
-	Opened       int          `json:"opened"`
-	Clicked      int          `json:"clicked"`
-	Errors       int          `json:"errors"`
-	Unsubscribed int          `json:"unsubscribed"`
-	MarkedAsSpam int          `json:"marked_as_spam"`
-	LastSend     DateTimeType `json:"last_send"`
+	Sent         int      `json:"sent"`
+	Delivered    int      `json:"delivered"`
+	Opened       int      `json:"opened"`
+	Clicked      int      `json:"clicked"`
+	Errors       int      `json:"errors"`
+	Unsubscribed int      `json:"unsubscribed"`
+	MarkedAsSpam int      `json:"marked_as_spam"`
+	LastSend     DateTime `json:"last_send"`
 }
 
 // GetEmailBlockStatistics returns statistics about the "Email" element
@@ -112,12 +112,12 @@ func (service *Automation360Service) GetEmailBlockStatistics(ctx context.Context
 
 // PushBlockStat represents statistics about the "Push" element
 type PushBlockStat struct {
-	FlowID    int          `json:"flow_id"`
-	Sent      int          `json:"sent"`
-	Delivered int          `json:"delivered"`
-	Clicked   int          `json:"clicked"`
-	Errors    int          `json:"errors"`
-	LastSend  DateTimeType `json:"last_send"`
+	FlowID    int      `json:"flow_id"`
+	Sent      int      `json:"sent"`
+	Delivered int      `json:"delivered"`
+	Clicked   int      `json:"clicked"`
+	Errors    int      `json:"errors"`
+	LastSend  DateTime `json:"last_send"`
 }
 
 // GetPushBlockStatistics returns statistics about the "Push" element
@@ -133,14 +133,14 @@ func (service *Automation360Service) GetPushBlockStatistics(ctx context.Context,
 
 // SmsBlockStat represents statistics about the "SMS" element
 type SmsBlockStat struct {
-	FlowID    int          `json:"flow_id"`
-	Executed  int          `json:"executed"`
-	Sent      int          `json:"sent"`
-	Delivered int          `json:"delivered"`
-	Opened    int          `json:"opened"`
-	Clicked   int          `json:"clicked"`
-	Errors    int          `json:"errors"`
-	LastSend  DateTimeType `json:"last_send"`
+	FlowID    int      `json:"flow_id"`
+	Executed  int      `json:"executed"`
+	Sent      int      `json:"sent"`
+	Delivered int      `json:"delivered"`
+	Opened    int      `json:"opened"`
+	Clicked   int      `json:"clicked"`
+	Errors    int      `json:"errors"`
+	LastSend  DateTime `json:"last_send"`
 }
 
 // GetSmsBlockStatistics returns statistics about the "SMS" element
@@ -156,10 +156,10 @@ func (service *Automation360Service) GetSmsBlockStatistics(ctx context.Context, 
 
 // MessengerBlockStat represents statistics about the "Messenger" element
 type MessengerBlockStat struct {
-	FlowID   int          `json:"flow_id"`
-	Executed int          `json:"executed"`
-	Sent     int          `json:"sent"`
-	LastSend DateTimeType `json:"last_send"`
+	FlowID   int      `json:"flow_id"`
+	Executed int      `json:"executed"`
+	Sent     int      `json:"sent"`
+	LastSend DateTime `json:"last_send"`
 }
 
 // GetMessengerBlockStatistics returns statistics about the "Messenger" element
@@ -175,9 +175,9 @@ func (service *Automation360Service) GetMessengerBlockStatistics(ctx context.Con
 
 // FilterBlockStat represents statistics about the "Filter" element
 type FilterBlockStat struct {
-	FlowID   int          `json:"flow_id"`
-	Executed int          `json:"executed"`
-	LastSend DateTimeType `json:"last_send"`
+	FlowID   int      `json:"flow_id"`
+	Executed int      `json:"executed"`
+	LastSend DateTime `json:"last_send"`
 }
 
 // GetFilterBlockStatistics returns statistics about the "Filter" element
@@ -193,9 +193,9 @@ func (service *Automation360Service) GetFilterBlockStatistics(ctx context.Contex
 
 // TriggerBlockStat represents statistics about the "Condition" element
 type TriggerBlockStat struct {
-	FlowID   int          `json:"flow_id"`
-	Executed int          `json:"executed"`
-	LastSend DateTimeType `json:"last_send"`
+	FlowID   int      `json:"flow_id"`
+	Executed int      `json:"executed"`
+	LastSend DateTime `json:"last_send"`
 }
 
 // GetTriggerBlockStatistics returns statistics about the "Condition" element
@@ -211,14 +211,14 @@ func (service *Automation360Service) GetTriggerBlockStatistics(ctx context.Conte
 
 // GoalBlockStat represents statistics about the "Goal" element
 type GoalBlockStat struct {
-	FlowID    int          `json:"flow_id"`
-	Executed  int          `json:"executed"`
-	Sent      int          `json:"sent"`
-	Delivered int          `json:"delivered"`
-	Opened    int          `json:"opened"`
-	Clicked   int          `json:"clicked"`
-	Errors    int          `json:"errors"`
-	LastSend  DateTimeType `json:"last_send"`
+	FlowID    int      `json:"flow_id"`
+	Executed  int      `json:"executed"`
+	Sent      int      `json:"sent"`
+	Delivered int      `json:"delivered"`
+	Opened    int      `json:"opened"`
+	Clicked   int      `json:"clicked"`
+	Errors    int      `json:"errors"`
+	LastSend  DateTime `json:"last_send"`
 }
 
 // GetGoalBlockStatistics returns statistics about the "Goal" element
@@ -234,9 +234,9 @@ func (service *Automation360Service) GetGoalBlockStatistics(ctx context.Context,
 
 // ActionBlockStat represents statistics about the "Action" element
 type ActionBlockStat struct {
-	FlowID   int          `json:"flow_id"`
-	Executed int          `json:"executed"`
-	LastSend DateTimeType `json:"last_send"`
+	FlowID   int      `json:"flow_id"`
+	Executed int      `json:"executed"`
+	LastSend DateTime `json:"last_send"`
 }
 
 // GetActionBlockStatistics returns statistics about the "Action" element
@@ -256,20 +256,20 @@ type AutoresponderConversion struct {
 	MaintriggerConversions int `json:"maintrigger_conversions"`
 	GoalConversions        int `json:"goal_conversions"`
 	Maintrigger            struct {
-		ID          int          `json:"id"`
-		MainID      int          `json:"main_id"`
-		AfType      string       `json:"af_type"`
-		Created     DateTimeType `json:"created"`
-		LastSend    DateTimeType `json:"last_send"`
-		Conversions int          `json:"conversions"`
+		ID          int      `json:"id"`
+		MainID      int      `json:"main_id"`
+		AfType      string   `json:"af_type"`
+		Created     DateTime `json:"created"`
+		LastSend    DateTime `json:"last_send"`
+		Conversions int      `json:"conversions"`
 	} `json:"maintrigger"`
 	Goals []struct {
-		ID          int          `json:"id"`
-		Name        string       `json:"name"`
-		MainID      int          `json:"main_id"`
-		AfType      string       `json:"af_type"`
-		Created     DateTimeType `json:"created"`
-		Conversions int          `json:"conversions"`
+		ID          int      `json:"id"`
+		Name        string   `json:"name"`
+		MainID      int      `json:"main_id"`
+		AfType      string   `json:"af_type"`
+		Created     DateTime `json:"created"`
+		Conversions int      `json:"conversions"`
 	} `json:"goals"`
 }
 
@@ -286,13 +286,13 @@ func (service *Automation360Service) GetAutoresponderConversions(ctx context.Con
 
 // AutoresponderContact represents the contact that converted
 type AutoresponderContact struct {
-	ID             int          `json:"id"`
-	ConversionType string       `json:"conversion_type"`
-	FlowID         int          `json:"flow_id"`
-	Email          string       `json:"email"`
-	Phone          string       `json:"phone"`
-	ConversionDate DateTimeType `json:"conversion_date"`
-	StartDate      DateTimeType `json:"start_date"`
+	ID             int      `json:"id"`
+	ConversionType string   `json:"conversion_type"`
+	FlowID         int      `json:"flow_id"`
+	Email          string   `json:"email"`
+	Phone          string   `json:"phone"`
+	ConversionDate DateTime `json:"conversion_date"`
+	StartDate      DateTime `json:"start_date"`
 }
 
 // GetAutoresponderContacts returns a list of the contacts that converted

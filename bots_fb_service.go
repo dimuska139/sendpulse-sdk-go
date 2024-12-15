@@ -89,13 +89,13 @@ type FbBotContact struct {
 		Locale     string `json:"locale"`
 		Gender     string `json:"gender"`
 	} `json:"channel_data"`
-	Tags                  []string               `json:"tags"`
-	Variables             map[string]interface{} `json:"variables"`
-	IsChatOpened          bool                   `json:"is_chat_opened"`
-	LastActivityAt        time.Time              `json:"last_activity_at"`
-	AutomationPausedUntil time.Time              `json:"automation_paused_until"`
-	UnsubscribedAt        time.Time              `json:"unsubscribed_at"`
-	CreatedAt             time.Time              `json:"created_at"`
+	Tags                  []string       `json:"tags"`
+	Variables             map[string]any `json:"variables"`
+	IsChatOpened          bool           `json:"is_chat_opened"`
+	LastActivityAt        time.Time      `json:"last_activity_at"`
+	AutomationPausedUntil time.Time      `json:"automation_paused_until"`
+	UnsubscribedAt        time.Time      `json:"unsubscribed_at"`
+	CreatedAt             time.Time      `json:"created_at"`
 }
 
 func (service *BotsFbService) GetContact(ctx context.Context, contactID string) (*FbBotContact, error) {
@@ -166,14 +166,14 @@ func (service *BotsFbService) SendTextByContact(ctx context.Context, params FbBo
 	return err
 }
 
-func (service *BotsFbService) SetVariableToContact(ctx context.Context, contactID string, variableID string, variableName string, variableValue interface{}) error {
+func (service *BotsFbService) SetVariableToContact(ctx context.Context, contactID string, variableID string, variableName string, variableValue any) error {
 	path := "/messenger/contacts/setVariable"
 
 	type bodyFormat struct {
-		ContactID     string      `json:"contact_id"`
-		VariableID    string      `json:"variable_id"`
-		VariableName  string      `json:"variable_name"`
-		VariableValue interface{} `json:"variable_value"`
+		ContactID     string `json:"contact_id"`
+		VariableID    string `json:"variable_id"`
+		VariableName  string `json:"variable_name"`
+		VariableValue any    `json:"variable_value"`
 	}
 	body := bodyFormat{
 		ContactID:     contactID,
@@ -370,13 +370,13 @@ func (service *BotsFbService) GetFlows(ctx context.Context, botID string) ([]*Bo
 	return respData.Data, err
 }
 
-func (service *BotsFbService) RunFlow(ctx context.Context, contactID, flowID string, externalData map[string]interface{}) error {
+func (service *BotsFbService) RunFlow(ctx context.Context, contactID, flowID string, externalData map[string]any) error {
 	path := "/messenger/flows/run"
 
 	type bodyFormat struct {
-		ContactID    string                 `json:"contact_id"`
-		FlowID       string                 `json:"flow_id"`
-		ExternalData map[string]interface{} `json:"external_data,omitempty"`
+		ContactID    string         `json:"contact_id"`
+		FlowID       string         `json:"flow_id"`
+		ExternalData map[string]any `json:"external_data,omitempty"`
 	}
 	body := bodyFormat{
 		ContactID:    contactID,
@@ -391,13 +391,13 @@ func (service *BotsFbService) RunFlow(ctx context.Context, contactID, flowID str
 	return err
 }
 
-func (service *BotsFbService) RunFlowByTrigger(ctx context.Context, contactID, triggerKeyword string, externalData map[string]interface{}) error {
+func (service *BotsFbService) RunFlowByTrigger(ctx context.Context, contactID, triggerKeyword string, externalData map[string]any) error {
 	path := "/messenger/flows/runByTrigger"
 
 	type bodyFormat struct {
-		ContactID      string                 `json:"contact_id"`
-		TriggerKeyword string                 `json:"trigger_keyword"`
-		ExternalData   map[string]interface{} `json:"external_data,omitempty"`
+		ContactID      string         `json:"contact_id"`
+		TriggerKeyword string         `json:"trigger_keyword"`
+		ExternalData   map[string]any `json:"external_data,omitempty"`
 	}
 	body := bodyFormat{
 		ContactID:      contactID,
@@ -439,17 +439,17 @@ func (service *BotsFbService) GetBotTriggers(ctx context.Context, botID string) 
 }
 
 type FbBotMessage struct {
-	ID           string                 `json:"id"`
-	ContactID    string                 `json:"contact_id"`
-	BotID        string                 `json:"bot_id"`
-	CampaignID   string                 `json:"campaign_id"`
-	Data         map[string]interface{} `json:"data"`
-	Direction    int                    `json:"direction"`
-	Status       int                    `json:"status"`
-	DeliveredAt  time.Time              `json:"delivered_at"`
-	OpenedAt     time.Time              `json:"opened_at"`
-	RedirectedAt time.Time              `json:"redirected_at"`
-	CreatedAt    time.Time              `json:"created_at"`
+	ID           string         `json:"id"`
+	ContactID    string         `json:"contact_id"`
+	BotID        string         `json:"bot_id"`
+	CampaignID   string         `json:"campaign_id"`
+	Data         map[string]any `json:"data"`
+	Direction    int            `json:"direction"`
+	Status       int            `json:"status"`
+	DeliveredAt  time.Time      `json:"delivered_at"`
+	OpenedAt     time.Time      `json:"opened_at"`
+	RedirectedAt time.Time      `json:"redirected_at"`
+	CreatedAt    time.Time      `json:"created_at"`
 }
 
 type FbBotChat struct {

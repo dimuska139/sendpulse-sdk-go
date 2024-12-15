@@ -94,12 +94,12 @@ type TelegramBotContact struct {
 		Name         string `json:"name"`
 		LanguageCode string `json:"language_code"`
 	} `json:"channel_data"`
-	Tags                  []string               `json:"tags"`
-	Variables             map[string]interface{} `json:"variables"`
-	IsChatOpened          bool                   `json:"is_chat_opened"`
-	LastActivityAt        time.Time              `json:"last_activity_at"`
-	AutomationPausedUntil time.Time              `json:"automation_paused_until"`
-	CreatedAt             time.Time              `json:"created_at"`
+	Tags                  []string       `json:"tags"`
+	Variables             map[string]any `json:"variables"`
+	IsChatOpened          bool           `json:"is_chat_opened"`
+	LastActivityAt        time.Time      `json:"last_activity_at"`
+	AutomationPausedUntil time.Time      `json:"automation_paused_until"`
+	CreatedAt             time.Time      `json:"created_at"`
 }
 
 func (service *BotsTelegramService) GetContact(ctx context.Context, contactID string) (*TelegramBotContact, error) {
@@ -165,14 +165,14 @@ func (service *BotsTelegramService) SendTextByContact(ctx context.Context, conta
 	return err
 }
 
-func (service *BotsTelegramService) SetVariableToContact(ctx context.Context, contactID string, variableID string, variableName string, variableValue interface{}) error {
+func (service *BotsTelegramService) SetVariableToContact(ctx context.Context, contactID string, variableID string, variableName string, variableValue any) error {
 	path := "/telegram/contacts/setVariable"
 
 	type bodyFormat struct {
-		ContactID     string      `json:"contact_id"`
-		VariableID    string      `json:"variable_id"`
-		VariableName  string      `json:"variable_name"`
-		VariableValue interface{} `json:"variable_value"`
+		ContactID     string `json:"contact_id"`
+		VariableID    string `json:"variable_id"`
+		VariableName  string `json:"variable_name"`
+		VariableValue any    `json:"variable_value"`
 	}
 	body := bodyFormat{
 		ContactID:     contactID,
@@ -346,13 +346,13 @@ func (service *BotsTelegramService) GetFlows(ctx context.Context, botID string) 
 	return respData.Data, err
 }
 
-func (service *BotsTelegramService) RunFlow(ctx context.Context, contactID, flowID string, externalData map[string]interface{}) error {
+func (service *BotsTelegramService) RunFlow(ctx context.Context, contactID, flowID string, externalData map[string]any) error {
 	path := "/telegram/flows/run"
 
 	type bodyFormat struct {
-		ContactID    string                 `json:"contact_id"`
-		FlowID       string                 `json:"flow_id"`
-		ExternalData map[string]interface{} `json:"external_data,omitempty"`
+		ContactID    string         `json:"contact_id"`
+		FlowID       string         `json:"flow_id"`
+		ExternalData map[string]any `json:"external_data,omitempty"`
 	}
 	body := bodyFormat{
 		ContactID:    contactID,
@@ -367,13 +367,13 @@ func (service *BotsTelegramService) RunFlow(ctx context.Context, contactID, flow
 	return err
 }
 
-func (service *BotsTelegramService) RunFlowByTrigger(ctx context.Context, contactID, triggerKeyword string, externalData map[string]interface{}) error {
+func (service *BotsTelegramService) RunFlowByTrigger(ctx context.Context, contactID, triggerKeyword string, externalData map[string]any) error {
 	path := "/telegram/flows/runByTrigger"
 
 	type bodyFormat struct {
-		ContactID      string                 `json:"contact_id"`
-		TriggerKeyword string                 `json:"trigger_keyword"`
-		ExternalData   map[string]interface{} `json:"external_data,omitempty"`
+		ContactID      string         `json:"contact_id"`
+		TriggerKeyword string         `json:"trigger_keyword"`
+		ExternalData   map[string]any `json:"external_data,omitempty"`
 	}
 	body := bodyFormat{
 		ContactID:      contactID,
@@ -400,14 +400,14 @@ func (service *BotsTelegramService) GetBotTriggers(ctx context.Context, botID st
 }
 
 type TelegramBotMessage struct {
-	ID         string                 `json:"id"`
-	ContactID  string                 `json:"contact_id"`
-	BotID      string                 `json:"bot_id"`
-	CampaignID string                 `json:"campaign_id"`
-	Data       map[string]interface{} `json:"data"`
-	Direction  int                    `json:"direction"`
-	Status     int                    `json:"status"`
-	CreatedAt  time.Time              `json:"created_at"`
+	ID         string         `json:"id"`
+	ContactID  string         `json:"contact_id"`
+	BotID      string         `json:"bot_id"`
+	CampaignID string         `json:"campaign_id"`
+	Data       map[string]any `json:"data"`
+	Direction  int            `json:"direction"`
+	Status     int            `json:"status"`
+	CreatedAt  time.Time      `json:"created_at"`
 }
 
 type TelegramBotChat struct {

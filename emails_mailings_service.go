@@ -28,7 +28,7 @@ type CampaignParams struct {
 	MailingListID int               `json:"list_id,omitempty"`
 	SegmentID     int               `json:"segment_id,omitempty"`
 	IsTest        bool              `json:"is_test,omitempty"`
-	SendDate      DateTimeType      `json:"send_date,omitempty"`
+	SendDate      DateTime          `json:"send_date,omitempty"`
 	Name          string            `json:"name,omitempty"`
 	Attachments   map[string]string `json:"attachments"`
 	Type          string            `json:"type,omitempty"`
@@ -47,13 +47,13 @@ type Campaign struct {
 		Attachments   string `json:"attachments"`
 		MailingListID int    `json:"list_id"`
 	}
-	Status            int          `json:"status"`
-	AllEmailQty       int          `json:"all_email_qty"`
-	TariffEmailQty    int          `json:"tariff_email_qty"`
-	PaidEmailQty      int          `json:"paid_email_qty"`
-	OverdraftPrice    float32      `json:"overdraft_price"`
-	OverdraftCurrency string       `json:"overdraft_currency"`
-	SendDate          DateTimeType `json:"send_date"`
+	Status            int      `json:"status"`
+	AllEmailQty       int      `json:"all_email_qty"`
+	TariffEmailQty    int      `json:"tariff_email_qty"`
+	PaidEmailQty      int      `json:"paid_email_qty"`
+	OverdraftPrice    float32  `json:"overdraft_price"`
+	OverdraftCurrency string   `json:"overdraft_currency"`
+	SendDate          DateTime `json:"send_date"`
 }
 
 // CreateCampaign creates a campaign. Please note that you can send a maximum of 4 campaigns per hour
