@@ -4,7 +4,7 @@ the SendPulse API via Go.
 
 SendPulse API official documentation [https://sendpulse.com/api](https://sendpulse.com/api)
 
-[![Build Status](https://travis-ci.com/dimuska139/sendpulse-sdk-go.svg?branch=master)](https://travis-ci.org/dimuska139/sendpulse-sdk-go)
+[![Go Reference](https://pkg.go.dev/badge/github.com/dimuska139/sendpulse-sdk-go.svg)](https://pkg.go.dev/github.com/dimuska139/tilda-go)
 [![codecov](https://codecov.io/github/dimuska139/sendpulse-sdk-go/graph/badge.svg?token=8DVzSE0UcZ)](https://codecov.io/gh/dimuska139/sendpulse-sdk-go)
 [![Go Report Card](https://goreportcard.com/badge/github.com/dimuska139/sendpulse-sdk-go)](https://goreportcard.com/report/github.com/dimuska139/sendpulse-sdk-go)
 [![License](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/dimuska139/sendpulse-sdk-go/blob/master/LICENSE)
@@ -12,7 +12,7 @@ SendPulse API official documentation [https://sendpulse.com/api](https://sendpul
 ### Installation
 
 ```shell
-go get -u github.com/dimuska139/sendpulse-sdk-go/v7
+go get -u github.com/dimuska139/sendpulse-sdk-go/v8
 ```
 
 ### Usage
@@ -22,7 +22,7 @@ package main
 import (
     "context"
     "fmt"
-    sendpulse "github.com/dimuska139/sendpulse-sdk-go/v7"
+    sendpulse "github.com/dimuska139/sendpulse-sdk-go/v8"
     "net/http"
 )
 
