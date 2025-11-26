@@ -3,9 +3,10 @@ package sendpulse_sdk_go
 import (
 	"context"
 	"fmt"
-	"github.com/bxcodec/faker/v3"
 	"net/http"
 	"time"
+
+	"github.com/bxcodec/faker/v3"
 )
 
 func (suite *SendpulseTestSuite) TestSmtpService_Send() {
@@ -326,4 +327,17 @@ func (suite *SendpulseTestSuite) TestSmtpService_VerifyDomain() {
 
 	err := suite.client.SMTP.VerifyDomain(context.Background(), email)
 	suite.NoError(err)
+}
+
+func (suite *SendpulseTestSuite) TestSmtpService_GetUnsubscribedEmail() {
+	email := "test@example.com"
+	suite.mux.HandleFunc("/smtp/unsubscribe/search", func(w http.ResponseWriter, r *http.Request) {
+		suite.Equal(http.MethodGet, r.Method)
+		suite.Equal(email, r.URL.Query().Get("email"))
+		fmt.Fprintf(w, `{"result": true}`)
+	})
+
+	result, err := suite.client.SMTP.GetUnsubscribedEmail(context.Background(), email)
+	suite.NoError(err)
+	suite.True(result)
 }

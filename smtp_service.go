@@ -5,6 +5,7 @@ import (
 	b64 "encoding/base64"
 	"fmt"
 	"net/http"
+	"net/url"
 	"strings"
 	"time"
 )
@@ -248,6 +249,15 @@ func (service *SmtpService) GetUnsubscribedEmails(ctx context.Context, params Un
 
 	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
 	return respData, err
+}
+
+func (service *SmtpService) GetUnsubscribedEmail(ctx context.Context, email string) (bool, error) {
+	path := fmt.Sprintf("/smtp/unsubscribe/search?email=%s", url.QueryEscape(email))
+	var respData struct {
+		Result bool `json:"result"`
+	}
+	_, err := service.client.newRequest(ctx, http.MethodGet, path, nil, &respData, true)
+	return respData.Result, err
 }
 
 func (service *SmtpService) GetSendersIPs(ctx context.Context) ([]string, error) {
